@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Kardiovaskular</title>
+<meta name="description" content="Kumpulan kalkulator risiko kardiovaskular klinis (CHA2DS2-VASc, HAS-BLED, GRACE, TIMI, SCORE2, PREVENT, Framingham) — berjalan sepenuhnya di browser, tanpa data pasien dikirim ke server.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-mark">CV</div>
+      <span>Kalkulator Kardio</span>
+    </div>
+    <button class="menu-toggle" id="menu-toggle" aria-label="Buka menu navigasi"><span></span></button>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-mark">CV</div>
+      <div class="sidebar-brand-text">
+        <strong>Kalkulator Kardio</strong>
+        <span>Risk calculator suite</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="nav-link" href="#landing"><span class="nav-icon">•</span> Beranda</a>
+
+      <div class="sidebar-section-label">Fibrilasi Atrium</div>
+      <a class="nav-link" href="#chadsvasc"><span class="nav-icon">V2</span> CHA₂DS₂-VASc</a>
+      <a class="nav-link" href="#chadsva"><span class="nav-icon">VA</span> CHA₂DS₂-VA</a>
+      <a class="nav-link" href="#hasbled"><span class="nav-icon">HB</span> HAS-BLED</a>
+
+      <div class="sidebar-section-label">Sindrom Koroner Akut</div>
+      <a class="nav-link" href="#grace"><span class="nav-icon">GR</span> GRACE 2.0</a>
+      <a class="nav-link" href="#timi"><span class="nav-icon">TI</span> TIMI Risk Score</a>
+
+      <div class="sidebar-section-label">Risiko ASCVD Primer</div>
+      <a class="nav-link" href="#score2"><span class="nav-icon">S2</span> SCORE2 / SCORE2-OP</a>
+      <a class="nav-link" href="#prevent"><span class="nav-icon">PR</span> AHA PREVENT</a>
+      <a class="nav-link" href="#framingham"><span class="nav-icon">FR</span> Framingham</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      Seluruh perhitungan berjalan lokal di perangkat Anda. Tidak ada data pasien yang dikirim atau disimpan.
+    </div>
+  </aside>
+
+  <main class="main" id="main-content">
+
+    <!-- ===================== LANDING ===================== -->
+    <section class="view is-active" id="view-landing" data-title="Beranda">
+      <div class="hero-landing">
+        <span class="eyebrow">8 kalkulator klinis · 100% client-side</span>
+        <h1>Kalkulator risiko kardiovaskular untuk praktik sehari-hari</h1>
+        <p>Alat bantu skrining dan stratifikasi risiko berbasis guideline internasional terkini (AHA/ACC/HRS, ESC). Pilih salah satu kalkulator di bawah atau melalui menu di samping.</p>
+        <div class="privacy-note">
+          <span class="icon">&#128274;</span>
+          <span>Privasi terjaga: semua perhitungan dilakukan langsung di browser Anda. Tidak ada data pasien yang dikirim ke server mana pun.</span>
+        </div>
+      </div>
+
+      <div class="calc-grid" id="landing-grid">
+        <a class="calc-card" href="#chadsvasc">
+          <div class="calc-card-icon">V2</div>
+          <h3>CHA₂DS₂-VASc</h3>
+          <p>Estimasi risiko stroke tahunan pada pasien fibrilasi atrium untuk menentukan kebutuhan antikoagulasi (AHA/ACC/HRS 2023).</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+        <a class="calc-card" href="#chadsva">
+          <div class="calc-card-icon">VA</div>
+          <h3>CHA₂DS₂-VA</h3>
+          <p>Versi ESC 2024 tanpa poin jenis kelamin — estimasi risiko stroke pada fibrilasi atrium.</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+        <a class="calc-card" href="#hasbled">
+          <div class="calc-card-icon">HB</div>
+          <h3>HAS-BLED</h3>
+          <p>Estimasi risiko perdarahan mayor pada pasien yang menjalani terapi antikoagulasi.</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+        <a class="calc-card" href="#grace">
+          <div class="calc-card-icon">GR</div>
+          <h3>GRACE 2.0</h3>
+          <p>Prediksi mortalitas in-hospital dan 6 bulan pada pasien sindrom koroner akut (ACS/NSTEMI).</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+        <a class="calc-card" href="#timi">
+          <div class="calc-card-icon">TI</div>
+          <h3>TIMI Risk Score</h3>
+          <p>Stratifikasi risiko untuk UA/NSTEMI dan STEMI — dua versi kalkulator dalam satu halaman.</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+        <a class="calc-card" href="#score2">
+          <div class="calc-card-icon">S2</div>
+          <h3>SCORE2 / SCORE2-OP</h3>
+          <p>Estimasi risiko ASCVD 10 tahun berbasis region risiko Eropa (ESC 2021), untuk usia 40–89 tahun.</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+        <a class="calc-card" href="#prevent">
+          <div class="calc-card-icon">PR</div>
+          <h3>AHA PREVENT</h3>
+          <p>Estimasi risiko ASCVD 10 tahun dan 30 tahun berdasarkan model AHA PREVENT 2024.</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+        <a class="calc-card" href="#framingham">
+          <div class="calc-card-icon">FR</div>
+          <h3>Framingham Risk Score</h3>
+          <p>Risiko penyakit jantung koroner 10 tahun — skor legacy, kini digantikan SCORE2/PREVENT.</p>
+          <span class="calc-card-cta">Buka kalkulator &rarr;</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Calculator views are injected below by section -->
+    <!-- ===================== CHA2DS2-VASc ===================== -->
+    <section class="view" id="view-chadsvasc" data-title="CHA₂DS₂-VASc">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>CHA₂DS₂-VASc</h1>
+        <p class="calc-subtitle">Estimasi risiko stroke tahunan pada pasien fibrilasi atrium non-valvular untuk menentukan indikasi antikoagulasi jangka panjang.</p>
+        <div class="calc-badges">
+          <span class="badge">AHA/ACC/ACCP/HRS 2023</span>
+          <span class="badge">Fibrilasi Atrium</span>
+        </div>
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis pasien</h2>
+          <form id="form-chadsvasc" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="cvasc-sex">Jenis kelamin</label>
+                <select id="cvasc-sex">
+                  <option value="M">Laki-laki</option>
+                  <option value="F">Perempuan</option>
+                </select>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="cvasc-age">Usia (tahun)</label>
+                <input type="number" id="cvasc-age" min="18" max="120" placeholder="cth. 70">
+                <span class="field-hint">Skor usia otomatis: &lt;65 = 0, 65–74 = 1, &ge;75 = 2</span>
+                <span class="field-error"></span>
+              </div>
+
+              <label class="check-row field full" for="cvasc-chf">
+                <input type="checkbox" id="cvasc-chf">
+                <span class="check-label">Gagal jantung kongestif / disfungsi ventrikel kiri (EF &le; 40%)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="cvasc-htn">
+                <input type="checkbox" id="cvasc-htn">
+                <span class="check-label">Hipertensi (riwayat atau sedang terapi antihipertensi)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="cvasc-dm">
+                <input type="checkbox" id="cvasc-dm">
+                <span class="check-label">Diabetes melitus</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="cvasc-stroke">
+                <input type="checkbox" id="cvasc-stroke">
+                <span class="check-label">Riwayat stroke, TIA, atau tromboemboli sistemik</span>
+                <span class="check-points">+2</span>
+              </label>
+              <label class="check-row field full" for="cvasc-vasc">
+                <input type="checkbox" id="cvasc-vasc">
+                <span class="check-label">Penyakit vaskular (infark miokard, penyakit arteri perifer, atau plak aorta kompleks)</span>
+                <span class="check-points">+1</span>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung skor</button>
+              <button type="reset" class="btn btn-secondary" id="cvasc-reset">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="cvasc-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung skor" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box disclaimer">
+          <h4>Disclaimer</h4>
+          <p>Alat ini membantu proses pengambilan keputusan klinis dan tidak menggantikan penilaian (judgment) dokter yang menangani pasien secara langsung.</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>2023 ACC/AHA/ACCP/HRS Guideline for the Diagnosis and Management of Atrial Fibrillation. Estimasi laju stroke tahunan mengacu pada Friberg L, et al. Eur Heart J. 2012.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CHA2DS2-VA ===================== -->
+    <section class="view" id="view-chadsva" data-title="CHA₂DS₂-VA">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>CHA₂DS₂-VA</h1>
+        <p class="calc-subtitle">Versi ESC 2024 dari skor risiko stroke pada fibrilasi atrium — identik dengan CHA₂DS₂-VASc, namun tanpa poin jenis kelamin.</p>
+        <div class="calc-badges">
+          <span class="badge">ESC 2024 AF Guidelines</span>
+          <span class="badge">Fibrilasi Atrium</span>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <strong>Apa bedanya dengan CHA₂DS₂-VASc?</strong> Guideline ESC 2024 menghapus "sex category" (jenis kelamin perempuan) sebagai faktor risiko independen, karena bukti terbaru menunjukkan jenis kelamin berperan sebagai modifier risiko — bukan faktor risiko berdiri sendiri — sehingga skor maksimal turun dari 9 menjadi 8. AHA/ACC/HRS 2023 masih mempertahankan poin jenis kelamin (lihat kalkulator CHA₂DS₂-VASc).
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis pasien</h2>
+          <form id="form-chadsva" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="cva-age">Usia (tahun)</label>
+                <input type="number" id="cva-age" min="18" max="120" placeholder="cth. 70">
+                <span class="field-hint">Skor usia otomatis: &lt;65 = 0, 65–74 = 1, &ge;75 = 2</span>
+                <span class="field-error"></span>
+              </div>
+
+              <label class="check-row field full" for="cva-chf">
+                <input type="checkbox" id="cva-chf">
+                <span class="check-label">Gagal jantung kongestif / disfungsi ventrikel kiri (EF &le; 40%)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="cva-htn">
+                <input type="checkbox" id="cva-htn">
+                <span class="check-label">Hipertensi (riwayat atau sedang terapi antihipertensi)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="cva-dm">
+                <input type="checkbox" id="cva-dm">
+                <span class="check-label">Diabetes melitus</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="cva-stroke">
+                <input type="checkbox" id="cva-stroke">
+                <span class="check-label">Riwayat stroke, TIA, atau tromboemboli sistemik</span>
+                <span class="check-points">+2</span>
+              </label>
+              <label class="check-row field full" for="cva-vasc">
+                <input type="checkbox" id="cva-vasc">
+                <span class="check-label">Penyakit vaskular (infark miokard, penyakit arteri perifer, atau plak aorta kompleks)</span>
+                <span class="check-points">+1</span>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung skor</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="cva-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung skor" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box disclaimer">
+          <h4>Disclaimer</h4>
+          <p>Alat ini membantu proses pengambilan keputusan klinis dan tidak menggantikan penilaian (judgment) dokter yang menangani pasien secara langsung.</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>2024 ESC Guidelines for the management of atrial fibrillation. Estimasi laju stroke tahunan diadaptasi dari Friberg L, et al. Eur Heart J. 2012.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HAS-BLED ===================== -->
+    <section class="view" id="view-hasbled" data-title="HAS-BLED">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>HAS-BLED</h1>
+        <p class="calc-subtitle">Estimasi risiko perdarahan mayor tahunan pada pasien yang menjalani atau akan menjalani terapi antikoagulasi.</p>
+        <div class="calc-badges">
+          <span class="badge">ESC / EHRA</span>
+          <span class="badge">Fibrilasi Atrium</span>
+        </div>
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis pasien</h2>
+          <form id="form-hasbled" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="hb-age">Usia (tahun)</label>
+                <input type="number" id="hb-age" min="18" max="120" placeholder="cth. 70">
+                <span class="field-hint">Poin "Elderly" otomatis jika usia &gt; 65 tahun</span>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="hb-warfarin">Menggunakan warfarin (antagonis vitamin K)?</label>
+                <select id="hb-warfarin">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+                <span class="field-hint">Menentukan apakah poin INR labil relevan dinilai</span>
+              </div>
+
+              <label class="check-row field full" for="hb-htn">
+                <input type="checkbox" id="hb-htn">
+                <span class="check-label">Hipertensi tidak terkontrol (tekanan darah sistolik &gt; 160 mmHg)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="hb-renal">
+                <input type="checkbox" id="hb-renal">
+                <span class="check-label">Fungsi ginjal abnormal (dialisis, transplantasi ginjal, atau kreatinin serum &gt; 2,26 mg/dL)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="hb-hepatic">
+                <input type="checkbox" id="hb-hepatic">
+                <span class="check-label">Fungsi hati abnormal (sirosis, bilirubin &gt; 2x batas atas normal, atau AST/ALT/ALP &gt; 3x batas atas normal)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="hb-stroke">
+                <input type="checkbox" id="hb-stroke">
+                <span class="check-label">Riwayat stroke</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="hb-bleeding">
+                <input type="checkbox" id="hb-bleeding">
+                <span class="check-label">Riwayat perdarahan mayor atau predisposisi perdarahan (anemia, diatesis hemoragik)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="hb-inr">
+                <input type="checkbox" id="hb-inr">
+                <span class="check-label">INR labil (Time in Therapeutic Range &lt; 60%) — hanya bila menggunakan warfarin</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="hb-drugs">
+                <input type="checkbox" id="hb-drugs">
+                <span class="check-label">Penggunaan obat predisposisi perdarahan (antiplatelet, NSAID)</span>
+                <span class="check-points">+1</span>
+              </label>
+              <label class="check-row field full" for="hb-alcohol">
+                <input type="checkbox" id="hb-alcohol">
+                <span class="check-label">Konsumsi alkohol berlebihan (&ge; 8 unit/minggu)</span>
+                <span class="check-points">+1</span>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung skor</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="hb-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung skor" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box disclaimer">
+          <h4>Disclaimer</h4>
+          <p>Skor HAS-BLED tinggi bukan merupakan kontraindikasi absolut antikoagulasi — gunakan untuk mengidentifikasi dan mengoreksi faktor risiko perdarahan yang dapat dimodifikasi, bukan untuk menghindari terapi. Alat ini tidak menggantikan penilaian klinis dokter.</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>Pisters R, et al. Chest. 2010 (HAS-BLED original derivation); 2020 ESC Guidelines for the diagnosis and management of atrial fibrillation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GRACE 2.0 ===================== -->
+    <section class="view" id="view-grace" data-title="GRACE 2.0">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>GRACE 2.0</h1>
+        <p class="calc-subtitle">Prediksi mortalitas in-hospital dan pasca-pulang (6 bulan) pada pasien sindrom koroner akut (STEMI/NSTEMI/UA).</p>
+        <div class="calc-badges">
+          <span class="badge">GRACE ACS Risk Score</span>
+          <span class="badge">Sindrom Koroner Akut</span>
+        </div>
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis saat masuk rumah sakit</h2>
+          <form id="form-grace" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="gr-age">Usia (tahun)</label>
+                <input type="number" id="gr-age" min="18" max="120" placeholder="cth. 65">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="gr-hr">Denyut jantung (kali/menit)</label>
+                <input type="number" id="gr-hr" min="20" max="300" placeholder="cth. 90">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="gr-sbp">Tekanan darah sistolik (mmHg)</label>
+                <input type="number" id="gr-sbp" min="40" max="300" placeholder="cth. 120">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="gr-creat">Kreatinin serum (mg/dL)</label>
+                <input type="number" id="gr-creat" min="0.1" max="20" step="0.01" placeholder="cth. 1.0">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="gr-killip">Kelas Killip</label>
+                <select id="gr-killip">
+                  <option value="1">Killip I — tanpa gagal jantung</option>
+                  <option value="2">Killip II — ronki basah / S3 / peningkatan JVP</option>
+                  <option value="3">Killip III — edema paru akut</option>
+                  <option value="4">Killip IV — syok kardiogenik</option>
+                </select>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="gr-arrest">Cardiac arrest saat masuk?</label>
+                <select id="gr-arrest">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="gr-st">Deviasi segmen ST pada EKG?</label>
+                <select id="gr-st">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="gr-marker">Peningkatan biomarker jantung (troponin/CK-MB)?</label>
+                <select id="gr-marker">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung skor</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="gr-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung skor" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box disclaimer">
+          <h4>Disclaimer</h4>
+          <p>Alat ini membantu proses pengambilan keputusan klinis dan tidak menggantikan penilaian (judgment) dokter yang menangani pasien secara langsung.</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>Granger CB, et al. Arch Intern Med. 2003; Fox KA, et al. BMJ. 2006 (GRACE ACS Risk Score — tabel poin klasik yang mendasari kalkulator GRACE 2.0 online). ESC 2023 Guidelines for ACS.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TIMI ===================== -->
+    <section class="view" id="view-timi" data-title="TIMI Risk Score">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>TIMI Risk Score</h1>
+        <p class="calc-subtitle">Stratifikasi risiko pada sindrom koroner akut. Pilih varian sesuai presentasi klinis pasien — variabelnya berbeda antara UA/NSTEMI dan STEMI.</p>
+        <div class="calc-badges">
+          <span class="badge">TIMI Study Group</span>
+          <span class="badge">Sindrom Koroner Akut</span>
+        </div>
+      </div>
+
+      <div class="radio-toggle" id="timi-variant-toggle">
+        <input type="radio" name="timi-variant" id="timi-variant-uanstemi" value="uanstemi" checked>
+        <label for="timi-variant-uanstemi">UA / NSTEMI</label>
+        <input type="radio" name="timi-variant" id="timi-variant-stemi" value="stemi">
+        <label for="timi-variant-stemi">STEMI</label>
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis pasien</h2>
+          <form id="form-timi" novalidate>
+
+            <div id="timi-uanstemi-fields">
+              <div class="form-grid">
+                <label class="check-row field full" for="timi-u-age">
+                  <input type="checkbox" id="timi-u-age">
+                  <span class="check-label">Usia &ge; 65 tahun</span>
+                  <span class="check-points">+1</span>
+                </label>
+                <label class="check-row field full" for="timi-u-riskfactors">
+                  <input type="checkbox" id="timi-u-riskfactors">
+                  <span class="check-label">&ge; 3 faktor risiko PJK (hipertensi, diabetes, dislipidemia, merokok, riwayat keluarga PJK)</span>
+                  <span class="check-points">+1</span>
+                </label>
+                <label class="check-row field full" for="timi-u-knowncad">
+                  <input type="checkbox" id="timi-u-knowncad">
+                  <span class="check-label">Diketahui stenosis arteri koroner &ge; 50% (riwayat PJK)</span>
+                  <span class="check-points">+1</span>
+                </label>
+                <label class="check-row field full" for="timi-u-aspirin">
+                  <input type="checkbox" id="timi-u-aspirin">
+                  <span class="check-label">Penggunaan aspirin dalam 7 hari terakhir</span>
+                  <span class="check-points">+1</span>
+                </label>
+                <label class="check-row field full" for="timi-u-angina">
+                  <input type="checkbox" id="timi-u-angina">
+                  <span class="check-label">Angina berat (&ge; 2 episode dalam 24 jam terakhir)</span>
+                  <span class="check-points">+1</span>
+                </label>
+                <label class="check-row field full" for="timi-u-stdev">
+                  <input type="checkbox" id="timi-u-stdev">
+                  <span class="check-label">Deviasi segmen ST &ge; 0,5 mm pada EKG saat masuk</span>
+                  <span class="check-points">+1</span>
+                </label>
+                <label class="check-row field full" for="timi-u-marker">
+                  <input type="checkbox" id="timi-u-marker">
+                  <span class="check-label">Peningkatan biomarker jantung (troponin/CK-MB)</span>
+                  <span class="check-points">+1</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="timi-stemi-fields" style="display:none;">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="timi-s-age">Usia (tahun)</label>
+                  <input type="number" id="timi-s-age" min="18" max="120" placeholder="cth. 68">
+                  <span class="field-hint">65–74 th = +2, &ge;75 th = +3</span>
+                  <span class="field-error"></span>
+                </div>
+                <div class="field">
+                  <label for="timi-s-sbp">Tekanan darah sistolik (mmHg)</label>
+                  <input type="number" id="timi-s-sbp" min="40" max="300" placeholder="cth. 95">
+                  <span class="field-error"></span>
+                </div>
+                <div class="field">
+                  <label for="timi-s-hr">Denyut jantung (kali/menit)</label>
+                  <input type="number" id="timi-s-hr" min="20" max="300" placeholder="cth. 110">
+                  <span class="field-error"></span>
+                </div>
+                <div class="field">
+                  <label for="timi-s-weight">Berat badan (kg)</label>
+                  <input type="number" id="timi-s-weight" min="20" max="300" placeholder="cth. 60">
+                  <span class="field-error"></span>
+                </div>
+                <div class="field">
+                  <label for="timi-s-killip">Kelas Killip</label>
+                  <select id="timi-s-killip">
+                    <option value="1">Killip I</option>
+                    <option value="2">Killip II</option>
+                    <option value="3">Killip III</option>
+                    <option value="4">Killip IV</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="timi-s-time">Waktu onset gejala hingga terapi reperfusi</label>
+                  <select id="timi-s-time">
+                    <option value="no">&le; 4 jam</option>
+                    <option value="yes">&gt; 4 jam</option>
+                  </select>
+                </div>
+                <label class="check-row field full" for="timi-s-history">
+                  <input type="checkbox" id="timi-s-history">
+                  <span class="check-label">Riwayat diabetes, hipertensi, atau angina</span>
+                  <span class="check-points">+1</span>
+                </label>
+                <label class="check-row field full" for="timi-s-anterior">
+                  <input type="checkbox" id="timi-s-anterior">
+                  <span class="check-label">STEMI anterior atau LBBB (Left Bundle Branch Block) baru</span>
+                  <span class="check-points">+1</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung skor</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="timi-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung skor" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box disclaimer">
+          <h4>Disclaimer</h4>
+          <p>Alat ini membantu proses pengambilan keputusan klinis dan tidak menggantikan penilaian (judgment) dokter yang menangani pasien secara langsung.</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>UA/NSTEMI: Antman EM, et al. JAMA. 2000. STEMI: Morrow DA, et al. Circulation. 2000. ESC 2023 Guidelines for ACS.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SCORE2 / SCORE2-OP ===================== -->
+    <section class="view" id="view-score2" data-title="SCORE2 / SCORE2-OP">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>SCORE2 / SCORE2-OP</h1>
+        <p class="calc-subtitle">Estimasi risiko ASCVD (fatal &amp; non-fatal) 10 tahun pada individu tanpa riwayat ASCVD dan tanpa diabetes (SCORE2, usia 40–69 tahun) atau pada lansia (SCORE2-OP, usia &ge;70 tahun).</p>
+        <div class="calc-badges">
+          <span class="badge">ESC 2021 CVD Prevention Guidelines</span>
+          <span class="badge">Pencegahan Primer</span>
+        </div>
+      </div>
+
+      <div class="note-box" id="score2-op-warning" style="display:none;">
+        <strong>Catatan usia &ge; 70 tahun (SCORE2-OP):</strong> Model regresi SCORE2-OP resmi memiliki set koefisien tersendiri yang terpisah dari SCORE2. Perhitungan pada aplikasi ini mengekstrapolasi metodologi SCORE2 untuk kelompok usia lanjut karena koefisien resmi SCORE2-OP tidak dapat diverifikasi ulang saat aplikasi ini dibuat. Gunakan hasil ini sebagai estimasi awal, dan <strong>verifikasi dengan kalkulator resmi ESC CVD Risk Chart / U-Prevent.org</strong> sebelum dipakai untuk keputusan klinis penting.
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis pasien</h2>
+          <form id="form-score2" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="s2-sex">Jenis kelamin</label>
+                <select id="s2-sex">
+                  <option value="M">Laki-laki</option>
+                  <option value="F">Perempuan</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="s2-age">Usia (tahun)</label>
+                <input type="number" id="s2-age" min="40" max="89" placeholder="cth. 55">
+                <span class="field-hint">40–69 th &rarr; SCORE2, &ge;70 th &rarr; SCORE2-OP</span>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="s2-smoking">Status merokok</label>
+                <select id="s2-smoking">
+                  <option value="no">Bukan perokok saat ini</option>
+                  <option value="yes">Perokok saat ini</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="s2-region">Region risiko (chart ESC Eropa)</label>
+                <select id="s2-region">
+                  <option value="low">Risiko rendah</option>
+                  <option value="moderate" selected>Risiko sedang</option>
+                  <option value="high">Risiko tinggi</option>
+                  <option value="veryhigh">Risiko sangat tinggi</option>
+                </select>
+                <span class="field-hint">Indonesia tidak termasuk dalam kalibrasi region Eropa; pilih "risiko tinggi" sebagai estimasi konservatif bila tidak yakin.</span>
+              </div>
+              <div class="field">
+                <label for="s2-sbp">Tekanan darah sistolik (mmHg)</label>
+                <input type="number" id="s2-sbp" min="70" max="250" placeholder="cth. 140">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="s2-tchol">Kolesterol total (mg/dL)</label>
+                <input type="number" id="s2-tchol" min="80" max="500" placeholder="cth. 200">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="s2-hdl">Kolesterol HDL (mg/dL)</label>
+                <input type="number" id="s2-hdl" min="10" max="150" placeholder="cth. 50">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="s2-dm">Diabetes melitus</label>
+                <select id="s2-dm">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+                <span class="field-hint">Hanya berpengaruh pada perhitungan usia &ge; 70 tahun (SCORE2-OP)</span>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung risiko</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="s2-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung risiko" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box verify-warning">
+          <h4>Verifikasi disarankan</h4>
+          <p>SCORE2/SCORE2-OP adalah model regresi Cox dengan puluhan koefisien. Hasil di aplikasi ini adalah implementasi terbaik yang dapat kami susun, namun untuk keputusan klinis definitif tetap sarankan verifikasi dengan kalkulator resmi ESC (U-Prevent.org atau CVD Risk Chart resmi ESC).</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>SCORE2 working group and ESC Cardiovascular risk collaboration. Eur Heart J. 2021;42:2439–2454 (SCORE2) dan 2021;42:2455–2467 (SCORE2-OP). 2021 ESC Guidelines on cardiovascular disease prevention.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== AHA PREVENT ===================== -->
+    <section class="view" id="view-prevent" data-title="AHA PREVENT">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>AHA PREVENT</h1>
+        <p class="calc-subtitle">Estimasi risiko ASCVD 10 tahun dan 30 tahun pada dewasa usia 30–79 tahun tanpa riwayat penyakit kardiovaskular aterosklerotik, model dasar (base model) AHA PREVENT 2024.</p>
+        <div class="calc-badges">
+          <span class="badge">AHA PREVENT 2024</span>
+          <span class="badge">Pencegahan Primer</span>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <strong>Catatan implementasi:</strong> Model resmi AHA PREVENT menggunakan puluhan koefisien regresi spesifik per luaran (ASCVD, gagal jantung, total CVD) yang tidak dapat diverifikasi ulang secara langsung saat aplikasi ini dibuat. Perhitungan berikut mengikuti struktur dan arah pengaruh variabel yang dipublikasikan (Khan SS, et al. Circulation. 2024), namun angka pastinya dapat berbeda dari kalkulator resmi. <strong>Wajib diverifikasi dengan kalkulator resmi</strong> (professional.heart.org/prevent atau tools.acc.org/cvd-risk-estimator-plus) sebelum dipakai untuk keputusan klinis penting.
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis pasien</h2>
+          <form id="form-prevent" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="pv-sex">Jenis kelamin</label>
+                <select id="pv-sex">
+                  <option value="M">Laki-laki</option>
+                  <option value="F">Perempuan</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pv-age">Usia (tahun)</label>
+                <input type="number" id="pv-age" min="30" max="79" placeholder="cth. 50">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="pv-tchol">Kolesterol total (mg/dL)</label>
+                <input type="number" id="pv-tchol" min="80" max="500" placeholder="cth. 200">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="pv-hdl">Kolesterol HDL (mg/dL)</label>
+                <input type="number" id="pv-hdl" min="10" max="150" placeholder="cth. 50">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="pv-sbp">Tekanan darah sistolik (mmHg)</label>
+                <input type="number" id="pv-sbp" min="70" max="250" placeholder="cth. 130">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="pv-treated">Sedang terapi antihipertensi?</label>
+                <select id="pv-treated">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pv-bmi">Indeks massa tubuh — BMI (kg/m²)</label>
+                <input type="number" id="pv-bmi" min="12" max="70" step="0.1" placeholder="cth. 25">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="pv-egfr">eGFR (mL/min/1,73m²)</label>
+                <input type="number" id="pv-egfr" min="5" max="150" placeholder="cth. 90">
+                <span class="field-hint">Tercantum pada hasil lab kreatinin. Jika tidak tersedia, gunakan 90.</span>
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="pv-smoking">Perokok saat ini?</label>
+                <select id="pv-smoking">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pv-dm">Diabetes melitus?</label>
+                <select id="pv-dm">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung risiko</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="pv-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung risiko" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box verify-warning">
+          <h4>Verifikasi disarankan</h4>
+          <p>Lihat catatan implementasi di atas — hasil pada kalkulator ini adalah pendekatan struktural terhadap model AHA PREVENT, bukan reproduksi koefisien resmi yang terverifikasi digit demi digit.</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>Khan SS, et al. Development and Validation of the American Heart Association's PREVENT Equations. Circulation. 2024;149:430–449.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Framingham ===================== -->
+    <section class="view" id="view-framingham" data-title="Framingham Risk Score">
+      <div class="calc-header">
+        <a class="back-link" href="#landing">&larr; Kembali ke beranda</a>
+        <h1>Framingham Risk Score</h1>
+        <p class="calc-subtitle">Estimasi risiko penyakit jantung koroner (PJK) 10 tahun berdasarkan tabel poin Framingham / NCEP ATP III.</p>
+        <div class="calc-badges">
+          <span class="badge">Wilson 1998 / NCEP ATP III</span>
+          <span class="badge">Legacy score</span>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <strong>Catatan:</strong> Framingham Risk Score adalah skor legacy yang dikembangkan dari kohort populasi Amerika keturunan Eropa era 1970–1980an. Untuk estimasi risiko ASCVD pada populasi kontemporer, <strong>SCORE2/SCORE2-OP atau AHA PREVENT lebih direkomendasikan</strong> karena dikalibrasi dengan data yang lebih baru dan populasi yang lebih beragam.
+      </div>
+
+      <div class="calc-body">
+        <div class="card">
+          <h2>Data klinis pasien</h2>
+          <form id="form-framingham" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="fr-sex">Jenis kelamin</label>
+                <select id="fr-sex">
+                  <option value="M">Laki-laki</option>
+                  <option value="F">Perempuan</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fr-age">Usia (tahun)</label>
+                <input type="number" id="fr-age" min="20" max="79" placeholder="cth. 55">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="fr-tchol">Kolesterol total (mg/dL)</label>
+                <input type="number" id="fr-tchol" min="80" max="500" placeholder="cth. 210">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="fr-hdl">Kolesterol HDL (mg/dL)</label>
+                <input type="number" id="fr-hdl" min="10" max="150" placeholder="cth. 45">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="fr-sbp">Tekanan darah sistolik (mmHg)</label>
+                <input type="number" id="fr-sbp" min="70" max="250" placeholder="cth. 135">
+                <span class="field-error"></span>
+              </div>
+              <div class="field">
+                <label for="fr-treated">Sedang terapi antihipertensi?</label>
+                <select id="fr-treated">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fr-smoking">Perokok saat ini?</label>
+                <select id="fr-smoking">
+                  <option value="no">Tidak</option>
+                  <option value="yes">Ya</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Hitung risiko</button>
+              <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card result-card">
+          <h2>Hasil</h2>
+          <div id="fr-result">
+            <div class="result-placeholder">Isi form di sebelah kiri lalu klik "Hitung risiko" untuk melihat hasil.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-strip">
+        <div class="info-box disclaimer">
+          <h4>Disclaimer</h4>
+          <p>Alat ini membantu proses pengambilan keputusan klinis dan tidak menggantikan penilaian (judgment) dokter yang menangani pasien secara langsung.</p>
+        </div>
+        <div class="info-box">
+          <h4>Sumber</h4>
+          <p>Wilson PW, et al. Circulation. 1998;97:1837–1847. NCEP ATP III Final Report. Circulation. 2002;106:3143–3421.</p>
+        </div>
+      </div>
+    </section>
+
+    <!--CALC_SECTIONS-->
+
+  </main>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/chadsvasc.js"></script>
+<script src="js/chadsva.js"></script>
+<script src="js/hasbled.js"></script>
+<script src="js/grace.js"></script>
+<script src="js/timi.js"></script>
+<script src="js/score2.js"></script>
+<script src="js/prevent.js"></script>
+<script src="js/framingham.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
