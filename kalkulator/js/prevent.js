@@ -102,10 +102,13 @@ window.CVCalc = window.CVCalc || {};
     return (e / (1 + e)) * 100;
   }
 
+  // Risk categories specific to PREVENT-ASCVD (NOT the older Pooled Cohort Equations
+  // thresholds of 5/7.5/20%). Per the 2026 ACC/AHA/Multisociety Guideline on the
+  // Management of Dyslipidemia: <3% low, 3-<5% borderline, 5-<10% intermediate, >=10% high.
   function categorize(risk10) {
-    if (risk10 < 5) return { level: 'low', label: 'Risiko rendah' };
-    if (risk10 < 7.5) return { level: 'moderate', label: 'Risiko batas (borderline)' };
-    if (risk10 < 20) return { level: 'high', label: 'Risiko menengah (intermediate)' };
+    if (risk10 < 3) return { level: 'low', label: 'Risiko rendah' };
+    if (risk10 < 5) return { level: 'moderate', label: 'Risiko batas (borderline)' };
+    if (risk10 < 10) return { level: 'high', label: 'Risiko menengah (intermediate)' };
     return { level: 'veryhigh', label: 'Risiko tinggi' };
   }
 
@@ -115,12 +118,14 @@ window.CVCalc = window.CVCalc || {};
     var category = categorize(risk10);
 
     var recommendation;
-    if (category.level === 'veryhigh' || category.level === 'high') {
-      recommendation = 'Pertimbangkan terapi statin dan optimalisasi kontrol tekanan darah/gula darah sesuai target guideline, di samping intervensi gaya hidup.';
+    if (category.level === 'veryhigh') {
+      recommendation = 'Risiko tinggi (&ge;10%). Terapi statin (umumnya intensitas sedang–tinggi) direkomendasikan bersama optimalisasi kontrol tekanan darah/gula darah dan intervensi gaya hidup.';
+    } else if (category.level === 'high') {
+      recommendation = 'Risiko menengah/intermediate (5–&lt;10%). Terapi statin intensitas sedang sebaiknya dipertimbangkan untuk pencegahan primer ASCVD.';
     } else if (category.level === 'moderate') {
-      recommendation = 'Diskusikan risk-enhancing factors dan pertimbangkan terapi statin secara individual bersama pasien.';
+      recommendation = 'Risiko batas/borderline (3–&lt;5%). Terapi statin intensitas sedang dapat dipertimbangkan, personalisasi dengan risk-enhancing factors (riwayat keluarga PJK dini, ApoB, Lp(a), skor kalsium koroner/CAC bila tersedia).';
     } else {
-      recommendation = 'Prioritaskan edukasi gaya hidup sehat; terapi farmakologis umumnya belum diperlukan.';
+      recommendation = 'Risiko rendah (&lt;3%). Prioritaskan edukasi gaya hidup sehat; terapi farmakologis umumnya belum diperlukan.';
     }
 
     return {
