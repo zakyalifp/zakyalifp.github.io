@@ -768,6 +768,27 @@ h1, h2, h3, h4 {
   margin-bottom: 18px;
 }
 
+.note-box.legacy-banner {
+  background: var(--risk-moderate-bg);
+  border: 1px solid var(--risk-moderate-border);
+  color: var(--risk-moderate-text);
+  font-size: 0.88rem;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.note-box.legacy-banner .icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.note-box.legacy-banner a {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */

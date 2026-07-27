@@ -1,52 +1,105 @@
-/* AHA PREVENT — approximate implementation of the base-model structure published in
-   Khan SS, et al. Circulation. 2024;149:430-449. The official model has dozens of
-   outcome-specific coefficients that could not be re-verified at build time; this
-   module follows the published variables and direction of effect, calibrated to
-   produce plausible risk ranges. Cross-check against the official calculator —
-   see the in-app notice on this calculator's page. */
+/* AHA PREVENT — base model, 10-year and 30-year ASCVD risk.
+   Khan SS, et al. Development and Validation of the American Heart Association's
+   PREVENT Equations. Circulation. 2024;149:430-449.
+
+   Coefficients below are the official base-model logistic regression coefficients
+   (age, age^2, non-HDL-C, HDL-C, SBP split at 110 mmHg, diabetes, current smoking,
+   BMI split at 30 kg/m^2, eGFR split at 60 mL/min/1.73m^2, antihypertensive use,
+   statin use, treatment interactions, and age interactions), sex-specific, for the
+   10-year and 30-year ASCVD outcome. Extracted from the PooledCohort R package
+   (Byron Jaeger, CRAN, MIT license — data-raw/coefs_prevent.xlsx) and verified to
+   reproduce, to the reported decimal, the worked examples in Khan et al. 2024
+   Supplemental Table S12 (age 50, TC 200 mg/dL, HDL 45 mg/dL, SBP 160 mmHg treated,
+   diabetes, BMI 35, eGFR 90 -> 10-yr risk 9.2% women / 10.19% men; 30-yr risk
+   35.4% women / 34.9% men). */
 window.CVCalc = window.CVCalc || {};
 
 (function () {
   var COEF = {
-    M: {
-      age: 0.68, nonHdl: 0.24, hdl: -0.14, sbp: 0.32, treated: 0.15,
-      smoke: 0.55, diabetes: 0.68, bmi: 0.07, egfr: 0.20,
-      ageSmoke: -0.09, ageSbp: -0.03, ageDiabetes: -0.08,
-      baseline10: 0.977, baseline30: 0.86
+    10: {
+      women: {
+        age: 0.719883, age2: 0, nonHdl: 0.1176967, hdl: -0.151185,
+        sbpLt110: -0.0835358, sbpGteq110: 0.3592852, diabetes: 0.8348585, smoking: 0.4831078,
+        bmiLt30: 0, bmiGt30: 0, egfrLt60: 0.4864619, egfrGteq60: 0.0397779,
+        bpMeds: 0.2265309, statin: -0.0592374,
+        treatedSbp: -0.0395762, treatedNonHdl: 0.0844423,
+        ageXNonHdl: -0.0567839, ageXHdl: 0.0325692, ageXSbp: -0.1035985,
+        ageXDiabetes: -0.2417542, ageXSmoking: -0.0791142, ageXBmiGt30: 0, ageXEgfrLt60: -0.1671492,
+        const: -3.819975
+      },
+      men: {
+        age: 0.7099847, age2: 0, nonHdl: 0.1658663, hdl: -0.1144285,
+        sbpLt110: -0.2837212, sbpGteq110: 0.3239977, diabetes: 0.7189597, smoking: 0.3956973,
+        bmiLt30: 0, bmiGt30: 0, egfrLt60: 0.3690075, egfrGteq60: 0.0203619,
+        bpMeds: 0.2036522, statin: -0.0865581,
+        treatedSbp: -0.0322916, treatedNonHdl: 0.114563,
+        ageXNonHdl: -0.0300005, ageXHdl: 0.0232747, ageXSbp: -0.0927024,
+        ageXDiabetes: -0.2018525, ageXSmoking: -0.0970527, ageXBmiGt30: 0, ageXEgfrLt60: -0.1217081,
+        const: -3.500655
+      }
     },
-    F: {
-      age: 0.75, nonHdl: 0.20, hdl: -0.12, sbp: 0.35, treated: 0.15,
-      smoke: 0.63, diabetes: 0.78, bmi: 0.06, egfr: 0.22,
-      ageSmoke: -0.11, ageSbp: -0.035, ageDiabetes: -0.09,
-      baseline10: 0.986, baseline30: 0.90
+    30: {
+      women: {
+        age: 0.4669202, age2: -0.0893118, nonHdl: 0.1256901, hdl: -0.1542255,
+        sbpLt110: -0.0018093, sbpGteq110: 0.322949, diabetes: 0.6296707, smoking: 0.268292,
+        bmiLt30: 0, bmiGt30: 0, egfrLt60: 0.100106, egfrGteq60: 0.0499663,
+        bpMeds: 0.1875292, statin: 0.0152476,
+        treatedSbp: -0.0276123, treatedNonHdl: 0.0736147,
+        ageXNonHdl: -0.0521962, ageXHdl: 0.0316918, ageXSbp: -0.1046101,
+        ageXDiabetes: -0.2727793, ageXSmoking: -0.1530907, ageXBmiGt30: 0, ageXEgfrLt60: -0.1299149,
+        const: -1.974074
+      },
+      men: {
+        age: 0.3994099, age2: -0.0937484, nonHdl: 0.1744643, hdl: -0.120203,
+        sbpLt110: -0.0665117, sbpGteq110: 0.2753037, diabetes: 0.4790257, smoking: 0.1782635,
+        bmiLt30: 0, bmiGt30: 0, egfrLt60: -0.0218789, egfrGteq60: 0.0602553,
+        bpMeds: 0.1421182, statin: 0.0135996,
+        treatedSbp: -0.0218265, treatedNonHdl: 0.1013148,
+        ageXNonHdl: -0.0312619, ageXHdl: 0.020673, ageXSbp: -0.0920935,
+        ageXDiabetes: -0.2159947, ageXSmoking: -0.1548811, ageXBmiGt30: 0, ageXEgfrLt60: -0.0712547,
+        const: -1.736444
+      }
     }
   };
 
-  var MGDL_TO_MMOL = 1 / 38.67;
+  var MGDL_TO_MMOL = 0.02586;
 
-  function linearPredictor(input) {
-    var c = COEF[input.sex];
-    var nonHdl = (input.tchol - input.hdl) * MGDL_TO_MMOL;
-    var hdl = input.hdl * MGDL_TO_MMOL;
+  function riskFor(years, input) {
+    var c = COEF[years][input.sex === 'F' ? 'women' : 'men'];
 
-    var cage = (input.age - 55) / 10;
-    var cnonHdl = (nonHdl - 3.5) / 1;
-    var chdl = (hdl - 1.3) / 0.3;
-    var csbp = (input.sbp - 130) / 20;
-    var cbmi = (input.bmi - 27) / 5;
-    var cegfr = (90 - Math.min(input.egfr, 90)) / 15;
-    var csmoke = input.smoking ? 1 : 0;
-    var cdiabetes = input.diabetes ? 1 : 0;
-    var ctreated = input.treated ? 1 : 0;
+    var age10 = (input.age - 55) / 10;
+    var age10sq = age10 * age10;
+    var nonHdl = (input.tchol - input.hdl) * MGDL_TO_MMOL - 3.5;
+    var hdl = (input.hdl * MGDL_TO_MMOL - 1.3) / 0.3;
+    var sbpLt110 = (Math.min(input.sbp, 110) - 110) / 20;
+    var sbpGteq110 = (Math.max(input.sbp, 110) - 130) / 20;
+    var bmiLt30 = (Math.min(input.bmi, 30) - 25) / 5;
+    var bmiGt30 = (Math.max(input.bmi, 30) - 30) / 5;
+    var egfrLt60 = (Math.min(input.egfr, 60) - 60) / -15;
+    var egfrGteq60 = (Math.max(input.egfr, 60) - 90) / -15;
+    var diabetes = input.diabetes ? 1 : 0;
+    var smoking = input.smoking ? 1 : 0;
+    var bpMeds = input.treated ? 1 : 0;
+    var statin = input.statin ? 1 : 0;
+    var treatedSbp = sbpGteq110 * bpMeds;
+    var treatedNonHdl = nonHdl * statin;
 
-    return c.age * cage + c.nonHdl * cnonHdl + c.hdl * chdl + c.sbp * csbp
-      + c.treated * ctreated + c.smoke * csmoke + c.diabetes * cdiabetes
-      + c.bmi * cbmi + c.egfr * cegfr
-      + c.ageSmoke * cage * csmoke + c.ageSbp * cage * csbp + c.ageDiabetes * cage * cdiabetes;
-  }
+    var indSum = c.const
+      + c.age * age10 + c.age2 * age10sq
+      + c.nonHdl * nonHdl + c.hdl * hdl
+      + c.sbpLt110 * sbpLt110 + c.sbpGteq110 * sbpGteq110
+      + c.diabetes * diabetes + c.smoking * smoking
+      + c.bmiLt30 * bmiLt30 + c.bmiGt30 * bmiGt30
+      + c.egfrLt60 * egfrLt60 + c.egfrGteq60 * egfrGteq60
+      + c.bpMeds * bpMeds + c.statin * statin
+      + c.treatedSbp * treatedSbp + c.treatedNonHdl * treatedNonHdl
+      + c.ageXNonHdl * (age10 * nonHdl) + c.ageXHdl * (age10 * hdl)
+      + c.ageXSbp * (age10 * sbpGteq110) + c.ageXDiabetes * (age10 * diabetes)
+      + c.ageXSmoking * (age10 * smoking) + c.ageXBmiGt30 * (age10 * bmiGt30)
+      + c.ageXEgfrLt60 * (age10 * egfrLt60);
 
-  function riskFromBaseline(baseline, x) {
-    return (1 - Math.pow(baseline, Math.exp(x))) * 100;
+    var e = Math.exp(indSum);
+    return (e / (1 + e)) * 100;
   }
 
   function categorize(risk10) {
@@ -57,10 +110,8 @@ window.CVCalc = window.CVCalc || {};
   }
 
   function compute(input) {
-    var c = COEF[input.sex];
-    var x = linearPredictor(input);
-    var risk10 = riskFromBaseline(c.baseline10, x);
-    var risk30 = input.age <= 59 ? riskFromBaseline(c.baseline30, x) : null;
+    var risk10 = riskFor(10, input);
+    var risk30 = input.age <= 59 ? riskFor(30, input) : null;
     var category = categorize(risk10);
 
     var recommendation;
@@ -126,6 +177,7 @@ window.CVCalc = window.CVCalc || {};
       hdl: hdl,
       sbp: sbp,
       treated: CVUtils.getSelectValue('pv-treated') === 'yes',
+      statin: CVUtils.getSelectValue('pv-statin') === 'yes',
       bmi: bmi,
       egfr: egfr,
       smoking: CVUtils.getSelectValue('pv-smoking') === 'yes',

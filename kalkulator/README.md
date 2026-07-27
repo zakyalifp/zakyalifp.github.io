@@ -1,6 +1,6 @@
 # Kalkulator Kardiovaskular
 
-Kumpulan 8 kalkulator risiko kardiovaskular untuk membantu praktik klinis sehari-hari — CHA₂DS₂-VASc, CHA₂DS₂-VA, HAS-BLED, GRACE 2.0, TIMI (UA/NSTEMI & STEMI), SCORE2/SCORE2-OP, AHA PREVENT, dan Framingham Risk Score.
+Kumpulan 7 kalkulator risiko kardiovaskular untuk membantu praktik klinis sehari-hari — CHA₂DS₂-VASc, CHA₂DS₂-VA, HAS-BLED, GRACE 2.0, TIMI (UA/NSTEMI & STEMI), AHA PREVENT, dan Framingham Risk Score.
 
 Dibangun dengan HTML/CSS/JavaScript murni (tanpa framework, tanpa proses build) sehingga mudah dijalankan dan di-deploy. Semua perhitungan berjalan langsung di browser — **tidak ada data pasien yang dikirim ke server mana pun.**
 
@@ -21,7 +21,7 @@ Lalu buka `http://localhost:8080` di browser.
 
 ```
 kalkulator/
-├── index.html          # Semua halaman (landing + 8 kalkulator) dalam satu file
+├── index.html          # Semua halaman (landing + 7 kalkulator) dalam satu file
 ├── css/
 │   └── style.css        # Semua styling
 ├── js/
@@ -32,7 +32,6 @@ kalkulator/
 │   ├── hasbled.js            # Logic HAS-BLED
 │   ├── grace.js                # Logic GRACE 2.0
 │   ├── timi.js                  # Logic TIMI (UA/NSTEMI + STEMI)
-│   ├── score2.js                 # Logic SCORE2 / SCORE2-OP
 │   ├── prevent.js                 # Logic AHA PREVENT
 │   └── framingham.js               # Logic Framingham Risk Score
 └── README.md
@@ -57,7 +56,9 @@ Tidak ada langkah build atau konfigurasi tambahan yang diperlukan.
 ## Catatan akurasi
 
 - **CHA₂DS₂-VASc, CHA₂DS₂-VA, HAS-BLED, GRACE 2.0, TIMI, dan Framingham** menggunakan sistem skor berbasis tabel poin yang baku dan telah divalidasi luas (lihat sumber di bagian bawah setiap kalkulator).
-- **SCORE2/SCORE2-OP dan AHA PREVENT** adalah model regresi Cox dengan puluhan koefisien. Implementasi di aplikasi ini mengikuti struktur dan variabel yang dipublikasikan, namun disarankan untuk **verifikasi dengan kalkulator resmi** (U-Prevent.org untuk SCORE2, professional.heart.org/prevent untuk PREVENT) sebelum dipakai untuk keputusan klinis penting — lihat catatan verifikasi yang tertera pada masing-masing kalkulator tersebut.
+- **AHA PREVENT** memakai koefisien regresi resmi model dasar (base model), diekstrak dari paket R `PooledCohort` (open-source, MIT license, oleh Byron Jaeger) dan diverifikasi cocok hingga dua desimal dengan contoh kasus resmi pada Khan et al. 2024 (Circulation;149:430–449), Supplemental Table S12.
+- **SCORE2/SCORE2-OP tidak disertakan** — dihapus karena memerlukan tabel baseline hazard spesifik per negara yang tidak dipublikasikan secara bebas (implementasi mandiri hanya bisa berupa aproksimasi dari chart ESC), dan model ini dikalibrasi khusus untuk populasi Eropa sehingga tidak berlaku untuk pasien Indonesia.
+- **Framingham Risk Score** adalah skor legacy — kalkulator ini menampilkan banner yang mengarahkan pengguna ke AHA PREVENT sebagai tool yang direkomendasikan guideline terkini.
 
 ## Menambah atau mengedit kalkulator
 
