@@ -6,12 +6,12 @@ Dibangun dengan HTML/CSS/JavaScript murni (tanpa framework, tanpa proses build) 
 
 ## Cara membuka secara lokal
 
-Cara termudah: buka file `index.html` di folder `calculator/` langsung dengan cara double-click, lalu pilih "Open with" browser (Chrome/Firefox/Edge).
+Cara termudah: buka file `index.html` di folder `kalkulator/` langsung dengan cara double-click, lalu pilih "Open with" browser (Chrome/Firefox/Edge).
 
 Jika ingin menjalankan lewat local server (opsional, hanya untuk pengembangan):
 
 ```bash
-cd calculator
+cd kalkulator
 python3 -m http.server 8080
 ```
 
@@ -20,7 +20,7 @@ Lalu buka `http://localhost:8080` di browser.
 ## Struktur folder
 
 ```
-calculator/
+kalkulator/
 ├── index.html          # Semua halaman (landing + 8 kalkulator) dalam satu file
 ├── css/
 │   └── style.css        # Semua styling
@@ -40,10 +40,10 @@ calculator/
 
 ## Cara deploy ke GitHub Pages
 
-Karena repo ini (`zakyalifp.github.io`) sudah menjadi situs GitHub Pages, folder `calculator/` otomatis ikut ter-publish begitu di-push ke branch `main`. Setelah merge ke `main`, aplikasi bisa diakses di:
+Karena repo ini (`zakyalifp.github.io`) sudah menjadi situs GitHub Pages, folder `kalkulator/` otomatis ikut ter-publish begitu di-push ke branch `main`. Setelah merge ke `main`, aplikasi bisa diakses di:
 
 ```
-https://zakyalifp.github.io/calculator/
+https://zakyalifp.github.io/kalkulator/
 ```
 
 Tidak ada langkah build atau konfigurasi tambahan yang diperlukan.
@@ -51,7 +51,7 @@ Tidak ada langkah build atau konfigurasi tambahan yang diperlukan.
 ### Deploy ke Netlify (alternatif)
 
 1. Buat akun di [netlify.com](https://netlify.com).
-2. Pilih "Add new site" → "Deploy manually", lalu drag-and-drop folder `calculator/`.
+2. Pilih "Add new site" → "Deploy manually", lalu drag-and-drop folder `kalkulator/`.
 3. Netlify akan memberikan link publik secara instan.
 
 ## Catatan akurasi
