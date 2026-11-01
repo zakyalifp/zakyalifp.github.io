@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACLS Megacode Simulator</title>
+<meta name="description" content="Simulator megacode ACLS interaktif berbasis AHA 2025: henti jantung, bradikardia, takikardia, pasca-ROSC, SKA, dan stroke — dengan monitor EKG real-time, debrief, dan skor. Berjalan sepenuhnya di browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="ACLS Megacode Simulator — beranda">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M2 12h4l2-5 4 10 3-7 2 2h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span>ACLS Megacode Simulator</span>
+  </a>
+  <nav class="topnav">
+    <a href="referensi.html">Ringkasan algoritma</a>
+    <a href="../index.html">Situs utama</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============================ BERANDA ============================ -->
+  <section class="view is-active" id="view-home">
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Latihan kasus ACLS · AHA Guidelines 2025</p>
+          <h1>Simulator megacode ACLS untuk dokter</h1>
+          <p class="lead">Pimpin resusitasi secara real-time: baca monitor, lakukan RJP, defibrilasi, berikan obat, dan cari penyebab reversibel. Setiap skenario diakhiri debrief berisi skor, timeline, dan catatan pembelajaran.</p>
+        </div>
+        <div class="card settings">
+          <h2 class="card-title">Pengaturan latihan</h2>
+          <div class="seg" role="radiogroup" aria-label="Tingkat kesulitan">
+            <label class="seg-opt"><input type="radio" name="level" value="pemula" checked><span><strong>Pemula</strong><small>Nama ritme ditampilkan, petunjuk langkah berikutnya, umpan balik langsung, bisa jeda.</small></span></label>
+            <label class="seg-opt"><input type="radio" name="level" value="mahir"><span><strong>Mahir</strong><small>Baca EKG sendiri (dinilai), tanpa petunjuk & umpan balik sampai debrief, tanpa jeda.</small></span></label>
+          </div>
+          <div class="sound-prefs">
+            <span class="muted small">Suara:</span>
+            <label class="chk"><input type="checkbox" id="pref-beep" checked> Beep QRS</label>
+            <label class="chk"><input type="checkbox" id="pref-metro" checked> Metronom 110/mnt</label>
+            <label class="chk"><input type="checkbox" id="pref-alarm"> Alarm</label>
+          </div>
+        </div>
+      </div>
+
+      <div id="scenario-list"></div>
+
+      <div class="card history-card">
+        <div class="card-head">
+          <h2 class="card-title">Riwayat latihan</h2>
+          <button class="btn btn-ghost btn-sm" id="btn-clear-history" type="button">Hapus riwayat</button>
+        </div>
+        <div id="history"></div>
+        <p class="muted small">Riwayat hanya tersimpan di browser perangkat ini.</p>
+      </div>
+
+      <div class="disclaimer">
+        <strong>Catatan:</strong> simulator ini adalah alat bantu belajar, bukan pengganti kursus ACLS bersertifikat maupun protokol institusi. Dosis & alur mengacu pada AHA Guidelines for CPR & ECC 2025 — selalu verifikasi dengan pedoman resmi dan kebijakan RS Anda. Fisiologi pasien disederhanakan untuk tujuan latihan.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SIMULASI ============================ -->
+  <section class="view" id="view-sim">
+    <div class="simbar">
+      <div class="simbar-title">
+        <span class="chip" id="sim-level">Pemula</span>
+        <strong id="sim-title">Skenario</strong>
+      </div>
+      <div class="simbar-ctrl">
+        <span class="clock" title="Waktu skenario"><span class="muted small">Waktu</span> <b id="t-elapsed">0:00</b></span>
+        <label class="small muted" for="sel-speed">Kecepatan</label>
+        <select id="sel-speed" class="sel-sm">
+          <option value="1">1×</option><option value="2">2×</option><option value="4">4×</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="btn-ff" type="button" title="Lompat waktu">⏩ +1 menit</button>
+        <button class="btn btn-ghost btn-sm" id="btn-pause" type="button">⏸ Jeda</button>
+        <details class="popover">
+          <summary class="btn btn-ghost btn-sm">🔊 Suara</summary>
+          <div class="popover-body">
+            <label class="chk"><input type="checkbox" data-snd="beep"> Beep QRS</label>
+            <label class="chk"><input type="checkbox" data-snd="metro"> Metronom 110/mnt</label>
+            <label class="chk"><input type="checkbox" data-snd="alarm"> Alarm henti jantung</label>
+          </div>
+        </details>
+        <button class="btn btn-danger btn-sm" id="btn-end" type="button">Akhiri</button>
+      </div>
+    </div>
+
+    <div class="sim-grid">
+      <div class="sim-left">
+        <div class="monitor">
+          <div class="monitor-screen">
+            <canvas id="ecg"></canvas>
+            <div class="lane-label l-ecg">II</div>
+            <div class="lane-label l-pleth">Pleth</div>
+            <div class="lane-label l-co2">CO₂</div>
+            <div class="mon-overlay" id="mon-label"></div>
+            <div class="mon-badges"><span id="mon-sync" class="mbadge" hidden>SYNC</span><span id="mon-pace" class="mbadge" hidden>PACER</span><span id="mon-charge" class="mbadge warn" hidden>CHARGED</span></div>
+            <div class="flash" id="flash"></div>
+          </div>
+          <div class="vitals">
+            <div class="vital v-hr"><span class="v-lbl">HR</span><span class="v-val" id="v-hr">--</span><span class="v-unit">×/mnt</span></div>
+            <div class="vital v-spo2"><span class="v-lbl">SpO₂</span><span class="v-val" id="v-spo2">--</span><span class="v-unit">%</span></div>
+            <div class="vital v-bp"><span class="v-lbl">TD</span><span class="v-val v-sm" id="v-bp">--/--</span><span class="v-unit" id="v-map">MAP --</span></div>
+            <div class="vital v-co2"><span class="v-lbl">EtCO₂</span><span class="v-val" id="v-co2">--</span><span class="v-unit">mmHg</span></div>
+          </div>
+        </div>
+
+        <div class="timers">
+          <div class="timer"><span class="t-lbl">Siklus RJP</span><b id="t-cycle">–</b><div class="bar"><i id="t-cycle-bar"></i></div></div>
+          <div class="timer"><span class="t-lbl">Sejak epinefrin</span><b id="t-epi">–</b></div>
+          <div class="timer"><span class="t-lbl">Shock</span><b id="t-shocks">0</b></div>
+          <div class="timer"><span class="t-lbl">CCF</span><b id="t-ccf">–</b></div>
+        </div>
+
+        <div class="hint" id="hint" hidden><span class="hint-ic" aria-hidden="true">💡</span><span id="hint-text"></span></div>
+
+        <div class="two-col">
+          <div class="card compact">
+            <h3 class="card-title-sm">Kondisi pasien</h3>
+            <dl class="pt" id="pt-status"></dl>
+          </div>
+          <div class="card compact">
+            <h3 class="card-title-sm">Temuan pemeriksaan</h3>
+            <div id="findings" class="findings"><p class="muted small">Belum ada pemeriksaan.</p></div>
+          </div>
+        </div>
+        <details class="card compact case-box" open>
+          <summary class="card-title-sm">Ringkasan kasus</summary>
+          <p id="case-stem" class="small"></p>
+        </details>
+      </div>
+
+      <div class="sim-right">
+        <div class="defib" id="defib">
+          <div class="defib-head">
+            <strong>Defibrilator / Monitor</strong>
+            <span id="defib-status" class="small">Pads belum terpasang</span>
+          </div>
+          <div class="defib-row">
+            <button class="btn btn-sm" id="btn-pads" type="button">Pasang pads</button>
+            <label class="small" for="sel-energy">Energi</label>
+            <select id="sel-energy" class="sel-sm">
+              <option>50</option><option>70</option><option>100</option><option>120</option><option>150</option><option selected>200</option><option>300</option><option>360</option>
+            </select><span class="small">J</span>
+            <button class="btn btn-sm btn-toggle" id="btn-sync" type="button" aria-pressed="false">SYNC: OFF</button>
+          </div>
+          <div class="defib-row">
+            <button class="btn btn-charge" id="btn-charge" type="button">Charge</button>
+            <button class="btn btn-shock" id="btn-shock" type="button">⚡ Shock</button>
+            <button class="btn btn-ghost btn-sm" id="btn-dump" type="button">Dump</button>
+          </div>
+          <details class="pacer">
+            <summary class="small">Pacing transkutan</summary>
+            <div class="defib-row">
+              <button class="btn btn-sm btn-toggle" id="btn-pace" type="button" aria-pressed="false">Pacing: OFF</button>
+              <span class="stepper"><span class="small">Laju</span><button type="button" class="btn btn-ghost btn-xs" data-pr="-10">−</button><output id="out-rate">70</output><button type="button" class="btn btn-ghost btn-xs" data-pr="10">+</button><span class="small">ppm</span></span>
+              <span class="stepper"><span class="small">Arus</span><button type="button" class="btn btn-ghost btn-xs" data-pm="-10">−</button><output id="out-ma">0</output><button type="button" class="btn btn-ghost btn-xs" data-pm="10">+</button><span class="small">mA</span></span>
+            </div>
+          </details>
+        </div>
+
+        <div class="rid card compact" id="rid" hidden>
+          <h3 class="card-title-sm">Interpretasi ritme — apa yang Anda lihat?</h3>
+          <div class="rid-grid" id="rid-grid"></div>
+        </div>
+
+        <div class="actions card compact">
+          <div class="tabs" id="tabs" role="tablist"></div>
+          <div class="action-grid" id="action-grid"></div>
+          <p class="kbd-help small muted">Pintasan: <kbd>Spasi</kbd> RJP · <kbd>R</kbd> analisis ritme · <kbd>N</kbd> cek nadi · <kbd>C</kbd> charge · <kbd>S</kbd> shock</p>
+        </div>
+
+        <div class="card compact logbox">
+          <h3 class="card-title-sm">Log tindakan</h3>
+          <ol class="log" id="log"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ DEBRIEF ============================ -->
+  <section class="view" id="view-debrief">
+    <div class="wrap" id="debrief"></div>
+  </section>
+
+</main>
+
+<!-- Modal briefing -->
+<div class="modal" id="modal-brief" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="brief-title">
+    <p class="eyebrow" id="brief-cat"></p>
+    <h2 id="brief-title"></h2>
+    <p class="muted small" id="brief-setting"></p>
+    <p id="brief-stem"></p>
+    <div class="brief-vitals" id="brief-vitals"></div>
+    <div id="brief-obj"></div>
+    <div class="brief-note small" id="brief-note"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" data-close>Batal</button>
+      <button class="btn btn-primary" type="button" id="btn-start">Mulai skenario</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal H & T -->
+<div class="modal" id="modal-hst" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="hst-title">
+    <h2 id="hst-title">Penyebab reversibel — H &amp; T</h2>
+    <p class="muted small">Pilih penyebab yang Anda curigai. Simulasi tetap berjalan.</p>
+    <div class="hst-grid" id="hst-grid"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" data-close>Batal</button>
+      <button class="btn btn-primary" type="button" id="btn-hst">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal konfirmasi akhir -->
+<div class="modal" id="modal-end" hidden>
+  <div class="modal-card narrow" role="dialog" aria-modal="true" aria-labelledby="end-title">
+    <h2 id="end-title">Akhiri skenario?</h2>
+    <p>Skenario akan dihentikan dan debrief ditampilkan. Pastikan pasien sudah diserahterimakan bila ROSC/stabil.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" data-close>Lanjutkan simulasi</button>
+      <button class="btn btn-danger" type="button" id="btn-end-confirm">Akhiri &amp; lihat debrief</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="js/ecg.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/actions.js"></script>
+<script src="js/scenarios.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
