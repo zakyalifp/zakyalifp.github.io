@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ringkasan ATLS</title>
+<meta name="description" content="Ringkasan prinsip ATLS edisi ke-11: primary survey xABCDE, trauma toraks, syok hemoragik & resusitasi hemostatik, cedera otak, medula spinalis, luka bakar, populasi khusus, dan rujukan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .ref-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 22px; }
+  .ref-nav a { font-size: 0.82rem; font-weight: 600; padding: 5px 11px; border-radius: 99px; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .ref-nav a:hover { border-color: var(--accent); text-decoration: none; }
+  .ref { margin-bottom: 18px; scroll-margin-top: 70px; }
+  .ref h2 { font-size: 1.15rem; margin-bottom: 4px; }
+  .ref .sub { color: var(--muted); font-size: 0.86rem; margin-bottom: 12px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .path { border-radius: var(--radius-sm); padding: 12px 14px; border: 1px solid var(--border); background: var(--surface-2); }
+  .path h3 { font-size: 0.95rem; margin-bottom: 8px; }
+  .path.hot { border-left: 4px solid var(--danger); }
+  .path.cool { border-left: 4px solid var(--accent); }
+  .bul { padding-left: 18px; display: grid; gap: 4px; font-size: 0.9rem; }
+  .ref .tbl td:first-child { font-weight: 600; }
+  .note { font-size: 0.84rem; color: var(--muted); margin-top: 8px; }
+  .pill { display: inline-block; font-family: var(--mono); font-weight: 700; font-size: 0.82rem; padding: 1px 7px; border-radius: 6px; background: var(--accent-2); color: var(--accent); }
+  .letter { font-family: var(--mono); font-weight: 800; color: var(--accent); }
+  @media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+  @media print { .topbar, .ref-nav, .no-print { display: none !important; } .ref { break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Kembali ke simulator">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v18M3 12h18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+    <span>ATLS Trauma Simulator</span>
+  </a>
+  <nav class="topnav">
+    <a href="index.html">Simulator</a>
+    <a href="kalkulator.html">Kalkulator trauma</a>
+    <a href="../index.html">Situs utama</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Cheat sheet · Prinsip ATLS® edisi ke-11</p>
+  <h1>Ringkasan tata laksana trauma (ATLS)</h1>
+  <p class="lead">Rangkuman cepat untuk dibaca sebelum atau sesudah simulasi. Ini bukan pengganti manual kursus ATLS® (American College of Surgeons); verifikasi dengan manual resmi dan protokol institusi.</p>
+
+  <nav class="ref-nav no-print">
+    <a href="#ps">Primary survey</a>
+    <a href="#airway">Airway</a>
+    <a href="#chest">Toraks</a>
+    <a href="#shock">Syok</a>
+    <a href="#dcr">Resusitasi hemostatik</a>
+    <a href="#tbi">Cedera otak</a>
+    <a href="#spine">Medula spinalis</a>
+    <a href="#burn">Luka bakar</a>
+    <a href="#special">Populasi khusus</a>
+    <a href="#adj">Adjuvan & survei sekunder</a>
+    <a href="#transfer">Rujukan</a>
+    <a href="#" onclick="window.print(); return false;">Cetak</a>
+  </nav>
+
+  <section class="card ref" id="ps">
+    <h2>Primary survey xABCDE + resusitasi simultan</h2>
+    <p class="sub">Kenali & atasi ancaman nyawa sesuai urutan prioritas. Dalam tim, penilaian bisa paralel, tetapi ketua tim menjaga prioritas. Bila pasien memburuk, kembali ke awal.</p>
+    <div class="table-wrap"><table class="tbl">
+      <thead><tr><th></th><th>Nilai</th><th>Tindakan kunci</th></tr></thead>
+      <tbody>
+        <tr><td><span class="letter">x</span></td><td>Perdarahan eksternal masif (eXsanguinating)</td><td>Tekan langsung, tourniquet 5–7 cm proksimal luka ekstremitas (catat jam), wound packing hemostatik untuk area junctional</td></tr>
+        <tr><td><span class="letter">A</span></td><td>Jalan napas + restriksi gerak servikal</td><td>Suction, jaw thrust/chin lift tanpa ekstensi, OPA/NPA; jalan napas definitif bila terancam; MILS selama manipulasi</td></tr>
+        <tr><td><span class="letter">B</span></td><td>Napas & ventilasi: inspeksi, trakea, auskultasi, perkusi</td><td>O₂ aliran tinggi; dekompresi tension, balut open pneumothorax, chest tube hemotoraks</td></tr>
+        <tr><td><span class="letter">C</span></td><td>Sirkulasi: kesadaran, kulit, nadi, CRT, vena leher; sumber perdarahan (dada, abdomen, pelvis, femur, eksternal)</td><td>2 IV besar / IO, sampel & crossmatch, darah dini, TXA, pelvic binder, bidai; kontrol sumber</td></tr>
+        <tr><td><span class="letter">D</span></td><td>GCS, pupil, lateralisasi, tingkat cedera medula; gula darah</td><td>Cegah cedera otak sekunder (hipoksia, hipotensi); terapi herniasi; konsul bedah saraf</td></tr>
+        <tr><td><span class="letter">E</span></td><td>Buka seluruh pakaian, log roll, suhu</td><td>Cegah hipotermia: selimut hangat, ruangan hangat, cairan & darah hangat</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Adjuvan primary survey: monitor EKG, pulse oximetry, kapnografi (bila terintubasi), AGD-laktat-BD, kateter urin & pipa lambung (bila tidak ada kontraindikasi), foto toraks & pelvis AP, eFAST.</p>
+  </section>
+
+  <section class="card ref" id="airway">
+    <h2>Airway & jalan napas definitif</h2>
+    <div class="cols">
+      <div class="path hot"><h3>Indikasi jalan napas definitif</h3>
+        <ul class="bul">
+          <li>Obstruksi/ancaman jalan napas (perdarahan orofaring, fraktur maksilofasial berat, hematoma leher, cedera laring)</li>
+          <li>Cedera inhalasi bermakna — intubasi <b>dini</b> sebelum edema</li>
+          <li>GCS <span class="pill">≤8</span> / tidak mampu melindungi jalan napas, risiko aspirasi</li>
+          <li>Gagal oksigenasi/ventilasi, apnea, kejang berulang</li>
+        </ul></div>
+      <div class="path cool"><h3>Teknik & jebakan</h3>
+        <ul class="bul">
+          <li>RSI dengan MILS (bagian depan collar dibuka), konfirmasi dengan kapnografi gelombang</li>
+          <li>Pasien hipotensi: resusitasi dulu/bersamaan, kurangi dosis induksi</li>
+          <li>Tension pneumothorax: dekompresi <b>sebelum</b> ventilasi tekanan positif</li>
+          <li>Intubasi gagal / CICO → <b>krikotiroidotomi bedah</b>; anak &lt;12 tahun → krikotiroidotomi jarum + jet insufflation</li>
+          <li>NPA & NGT kontraindikasi pada curiga fraktur basis kranii/midface (racoon eyes, Battle sign, rinore/otore LCS) → gunakan OPA/OGT</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section class="card ref" id="chest">
+    <h2>Cedera toraks yang mengancam nyawa</h2>
+    <div class="table-wrap"><table class="tbl">
+      <thead><tr><th>Cedera</th><th>Temuan</th><th>Tindakan</th></tr></thead>
+      <tbody>
+        <tr><td>Tension pneumothorax</td><td>Distres napas, deviasi trakea menjauhi sisi sakit, suara napas hilang, hipersonor, vena leher distensi, hipotensi</td><td><b>Diagnosis klinis — jangan menunggu foto.</b> Dekompresi jarum ICS 4–5 anterior LMA (dewasa) / ICS 2 LMK (anak), atau torakostomi jari → chest tube</td></tr>
+        <tr><td>Open pneumothorax</td><td>Luka dinding dada dengan bunyi udara terisap</td><td>Balut oklusif 3 sisi / vented chest seal → chest tube jauh dari luka. Hindari balut rapat 4 sisi tanpa chest tube</td></tr>
+        <tr><td>Hemotoraks masif</td><td>Syok, suara napas hilang, perkusi redup, vena leher kolaps</td><td>Darah dini + chest tube 28–32 Fr ICS 5 anterior LMA. Torakotomi bila output awal <span class="pill">≥1.500 mL</span>, atau <span class="pill">&gt;200 mL/jam</span> selama 2–4 jam, atau butuh transfusi berulang</td></tr>
+        <tr><td>Tamponade jantung</td><td>Trias Beck (hipotensi, distensi vena leher, bunyi jantung menjauh), pulsus paradoksus, eFAST efusi perikard</td><td>Ahli bedah segera: torakotomi/sternotomi atau pericardial window. Perikardiosentesis hanya jembatan bila ahli bedah belum tersedia</td></tr>
+        <tr><td>Flail chest + kontusio paru</td><td>Gerak paradoksal, krepitasi, hipoksemia</td><td>O₂, analgesia adekuat (termasuk blok regional), cairan secukupnya, ventilasi bila gagal napas</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="card ref" id="shock">
+    <h2>Syok hemoragik — klasifikasi</h2>
+    <p class="sub">Pada trauma, hipotensi dianggap hipovolemia sampai terbukti lain. Takikardia & penyempitan tekanan nadi muncul lebih dulu dari hipotensi.</p>
+    <div class="table-wrap"><table class="tbl">
+      <thead><tr><th>Parameter</th><th>Kelas I</th><th>Kelas II (ringan)</th><th>Kelas III (sedang)</th><th>Kelas IV (berat)</th></tr></thead>
+      <tbody>
+        <tr><td>Perkiraan kehilangan darah</td><td>&lt;15%</td><td>15–30%</td><td>31–40%</td><td>&gt;40%</td></tr>
+        <tr><td>Nadi</td><td>↔</td><td>↔/↑</td><td>↑</td><td>↑↑</td></tr>
+        <tr><td>TD sistolik</td><td>↔</td><td>↔</td><td>↔/↓</td><td>↓</td></tr>
+        <tr><td>Tekanan nadi</td><td>↔</td><td>↓</td><td>↓</td><td>↓</td></tr>
+        <tr><td>Laju napas</td><td>↔</td><td>↔</td><td>↔/↑</td><td>↑</td></tr>
+        <tr><td>Urin output</td><td>↔</td><td>↔</td><td>↓</td><td>↓↓</td></tr>
+        <tr><td>GCS</td><td>↔</td><td>↔</td><td>↓</td><td>↓</td></tr>
+        <tr><td>Base deficit</td><td>0 s/d −2</td><td>−2 s/d −6</td><td>−6 s/d −10</td><td>≤ −10</td></tr>
+        <tr><td>Kebutuhan darah</td><td>Pantau</td><td>Mungkin</td><td>Ya</td><td>Protokol transfusi masif</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Respons terhadap resusitasi awal: <b>cepat</b> (stabil), <b>sementara</b> (membaik lalu memburuk — perdarahan berlanjut), <b>minimal/tanpa respons</b> (perlu kontrol bedah/angio segera). Kehamilan, lansia, atlet, β-bloker, dan anak dapat menutupi tanda syok.</p>
+  </section>
+
+  <section class="card ref" id="dcr">
+    <h2>Resusitasi hemostatik (damage control resuscitation)</h2>
+    <div class="cols">
+      <div class="path hot"><h3>Prinsip</h3>
+        <ul class="bul">
+          <li>Kontrol sumber perdarahan secepatnya (tourniquet, binder, OK, angioembolisasi) — cairan bukan pengganti kontrol sumber</li>
+          <li>Kristaloid hangat dibatasi: dewasa <span class="pill">≤1 L</span>, anak <span class="pill">20 mL/kg</span>; beralih ke produk darah sedini mungkin</li>
+          <li>Transfusi seimbang PRC : plasma : trombosit ≈ <b>1:1:1</b>; aktifkan protokol transfusi masif pada syok kelas III–IV</li>
+          <li>Hipotensi permisif (target SBP ±80–90 mmHg) sampai perdarahan terkontrol — <b>tidak</b> pada cedera otak/medula spinalis</li>
+          <li>Hindari trias letal: hipotermia, asidosis, koagulopati</li>
+        </ul></div>
+      <div class="path cool"><h3>Obat penunjang</h3>
+        <ul class="bul">
+          <li><b>Asam traneksamat</b> 1 g IV dalam 10 menit lalu 1 g dalam 8 jam (anak 15 mg/kg) — hanya bila <span class="pill">≤3 jam</span> sejak cedera</li>
+          <li><b>Kalsium</b> (CaCl₂ 10% 10 mL / Ca glukonas 10% 30 mL) — pantau Ca²⁺ terionisasi selama transfusi masif</li>
+          <li>Reversal antikoagulan segera bila perdarahan mengancam nyawa/intrakranial (warfarin: PCC 4-faktor + vitamin K; dabigatran: idarucizumab; inhibitor Xa: andexanet alfa atau PCC)</li>
+          <li><b>Vasopresor bukan terapi syok hemoragik</b></li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section class="card ref" id="tbi">
+    <h2>Cedera otak traumatik</h2>
+    <div class="cols">
+      <div class="path cool"><h3>Cegah cedera otak sekunder</h3>
+        <ul class="bul">
+          <li>Hindari hipoksia: SpO₂ ≥ 94% (PaO₂ &gt;60–100 mmHg); GCS ≤8 → jalan napas definitif</li>
+          <li>Hindari hipotensi: SBP <span class="pill">≥100</span> (usia 50–69) / <span class="pill">≥110</span> mmHg (15–49 atau &gt;70 tahun)</li>
+          <li>Normokapnia PaCO₂ 35–45 mmHg; elevasi kepala 30°, collar tidak menekan vena leher</li>
+          <li>Cek gula darah, profilaksis kejang (levetiracetam/fenitoin) pada cedera otak berat</li>
+          <li>CT kepala non-kontras setelah pasien stabil; konsul bedah saraf dini</li>
+        </ul></div>
+      <div class="path hot"><h3>Tanda herniasi → jembatan ke bedah saraf</h3>
+        <ul class="bul">
+          <li>Anisokor/pupil dilatasi tanpa refleks, penurunan GCS ≥2, postur ekstensi, trias Cushing (hipertensi, bradikardia, napas ireguler)</li>
+          <li>Terapi hiperosmolar: NaCl 3% (pilihan pada hipotensi) atau mannitol 0,25–1 g/kg</li>
+          <li>Hiperventilasi singkat (PaCO₂ ±30–35) hanya sebagai jembatan</li>
+          <li>Steroid tidak direkomendasikan</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section class="card ref" id="spine">
+    <h2>Cedera medula spinalis & syok neurogenik</h2>
+    <ul class="bul">
+      <li>Restriksi gerak spinal pada mekanisme berisiko; log roll dengan 4 orang & MILS; lepas papan spinal sedini mungkin</li>
+      <li><b>Syok neurogenik</b>: hipotensi + bradikardia + kulit hangat (lesi ≥T6). Singkirkan perdarahan dahulu (eFAST, foto toraks & pelvis)</li>
+      <li>Cairan secukupnya → vasopresor (norepinefrin); atropin untuk bradikardia simtomatik; hindari hipotensi</li>
+      <li>Lesi servikal tinggi (C3–C5): antisipasi gagal napas (napas diafragmatik, kelelahan) → intubasi dengan MILS</li>
+      <li>Kateter urin (retensi), pipa lambung (ileus), cegah hipotermia (poikilotermia), steroid dosis tinggi tidak direkomendasikan; rujuk ke pusat spine</li>
+    </ul>
+  </section>
+
+  <section class="card ref" id="burn">
+    <h2>Luka bakar</h2>
+    <div class="cols">
+      <div class="path hot"><h3>Primary survey luka bakar</h3>
+        <ul class="bul">
+          <li>Hentikan proses luka bakar: lepas pakaian, cincin & perhiasan; irigasi bahan kimia</li>
+          <li>Tanda cedera inhalasi (ruang tertutup, luka bakar wajah, bulu hidung terbakar, sputum karbon, suara serak, stridor) → intubasi dini</li>
+          <li>Keracunan CO: <b>SpO₂ dapat normal palsu</b> — O₂ 100% via NRM, periksa COHb</li>
+          <li>Luka bakar melingkar (dada/ekstremitas) → pantau ventilasi & sindrom kompartemen → eskarotomi</li>
+          <li>Cegah hipotermia; profilaksis tetanus</li>
+        </ul></div>
+      <div class="path cool"><h3>Luas & cairan</h3>
+        <ul class="bul">
+          <li>Rule of Nines dewasa: kepala 9, tiap lengan 9, dada-perut 18, punggung 18, tiap tungkai 18, perineum 1; telapak tangan pasien ≈1%</li>
+          <li>Hitung hanya derajat II (parsial) & III (penuh) — <b>derajat I tidak dihitung</b></li>
+          <li>RL <span class="pill">2 mL × kgBB × %TBSA</span> (dewasa), 3 mL (anak), 4 mL (listrik) per 24 jam; ½ dalam 8 jam pertama <b>sejak cedera</b></li>
+          <li>Titrasi ke urin output 0,5 mL/kg/jam (dewasa), 1 mL/kg/jam (anak ≤30 kg); hindari bolus berulang (fluid creep)</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section class="card ref" id="special">
+    <h2>Populasi khusus</h2>
+    <div class="cols">
+      <div class="path cool"><h3>Anak</h3>
+        <ul class="bul">
+          <li>Estimasi BB: pita Broselow atau (usia + 4) × 2 kg</li>
+          <li>Syok terkompensasi: takikardia & CRT memanjang dengan TD normal; hipotensi (SBP &lt;70 + 2×usia) = tanda lanjut</li>
+          <li>IV gagal → IO segera; kristaloid 20 mL/kg, lalu PRC 10–20 mL/kg; TXA 15 mg/kg</li>
+          <li>Cepat hipotermia; cedera limpa/hati yang stabil umumnya non-operatif di pusat dengan bedah anak & PICU</li>
+          <li>ETT tanpa cuff ±(usia/4)+4, dengan cuff ±(usia/4)+3,5</li>
+        </ul></div>
+      <div class="path cool"><h3>Kehamilan</h3>
+        <ul class="bul">
+          <li>Resusitasi ibu = resusitasi janin; volume darah ibu ↑ — tanda syok muncul terlambat</li>
+          <li>≥20 minggu: pergeseran uterus ke kiri (manual) atau papan dimiringkan 15–30° ke kiri</li>
+          <li>Pemantauan janin dini (CTG), konsul obstetri; waspadai solusio plasenta</li>
+          <li>Rh negatif → imunoglobulin anti-D</li>
+          <li>Henti jantung dengan fundus ≥ pusat → seksio sesarea perimortem dalam 4–5 menit</li>
+        </ul></div>
+      <div class="path cool"><h3>Lansia</h3>
+        <ul class="bul">
+          <li>Jatuh dari posisi berdiri dapat berat; SBP &lt;110 mmHg dapat berarti syok</li>
+          <li>β-bloker menutupi takikardia; cadangan fisiologis rendah</li>
+          <li>Antikoagulan: cek INR/koagulasi, CT kepala dini, reversal segera bila perdarahan</li>
+          <li>Hati-hati cairan berlebih; analgesia adekuat (fraktur kosta/panggul)</li>
+        </ul></div>
+      <div class="path hot"><h3>Henti jantung traumatik</h3>
+        <ul class="bul">
+          <li>Atasi penyebab reversibel lebih dulu: hipoksia (jalan napas & ventilasi), hipovolemia (kontrol perdarahan, darah, binder), tension (dekompresi bilateral), tamponade</li>
+          <li>Kompresi dada saja jarang efektif pada hipovolemia/obstruksi</li>
+          <li>Torakotomi resusitasi oleh ahli bedah terlatih pada indikasi tertentu (terutama trauma tembus toraks dengan tanda kehidupan baru hilang)</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section class="card ref" id="adj">
+    <h2>Adjuvan & survei sekunder</h2>
+    <div class="cols">
+      <div class="path cool"><h3>Adjuvan & kontraindikasinya</h3>
+        <ul class="bul">
+          <li><b>eFAST</b>: perikardium, RUQ, LUQ, pelvis, kedua hemitoraks (pneumotoraks, hemotoraks). FAST negatif tidak menyingkirkan perdarahan retroperitoneal (pelvis)</li>
+          <li><b>Kateter urin</b>: kontraindikasi bila darah di meatus/hematoma perineum → uretrografi retrograd dulu</li>
+          <li><b>NGT</b>: kontraindikasi pada curiga fraktur basis kranii/lamina kribrosa → OGT</li>
+          <li><b>CT scan</b> hanya untuk pasien yang hemodinamiknya normal/terkendali. Pasien tidak stabil → OK atau rujuk</li>
+        </ul></div>
+      <div class="path cool"><h3>Survei sekunder</h3>
+        <ul class="bul">
+          <li>Dimulai setelah primary survey selesai, resusitasi berjalan, dan tanda vital mulai normal</li>
+          <li>Anamnesis <b>AMPLE</b>: Alergi, Medikasi, Past illness/Pregnancy, Last meal, Event/Environment</li>
+          <li>Pemeriksaan head-to-toe lengkap termasuk punggung (log roll) & neurologis</li>
+          <li>Bila memburuk → kembali ke primary survey</li>
+        </ul></div>
+    </div>
+  </section>
+
+  <section class="card ref" id="transfer">
+    <h2>Tata laksana definitif & rujukan</h2>
+    <ul class="bul">
+      <li>Kenali keterbatasan fasilitas sejak awal; putuskan rujukan dini — <b>jangan menunda rujukan untuk pemeriksaan</b> yang tidak mengubah tata laksana di fasilitas saat ini</li>
+      <li>Komunikasi dokter-ke-dokter terstruktur (mis. format ABC-SBAR): identitas & masalah, mekanisme (MIST), temuan, tindakan + jam (tourniquet, darah, TXA), respons, kebutuhan selama transport</li>
+      <li>Pastikan RS penerima bersedia sebelum berangkat; kirim rekam medis, hasil lab/pencitraan, lembar observasi</li>
+      <li>Pendamping terlatih, monitor, O₂, jalan napas aman, akses vaskular, darah/cairan, dan rencana bila memburuk di perjalanan</li>
+      <li>Tourniquet efektif tidak dilonggarkan berkala; catat jam pemasangan</li>
+    </ul>
+  </section>
+
+  <p class="muted small">Acuan: American College of Surgeons Committee on Trauma. Advanced Trauma Life Support® (ATLS®) Student Course Manual, 11th ed. (2025), serta literatur pendukung (CRASH-2, Brain Trauma Foundation). Ringkasan ini disederhanakan untuk latihan.</p>
+</main>
+</body>
+</html>
