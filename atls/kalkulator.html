@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Trauma</title>
+<meta name="description" content="Kalkulator trauma: GCS, Shock Index & skor ABC, estimasi kelas syok hemoragik, luas luka bakar (Rule of Nines) & cairan, Revised Trauma Score, dosis trauma anak. Berjalan lokal di browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .calc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; margin-top: 18px; }
+  .calc { scroll-margin-top: 70px; display: flex; flex-direction: column; gap: 10px; }
+  .calc h2 { font-size: 1.05rem; }
+  .calc .sub { color: var(--muted); font-size: 0.84rem; }
+  .fld { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 0.88rem; }
+  .fld select, .fld input { padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 0.88rem; max-width: 210px; }
+  .fld input[type=number] { width: 100px; font-family: var(--mono); }
+  .res { background: var(--surface-2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 0.9rem; }
+  .res .big { font-family: var(--mono); font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+  .res.r-ok { border-left: 4px solid var(--good); } .res.r-mid { border-left: 4px solid var(--warn); } .res.r-bad { border-left: 4px solid var(--danger); }
+  .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .chips label { display: flex; gap: 6px; align-items: center; font-size: 0.84rem; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; }
+  .chips label:has(input:checked) { border-color: var(--accent); background: var(--accent-2); }
+  .seg-inline { display: flex; gap: 6px; flex-wrap: wrap; }
+  .seg-inline label { font-size: 0.84rem; padding: 5px 10px; border: 1px solid var(--border); border-radius: 99px; cursor: pointer; }
+  .seg-inline label:has(input:checked) { border-color: var(--accent); background: var(--accent-2); color: var(--accent); font-weight: 600; }
+  .seg-inline input, .chips input { accent-color: var(--accent); }
+  .ref-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .ref-nav a { font-size: 0.82rem; font-weight: 600; padding: 5px 11px; border-radius: 99px; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .ref-nav a:hover { border-color: var(--accent); text-decoration: none; }
+  @media (max-width: 420px) { .calc-grid { grid-template-columns: 1fr; } .chips { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Kembali ke simulator">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v18M3 12h18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+    <span>ATLS Trauma Simulator</span>
+  </a>
+  <nav class="topnav">
+    <a href="index.html">Simulator</a>
+    <a href="referensi.html">Ringkasan ATLS</a>
+    <a href="../index.html">Situs utama</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Alat bantu klinis · semua perhitungan berjalan lokal di perangkat Anda</p>
+  <h1>Kalkulator trauma</h1>
+  <p class="lead">Enam kalkulator yang sering dipakai saat resusitasi trauma. Hasil adalah alat bantu — keputusan klinis tetap berdasarkan penilaian pasien secara menyeluruh.</p>
+  <nav class="ref-nav">
+    <a href="#gcs">GCS</a><a href="#si">Shock Index & ABC</a><a href="#cls">Kelas syok</a><a href="#burn">Luka bakar</a><a href="#rts">Revised Trauma Score</a><a href="#peds">Dosis anak</a>
+  </nav>
+
+  <div class="calc-grid">
+
+    <!-- GCS -->
+    <section class="card calc" id="gcs">
+      <h2>Glasgow Coma Scale</h2>
+      <div class="seg-inline"><label><input type="radio" name="gcs-age" value="adult" checked> Dewasa/anak besar</label><label><input type="radio" name="gcs-age" value="peds"> Anak pra-verbal</label></div>
+      <div class="fld"><span>Mata (E)</span><select id="gcs-e">
+        <option value="4">4 — spontan</option><option value="3">3 — terhadap suara</option><option value="2">2 — terhadap tekanan/nyeri</option><option value="1">1 — tidak ada</option></select></div>
+      <div class="fld"><span>Verbal (V)</span><select id="gcs-v"></select></div>
+      <div class="fld"><span>Motorik (M)</span><select id="gcs-m">
+        <option value="6">6 — mengikuti perintah</option><option value="5">5 — melokalisasi</option><option value="4">4 — fleksi normal/menarik</option><option value="3">3 — fleksi abnormal</option><option value="2">2 — ekstensi</option><option value="1">1 — tidak ada</option></select></div>
+      <div class="res" id="gcs-out"></div>
+    </section>
+
+    <!-- Shock index & ABC -->
+    <section class="card calc" id="si">
+      <h2>Shock Index & skor ABC</h2>
+      <p class="sub">SI = HR ÷ SBP. Skor ABC (Assessment of Blood Consumption) memprediksi kebutuhan transfusi masif.</p>
+      <div class="fld"><span>Nadi (×/mnt)</span><input type="number" id="si-hr" value="120" min="0"></div>
+      <div class="fld"><span>TD sistolik (mmHg)</span><input type="number" id="si-sbp" value="90" min="0"></div>
+      <div class="chips">
+        <label><input type="checkbox" id="abc-pen"> Mekanisme tembus</label>
+        <label><input type="checkbox" id="abc-fast"> FAST positif</label>
+      </div>
+      <div class="res" id="si-out"></div>
+    </section>
+
+    <!-- Kelas syok -->
+    <section class="card calc" id="cls">
+      <h2>Estimasi kelas syok hemoragik</h2>
+      <p class="sub">Mengambil kelas terberat dari nadi, TD, GCS, dan base deficit (tabel ATLS). Interpretasi bersama konteks klinis.</p>
+      <div class="fld"><span>Nadi (×/mnt)</span><input type="number" id="c-hr" value="125"></div>
+      <div class="fld"><span>TD sistolik (mmHg)</span><input type="number" id="c-sbp" value="100"></div>
+      <div class="fld"><span>Tekanan nadi</span><select id="c-pp"><option value="0">Normal</option><option value="1">Menyempit</option></select></div>
+      <div class="fld"><span>Kesadaran</span><select id="c-gcs"><option value="0">Normal</option><option value="1">Gelisah/bingung (GCS ↓)</option><option value="2">Letargi</option></select></div>
+      <div class="fld"><span>Base deficit (mEq/L, kosongkan bila tidak ada)</span><input type="number" id="c-bd" placeholder="mis. -7" step="0.5"></div>
+      <div class="res" id="c-out"></div>
+    </section>
+
+    <!-- Luka bakar -->
+    <section class="card calc" id="burn">
+      <h2>Luas luka bakar & cairan</h2>
+      <p class="sub">Centang area dengan luka bakar derajat II–III (derajat I tidak dihitung).</p>
+      <div class="seg-inline"><label><input type="radio" name="b-age" value="adult" checked> Dewasa</label><label><input type="radio" name="b-age" value="child"> Anak kecil</label></div>
+      <div class="chips" id="b-parts"></div>
+      <div class="fld"><span>Tambahan % (area parsial, telapak tangan ≈1%)</span><input type="number" id="b-extra" value="0" min="0" max="100" step="0.5"></div>
+      <div class="fld"><span>Berat badan (kg)</span><input type="number" id="b-w" value="60" min="1"></div>
+      <div class="fld"><span>Jenis</span><select id="b-type"><option value="2">Termal dewasa (2 mL)</option><option value="3">Termal anak (3 mL)</option><option value="4">Listrik (4 mL)</option></select></div>
+      <div class="fld"><span>Jam sejak cedera</span><input type="number" id="b-hrs" value="0" min="0" max="8" step="0.5"></div>
+      <div class="res" id="b-out"></div>
+    </section>
+
+    <!-- RTS -->
+    <section class="card calc" id="rts">
+      <h2>Revised Trauma Score</h2>
+      <div class="fld"><span>GCS</span><input type="number" id="r-gcs" value="15" min="3" max="15"></div>
+      <div class="fld"><span>TD sistolik (mmHg)</span><input type="number" id="r-sbp" value="120" min="0"></div>
+      <div class="fld"><span>Laju napas (×/mnt)</span><input type="number" id="r-rr" value="18" min="0"></div>
+      <div class="res" id="r-out"></div>
+    </section>
+
+    <!-- Anak -->
+    <section class="card calc" id="peds">
+      <h2>Dosis trauma anak</h2>
+      <div class="fld"><span>Usia (tahun)</span><input type="number" id="p-age" value="6" min="0" max="14" step="0.5"></div>
+      <div class="fld"><span>BB diketahui (kg, opsional)</span><input type="number" id="p-w" placeholder="estimasi"></div>
+      <div class="res" id="p-out"></div>
+    </section>
+
+  </div>
+
+  <div class="disclaimer">
+    <strong>Catatan:</strong> rumus & ambang mengacu pada prinsip ATLS® edisi ke-11 dan literatur pendukung (Glasgow Coma Scale, Champion et al. untuk RTS, Nunez et al. untuk skor ABC). Selalu verifikasi dosis dengan protokol institusi.
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  function $(s) { return document.querySelector(s); }
+  function num(id) { var v = $(id).value; return v === '' ? null : Number(v); }
+  function r(x, d) { var m = Math.pow(10, d || 0); return Math.round(x * m) / m; }
+  function fmtN(x) { return x.toLocaleString('id-ID'); }
+
+  /* GCS */
+  var VERB = { adult: ['5 — orientasi baik', '4 — bingung', '3 — kata-kata tidak sesuai', '2 — suara tidak bermakna', '1 — tidak ada'],
+               peds: ['5 — mengoceh/kata sesuai usia, tersenyum', '4 — menangis tapi dapat ditenangkan', '3 — menangis/menjerit terhadap nyeri', '2 — merintih terhadap nyeri', '1 — tidak ada'] };
+  function fillVerbal() {
+    var age = document.querySelector('input[name="gcs-age"]:checked').value, cur = $('#gcs-v').value || '5';
+    $('#gcs-v').innerHTML = VERB[age].map(function (l, i) { return '<option value="' + (5 - i) + '">' + l + '</option>'; }).join('');
+    $('#gcs-v').value = cur;
+  }
+  function gcs() {
+    var e = num('#gcs-e'), v = num('#gcs-v'), m = num('#gcs-m'), t = e + v + m;
+    var cat = t >= 13 ? ['ringan', 'r-ok'] : t >= 9 ? ['sedang', 'r-mid'] : ['berat', 'r-bad'];
+    $('#gcs-out').className = 'res ' + cat[1];
+    $('#gcs-out').innerHTML = '<div class="big">' + t + '</div>E' + e + 'V' + v + 'M' + m + ' · cedera otak ' + cat[0] + (t <= 8 ? '. <b>GCS ≤8 → jalan napas definitif</b>; cegah hipoksia & hipotensi, konsul bedah saraf.' : t <= 12 ? '. CT kepala & observasi ketat; ulangi GCS berkala.' : '.') + ' Catat komponen terbaik; pada pasien terintubasi tulis V = "T".';
+  }
+
+  /* Shock index & ABC */
+  function si() {
+    var hr = num('#si-hr'), sbp = num('#si-sbp');
+    if (!hr || !sbp) { $('#si-out').textContent = 'Isi nadi & TD.'; return; }
+    var x = hr / sbp, cls = x < 0.7 ? 'r-ok' : x < 1 ? 'r-mid' : 'r-bad';
+    var abc = (hr >= 120 ? 1 : 0) + (sbp <= 90 ? 1 : 0) + ($('#abc-pen').checked ? 1 : 0) + ($('#abc-fast').checked ? 1 : 0);
+    $('#si-out').className = 'res ' + (abc >= 2 ? 'r-bad' : cls);
+    $('#si-out').innerHTML = '<div class="big">SI ' + r(x, 2) + '</div>' +
+      (x < 0.7 ? 'Normal (0,5–0,7).' : x < 1 ? 'Meningkat — waspada syok tersembunyi.' : 'SI ≥1 — syok bermakna, kemungkinan butuh transfusi.') +
+      '<br><b>Skor ABC ' + abc + '/4</b> (HR ≥120, SBP ≤90, tembus, FAST +): ' + (abc >= 2 ? 'prediksi transfusi masif — pertimbangkan aktivasi MTP.' : 'prediksi transfusi masif rendah.');
+  }
+
+  /* Kelas syok */
+  function cls() {
+    var hr = num('#c-hr') || 0, sbp = num('#c-sbp') || 0, pp = num('#c-pp'), g = num('#c-gcs'), bd = num('#c-bd');
+    var c = [];
+    c.push(hr > 140 ? 4 : hr > 120 ? 3 : hr >= 100 ? 2 : 1);
+    c.push(sbp < 70 ? 4 : sbp < 90 ? 3 : 1);
+    if (pp) c.push(2);
+    c.push(g === 2 ? 4 : g === 1 ? 3 : 1);
+    if (bd !== null) { var b = -Math.abs(bd); c.push(b <= -10 ? 4 : b <= -6 ? 3 : b <= -2 ? 2 : 1); }
+    var k = Math.max.apply(null, c);
+    var info = [null, ['I', '<15%', 'Pantau; kristaloid terbatas bila perlu.', 'r-ok'], ['II', '15–30%', 'Mungkin butuh darah; cari & kendalikan sumber perdarahan.', 'r-mid'], ['III', '31–40%', 'Butuh produk darah; kontrol sumber segera; TXA.', 'r-bad'], ['IV', '>40%', 'Protokol transfusi masif & kontrol bedah/angio segera; TXA.', 'r-bad']][k];
+    $('#c-out').className = 'res ' + info[3];
+    $('#c-out').innerHTML = '<div class="big">Kelas ' + info[0] + '</div>Perkiraan kehilangan darah ' + info[1] + ' volume darah. ' + info[2] + ' <span class="muted">Catatan: β-bloker, lansia, atlet, kehamilan, dan anak dapat menutupi tanda syok.</span>';
+  }
+
+  /* Luka bakar */
+  var PARTS = {
+    adult: [['Kepala-leher anterior', 4.5], ['Kepala-leher posterior', 4.5], ['Dada + perut (anterior)', 18], ['Punggung + bokong', 18], ['Lengan kanan', 9], ['Lengan kiri', 9], ['Tungkai kanan anterior', 9], ['Tungkai kanan posterior', 9], ['Tungkai kiri anterior', 9], ['Tungkai kiri posterior', 9], ['Perineum', 1]],
+    child: [['Kepala-leher anterior', 9], ['Kepala-leher posterior', 9], ['Dada + perut (anterior)', 18], ['Punggung + bokong', 18], ['Lengan kanan', 9], ['Lengan kiri', 9], ['Tungkai kanan anterior', 7], ['Tungkai kanan posterior', 7], ['Tungkai kiri anterior', 7], ['Tungkai kiri posterior', 7]]
+  };
+  function fillParts() {
+    var a = document.querySelector('input[name="b-age"]:checked').value;
+    $('#b-parts').innerHTML = PARTS[a].map(function (p) { return '<label><input type="checkbox" value="' + p[1] + '"> ' + p[0] + ' (' + p[1] + '%)</label>'; }).join('');
+    $('#b-type').value = a === 'child' ? '3' : '2';
+  }
+  function burn() {
+    var t = Array.prototype.slice.call(document.querySelectorAll('#b-parts input:checked')).reduce(function (s, x) { return s + Number(x.value); }, 0) + (num('#b-extra') || 0);
+    t = Math.min(100, t);
+    var w = num('#b-w') || 0, k = num('#b-type'), hrs = Math.min(8, num('#b-hrs') || 0);
+    var tot = k * w * t, first8 = tot / 2, left8 = Math.max(0, 8 - hrs), uo = (w <= 30 && k !== 4 ? 1 : k === 4 ? 1 : 0.5) * w;
+    var cls = t >= 20 ? 'r-bad' : t >= 10 ? 'r-mid' : 'r-ok';
+    $('#b-out').className = 'res ' + cls;
+    $('#b-out').innerHTML = '<div class="big">' + r(t, 1) + '% TBSA</div>' +
+      (t > 0 && w > 0 ? 'RL 24 jam: <b>' + fmtN(r(tot)) + ' mL</b>. 8 jam pertama (sejak cedera): <b>' + fmtN(r(first8)) + ' mL</b>' +
+      (hrs > 0 ? ' — tersisa ' + left8 + ' jam → <b>' + (left8 ? fmtN(r(first8 / left8)) : '–') + ' mL/jam</b>' : ' → <b>' + fmtN(r(first8 / 8)) + ' mL/jam</b>') +
+      '; 16 jam berikutnya <b>' + fmtN(r(first8 / 16)) + ' mL/jam</b>. Titrasi ke urin output ±<b>' + r(uo) + ' mL/jam</b>.' : 'Pilih area & isi berat badan.') +
+      (t >= 20 ? ' <br>Luka bakar luas → resusitasi cairan formal & rujuk ke unit luka bakar.' : '');
+  }
+
+  /* RTS */
+  function rts() {
+    var g = num('#r-gcs'), s = num('#r-sbp'), rr = num('#r-rr');
+    if (g === null || s === null || rr === null) return;
+    var gc = g >= 13 ? 4 : g >= 9 ? 3 : g >= 6 ? 2 : g >= 4 ? 1 : 0;
+    var sc = s > 89 ? 4 : s >= 76 ? 3 : s >= 50 ? 2 : s >= 1 ? 1 : 0;
+    var rc = rr > 29 ? 3 : rr >= 10 ? 4 : rr >= 6 ? 2 : rr >= 1 ? 1 : 0;
+    var v = 0.9368 * gc + 0.7326 * sc + 0.2908 * rc, tr = gc + sc + rc;
+    $('#r-out').className = 'res ' + (tr <= 10 ? 'r-bad' : tr === 11 ? 'r-mid' : 'r-ok');
+    $('#r-out').innerHTML = '<div class="big">RTS ' + r(v, 2) + '</div>Nilai kode GCS ' + gc + ', SBP ' + sc + ', RR ' + rc + ' (rentang 0–7,84). Triage-RTS ' + tr + '/12' + (tr <= 11 ? ' — &lt;12 mengindikasikan trauma bermakna; pertimbangkan pusat trauma.' : '.');
+  }
+
+  /* Anak */
+  function peds() {
+    var a = num('#p-age') || 0, kw = num('#p-w'), w = kw || (a >= 1 ? (a + 4) * 2 : 3.5 + a * 6);
+    var sbpMin = a >= 1 ? 70 + 2 * Math.min(10, a) : 60;
+    var etU = a >= 1 ? r(a / 4 + 4, 1) : 3.5, etC = a >= 1 ? r(a / 4 + 3.5, 1) : 3.0;
+    $('#p-out').className = 'res';
+    $('#p-out').innerHTML = '<div class="big">' + r(w, 1) + ' kg</div>' + (kw ? 'BB diketahui.' : 'Estimasi (usia + 4) × 2 — gunakan pita Broselow bila tersedia.') +
+      '<ul class="bul" style="margin-top:6px;padding-left:18px">' +
+      '<li>Kristaloid hangat 20 mL/kg: <b>' + r(20 * w) + ' mL</b></li>' +
+      '<li>PRC 10–20 mL/kg: <b>' + r(10 * w) + '–' + r(20 * w) + ' mL</b></li>' +
+      '<li>Asam traneksamat 15 mg/kg: <b>' + Math.min(1000, r(15 * w)) + ' mg</b> (maks 1 g)</li>' +
+      '<li>Hipotensi bila SBP &lt; <b>' + sbpMin + ' mmHg</b></li>' +
+      '<li>ETT tanpa cuff ±<b>' + etU + '</b>, dengan cuff ±<b>' + etC + '</b> (ID mm)</li>' +
+      '<li>Urin output target ≥1 mL/kg/jam: <b>' + r(w) + ' mL/jam</b></li>' +
+      '<li>Anak &lt;12 tahun: krikotiroidotomi <b>jarum</b>, bukan bedah</li></ul>';
+  }
+
+  document.addEventListener('input', function (e) {
+    if (e.target.closest('#gcs')) gcs();
+    if (e.target.closest('#si')) si();
+    if (e.target.closest('#cls')) cls();
+    if (e.target.closest('#burn')) { if (e.target.name === 'b-age') fillParts(); burn(); }
+    if (e.target.closest('#rts')) rts();
+    if (e.target.closest('#peds')) peds();
+  });
+  document.addEventListener('change', function (e) {
+    if (e.target.name === 'gcs-age') { fillVerbal(); gcs(); }
+    if (e.target.name === 'b-age') { fillParts(); burn(); }
+  });
+  fillVerbal(); fillParts();
+  gcs(); si(); cls(); burn(); rts(); peds();
+})();
+</script>
+</body>
+</html>

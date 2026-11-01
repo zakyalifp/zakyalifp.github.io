@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATLS Trauma Simulator</title>
+<meta name="description" content="Simulator kasus trauma interaktif berbasis prinsip ATLS edisi ke-11: primary survey xABCDE real-time, syok hemoragik, trauma toraks, cedera otak, luka bakar, dan populasi khusus — dengan monitor, debrief, dan skor. Berjalan sepenuhnya di browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="ATLS Trauma Simulator — beranda">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 3v18M3 12h18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+    </span>
+    <span>ATLS Trauma Simulator</span>
+  </a>
+  <nav class="topnav">
+    <a href="referensi.html">Ringkasan ATLS</a>
+    <a href="kalkulator.html">Kalkulator trauma</a>
+    <a href="../acls/index.html">Simulator ACLS</a>
+    <a href="../index.html">Situs utama</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============================ BERANDA ============================ -->
+  <section class="view is-active" id="view-home">
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Latihan kasus trauma · prinsip ATLS® edisi ke-11</p>
+          <h1>Simulator trauma ATLS untuk dokter</h1>
+          <p class="lead">Pimpin resusitasi trauma secara real-time: lakukan primary survey xABCDE, atasi ancaman nyawa saat ditemukan, gunakan adjuvan (eFAST, foto toraks/pelvis), kelola syok hemoragik, lalu putuskan tata laksana definitif atau rujukan. Pasien memburuk bila tidak ditangani. Setiap kasus diakhiri debrief berisi skor, timeline, dan catatan pembelajaran.</p>
+        </div>
+        <div class="card settings">
+          <h2 class="card-title">Pengaturan latihan</h2>
+          <div class="seg" role="radiogroup" aria-label="Tingkat kesulitan">
+            <label class="seg-opt"><input type="radio" name="level" value="pemula" checked><span><strong>Pemula</strong><small>Temuan disertai interpretasi, kotak petunjuk langkah berikutnya, umpan balik langsung, perkiraan kelas syok, bisa jeda.</small></span></label>
+            <label class="seg-opt"><input type="radio" name="level" value="mahir"><span><strong>Mahir</strong><small>Temuan mentah tanpa interpretasi, tanpa petunjuk & umpan balik sampai debrief, tanpa jeda.</small></span></label>
+          </div>
+          <div class="sound-prefs">
+            <span class="muted small">Suara:</span>
+            <label class="chk"><input type="checkbox" id="pref-beep" checked> Beep nadi</label>
+            <label class="chk"><input type="checkbox" id="pref-alarm"> Alarm monitor</label>
+          </div>
+        </div>
+      </div>
+
+      <div id="scenario-list"></div>
+
+      <div class="card history-card">
+        <div class="card-head">
+          <h2 class="card-title">Riwayat latihan</h2>
+          <button class="btn btn-ghost btn-sm" id="btn-clear-history" type="button">Hapus riwayat</button>
+        </div>
+        <div id="history"></div>
+        <p class="muted small">Riwayat hanya tersimpan di browser perangkat ini.</p>
+      </div>
+
+      <div class="disclaimer">
+        <strong>Catatan:</strong> simulator ini adalah alat bantu belajar, bukan pengganti kursus ATLS® bersertifikat (American College of Surgeons) maupun protokol institusi. Alur dan dosis mengacu pada prinsip ATLS edisi ke-11 dan literatur trauma terkini — selalu verifikasi dengan manual resmi kursus Anda. Fisiologi pasien disederhanakan untuk tujuan latihan. ATLS® adalah merek dagang American College of Surgeons; aplikasi ini tidak berafiliasi dengan ACS.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SIMULASI ============================ -->
+  <section class="view" id="view-sim">
+    <div class="simbar">
+      <div class="simbar-title">
+        <span class="chip" id="sim-level">Pemula</span>
+        <strong id="sim-title">Skenario</strong>
+      </div>
+      <div class="simbar-ctrl">
+        <span class="clock" title="Waktu sejak pasien tiba"><span class="muted small">Waktu</span> <b id="t-elapsed">0:00</b></span>
+        <label class="small muted" for="sel-speed">Kecepatan</label>
+        <select id="sel-speed" class="sel-sm">
+          <option value="1">1×</option><option value="2">2×</option><option value="4">4×</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="btn-ff" type="button" title="Lompat waktu 1 menit">⏩ +1 menit</button>
+        <button class="btn btn-ghost btn-sm" id="btn-pause" type="button">⏸ Jeda</button>
+        <details class="popover">
+          <summary class="btn btn-ghost btn-sm">🔊 Suara</summary>
+          <div class="popover-body">
+            <label class="chk"><input type="checkbox" data-snd="beep"> Beep nadi</label>
+            <label class="chk"><input type="checkbox" data-snd="alarm"> Alarm monitor</label>
+          </div>
+        </details>
+        <button class="btn btn-danger btn-sm" id="btn-end" type="button">Akhiri</button>
+      </div>
+    </div>
+
+    <div class="sim-grid">
+      <div class="sim-left">
+        <div class="monitor">
+          <div class="monitor-screen">
+            <canvas id="ecg"></canvas>
+            <div class="lane-label l-ecg">II</div>
+            <div class="lane-label l-pleth">Pleth</div>
+            <div class="lane-label l-co2">CO₂</div>
+            <div class="mon-overlay" id="mon-label"></div>
+            <div class="mon-off" id="mon-off">Monitor belum terpasang<small>Tab “Adjuvan &amp; pemeriksaan” → Pasang monitor</small></div>
+            <div class="mon-badges"><span id="mon-alarm" class="mbadge warn" hidden>ALARM</span></div>
+          </div>
+          <div class="vitals vitals-6">
+            <div class="vital v-hr"><span class="v-lbl">HR</span><span class="v-val" id="v-hr">--</span><span class="v-unit">×/mnt</span></div>
+            <div class="vital v-spo2"><span class="v-lbl">SpO₂</span><span class="v-val" id="v-spo2">--</span><span class="v-unit">%</span></div>
+            <div class="vital v-bp"><span class="v-lbl">TD</span><span class="v-val v-sm" id="v-bp">--/--</span><span class="v-unit" id="v-map">MAP --</span></div>
+            <div class="vital v-rr"><span class="v-lbl">RR</span><span class="v-val" id="v-rr">--</span><span class="v-unit">×/mnt</span></div>
+            <div class="vital v-temp"><span class="v-lbl">Suhu</span><span class="v-val v-sm" id="v-temp">--</span><span class="v-unit">°C</span></div>
+            <div class="vital v-co2"><span class="v-lbl">EtCO₂</span><span class="v-val" id="v-co2">--</span><span class="v-unit">mmHg</span></div>
+          </div>
+        </div>
+
+        <div class="timers">
+          <div class="timer"><span class="t-lbl">Sejak cedera</span><b id="t-injury">–</b></div>
+          <div class="timer"><span class="t-lbl">Kristaloid</span><b id="t-cryst">0 mL</b></div>
+          <div class="timer"><span class="t-lbl">Produk darah</span><b id="t-blood">–</b></div>
+          <div class="timer"><span class="t-lbl" id="t-x-lbl">TXA</span><b id="t-x">–</b></div>
+        </div>
+
+        <div class="ps-track" id="ps-track" aria-label="Kemajuan primary survey"></div>
+
+        <div class="hint" id="hint" hidden><span class="hint-ic" aria-hidden="true">💡</span><span id="hint-text"></span></div>
+
+        <div class="two-col">
+          <div class="card compact">
+            <h3 class="card-title-sm">Status pasien</h3>
+            <dl class="pt" id="pt-status"></dl>
+          </div>
+          <div class="card compact">
+            <h3 class="card-title-sm">Temuan pemeriksaan</h3>
+            <div id="findings" class="findings"><p class="muted small">Belum ada pemeriksaan.</p></div>
+          </div>
+        </div>
+        <details class="card compact case-box" open>
+          <summary class="card-title-sm">Ringkasan kasus &amp; laporan pra-RS (MIST)</summary>
+          <p id="case-stem" class="small"></p>
+          <dl class="mist small" id="case-mist"></dl>
+          <p class="small muted" id="case-setting"></p>
+        </details>
+      </div>
+
+      <div class="sim-right">
+        <div class="actions card compact">
+          <div class="tabs" id="tabs" role="tablist"></div>
+          <div class="action-grid" id="action-grid"></div>
+          <p class="kbd-help small muted">Pintasan: <kbd>X</kbd> <kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd> <kbd>E</kbd> primary survey · <kbd>R</kbd> reevaluasi · <kbd>M</kbd> monitor</p>
+        </div>
+
+        <div class="card compact logbox">
+          <h3 class="card-title-sm">Log tindakan</h3>
+          <ol class="log" id="log"></ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ DEBRIEF ============================ -->
+  <section class="view" id="view-debrief">
+    <div class="wrap" id="debrief"></div>
+  </section>
+
+</main>
+
+<!-- Modal briefing kasus -->
+<div class="modal" id="modal-brief" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="brief-title">
+    <p class="eyebrow" id="brief-cat"></p>
+    <h2 id="brief-title"></h2>
+    <p class="muted small" id="brief-setting"></p>
+    <p id="brief-stem"></p>
+    <div class="brief-mist" id="brief-mist"></div>
+    <div id="brief-obj"></div>
+    <div class="brief-note small" id="brief-note"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" data-close>Batal</button>
+      <button class="btn btn-primary" type="button" id="btn-start">Pasien tiba — mulai</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal serbaguna (sisi, diagnosis, tim, SBAR, luka bakar) -->
+<div class="modal" id="modal-choice" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="choice-title">
+    <h2 id="choice-title"></h2>
+    <p class="muted small" id="choice-sub"></p>
+    <div id="choice-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" data-close>Batal</button>
+      <button class="btn btn-primary" type="button" id="btn-choice">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal konfirmasi akhir -->
+<div class="modal" id="modal-end" hidden>
+  <div class="modal-card narrow" role="dialog" aria-modal="true" aria-labelledby="end-title">
+    <h2 id="end-title">Akhiri skenario?</h2>
+    <p>Skenario akan dihentikan dan debrief ditampilkan. Penilaian memakai kondisi pasien saat ini — pastikan tata laksana definitif/rujukan sudah diputuskan.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" type="button" data-close>Lanjutkan simulasi</button>
+      <button class="btn btn-danger" type="button" id="btn-end-confirm">Akhiri &amp; lihat debrief</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="js/ecg.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/actions.js"></script>
+<script src="js/scenarios.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
