@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ringkasan Algoritma ACLS</title>
+<meta name="description" content="Ringkasan algoritma & dosis ACLS dewasa (AHA 2025): henti jantung, pasca-ROSC, bradikardia, takikardia, SKA, dan stroke akut.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .ref-nav { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 22px; }
+  .ref-nav a { font-size: 0.82rem; font-weight: 600; padding: 5px 11px; border-radius: 99px; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .ref-nav a:hover { border-color: var(--accent); text-decoration: none; }
+  .ref { margin-bottom: 18px; scroll-margin-top: 70px; }
+  .ref h2 { font-size: 1.15rem; margin-bottom: 4px; }
+  .ref .sub { color: var(--muted); font-size: 0.86rem; margin-bottom: 12px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .path { border-radius: var(--radius-sm); padding: 12px 14px; border: 1px solid var(--border); background: var(--surface-2); }
+  .path h3 { font-size: 0.95rem; margin-bottom: 8px; }
+  .path.shock { border-left: 4px solid var(--danger); }
+  .path.noshock { border-left: 4px solid var(--accent); }
+  .steps { padding-left: 20px; display: grid; gap: 5px; font-size: 0.9rem; }
+  .bul { padding-left: 18px; display: grid; gap: 4px; font-size: 0.9rem; }
+  .ref .tbl td:first-child { font-weight: 600; }
+  .ht { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; font-size: 0.9rem; }
+  .ht b { color: var(--accent); }
+  .note { font-size: 0.84rem; color: var(--muted); margin-top: 8px; }
+  .pill { display: inline-block; font-family: var(--mono); font-weight: 700; font-size: 0.82rem; padding: 1px 7px; border-radius: 6px; background: var(--accent-2); color: var(--accent); }
+  @media (max-width: 760px) { .cols, .ht { grid-template-columns: 1fr; } }
+  @media print { .topbar, .ref-nav, .no-print { display: none !important; } .ref { break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="Kembali ke simulator">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="18" height="18"><path d="M2 12h4l2-5 4 10 3-7 2 2h5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </span>
+    <span>ACLS Megacode Simulator</span>
+  </a>
+  <nav class="topnav">
+    <a href="index.html">Simulator</a>
+    <a href="../index.html">Situs utama</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <p class="eyebrow">Cheat sheet · Dewasa · AHA Guidelines for CPR &amp; ECC 2025</p>
+  <h1>Ringkasan algoritma &amp; dosis ACLS</h1>
+  <p class="lead">Rangkuman cepat untuk dibaca sebelum atau sesudah simulasi. Selalu verifikasi dengan pedoman resmi dan protokol institusi.</p>
+
+  <nav class="ref-nav no-print">
+    <a href="#rjp">RJP berkualitas</a>
+    <a href="#arrest">Henti jantung</a>
+    <a href="#obat">Dosis obat</a>
+    <a href="#ht">H &amp; T</a>
+    <a href="#rosc">Pasca-ROSC</a>
+    <a href="#brady">Bradikardia</a>
+    <a href="#tachy">Takikardia</a>
+    <a href="#ska">SKA / STEMI</a>
+    <a href="#stroke">Stroke</a>
+    <a href="#" onclick="window.print(); return false;">Cetak</a>
+  </nav>
+
+  <section class="card ref" id="rjp">
+    <h2>RJP berkualitas tinggi</h2>
+    <p class="sub">Fondasi semua algoritma henti jantung.</p>
+    <ul class="bul">
+      <li>Kompresi <span class="pill">100–120/menit</span>, kedalaman <span class="pill">5–6 cm</span>, recoil dada penuh.</li>
+      <li>Minimalkan interupsi: <b>chest compression fraction ≥80%</b> (minimal 60%); jeda untuk analisis/shock &lt;10 detik.</li>
+      <li>Tanpa advanced airway: <b>30:2</b>. Dengan advanced airway: kompresi kontinu + <b>1 napas tiap 6 detik</b> (10×/menit). Hindari ventilasi berlebihan.</li>
+      <li>Ganti pemijat tiap 2 menit (atau lebih cepat bila lelah).</li>
+      <li>Kapnografi gelombang: EtCO₂ rendah (&lt;10 mmHg) → perbaiki kualitas kompresi; kenaikan mendadak (≥40 mmHg) → curigai ROSC.</li>
+      <li>Charge defibrilator saat kompresi masih berjalan untuk memperpendek jeda pra-shock.</li>
+    </ul>
+  </section>
+
+  <section class="card ref" id="arrest">
+    <h2>Henti jantung dewasa</h2>
+    <p class="sub">Mulai RJP, beri O₂, pasang monitor/defibrilator → analisis ritme.</p>
+    <div class="cols">
+      <div class="path shock">
+        <h3>Shockable: VF / pVT</h3>
+        <ol class="steps">
+          <li>Shock → segera RJP 2 menit. Pasang akses IV/IO.</li>
+          <li>Analisis ritme. Masih shockable → shock → RJP 2 menit.</li>
+          <li><b>Epinefrin 1 mg</b> setelah upaya defibrilasi awal gagal (umumnya setelah shock ke-2), lalu tiap 3–5 menit. Pertimbangkan advanced airway + kapnografi.</li>
+          <li>Masih shockable → shock → RJP 2 menit + <b>amiodaron 300 mg</b> atau <b>lidokain 1–1,5 mg/kg</b> (setelah shock ke-3).</li>
+          <li>Ulangi siklus; amiodaron 150 mg / lidokain 0,5–0,75 mg/kg untuk dosis kedua. Atasi H &amp; T.</li>
+          <li>Torsades de pointes → <b>MgSO₄ 1–2 g IV</b>.</li>
+        </ol>
+      </div>
+      <div class="path noshock">
+        <h3>Non-shockable: asistol / PEA</h3>
+        <ol class="steps">
+          <li>RJP 2 menit + akses IV/IO.</li>
+          <li><b>Epinefrin 1 mg sesegera mungkin</b>, lalu tiap 3–5 menit.</li>
+          <li>Pertimbangkan advanced airway + kapnografi.</li>
+          <li>Analisis ritme tiap 2 menit. Ritme terorganisir → cek nadi (≤10 detik).</li>
+          <li>Berubah menjadi shockable → pindah ke jalur VF/pVT.</li>
+          <li>Telusuri dan atasi penyebab reversibel (H &amp; T) — kunci keberhasilan PEA.</li>
+        </ol>
+      </div>
+    </div>
+    <p class="note">Energi defibrilasi bifasik: sesuai rekomendasi pabrik (umumnya 120–200 J); bila tidak diketahui gunakan energi maksimal. AHA 2025: manfaat <i>vector change</i> dan <i>double sequential defibrillation</i> setelah ≥3 shock belum terbukti. Jangan men-shock asistol/PEA; jangan aktifkan SYNC pada VF.</p>
+  </section>
+
+  <section class="card ref" id="obat">
+    <h2>Dosis obat henti jantung &amp; peri-arrest</h2>
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead><tr><th>Obat</th><th>Dosis</th><th>Catatan</th></tr></thead>
+        <tbody>
+          <tr><td>Epinefrin (henti jantung)</td><td>1 mg IV/IO tiap 3–5 menit</td><td>Non-shockable: sesegera mungkin. Shockable: setelah defibrilasi awal gagal.</td></tr>
+          <tr><td>Amiodaron (VF/pVT)</td><td>300 mg bolus → 150 mg</td><td>Untuk VF/pVT refrakter.</td></tr>
+          <tr><td>Lidokain (VF/pVT)</td><td>1–1,5 mg/kg → 0,5–0,75 mg/kg</td><td>Alternatif amiodaron.</td></tr>
+          <tr><td>Magnesium sulfat</td><td>1–2 g IV</td><td>Torsades de pointes / hipomagnesemia; tidak rutin untuk VF.</td></tr>
+          <tr><td>Kalsium</td><td>CaCl₂ 10% 10 mL / Ca glukonas 10% 30 mL</td><td>Hiperkalemia, hipokalsemia, toksisitas CCB; tidak rutin.</td></tr>
+          <tr><td>Natrium bikarbonat</td><td>1 mEq/kg</td><td>Hiperkalemia, intoksikasi trisiklik; tidak rutin.</td></tr>
+          <tr><td>Atropin (bradikardia)</td><td>1 mg IV tiap 3–5 menit, maks. 3 mg</td><td>Tidak untuk henti jantung.</td></tr>
+          <tr><td>Adenosin (SVT)</td><td>6 mg IV cepat → 12 mg</td><td>Bolus cepat + flush 20 mL; untuk takikardia QRS sempit reguler.</td></tr>
+          <tr><td>Amiodaron (takikardia dengan nadi)</td><td>150 mg IV dalam 10 menit</td><td>Lanjut infus 1 mg/menit.</td></tr>
+          <tr><td>Dopamin</td><td>5–20 mcg/kg/menit</td><td>Bradikardia/hipotensi.</td></tr>
+          <tr><td>Infus epinefrin</td><td>2–10 mcg/menit</td><td>Bradikardia/hipotensi.</td></tr>
+          <tr><td>Norepinefrin</td><td>0,1–0,5 mcg/kg/menit</td><td>Hipotensi pasca-ROSC; titrasi MAP ≥65 mmHg.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card ref" id="ht">
+    <h2>Penyebab reversibel — H &amp; T</h2>
+    <div class="ht">
+      <div><b>Hipovolemia</b> — cairan/darah</div>
+      <div><b>Tension pneumothorax</b> — dekompresi jarum → chest tube</div>
+      <div><b>Hipoksia</b> — oksigenasi & ventilasi</div>
+      <div><b>Tamponade jantung</b> — perikardiosentesis</div>
+      <div><b>Ion hidrogen (asidosis)</b> — ventilasi, pertimbangkan bikarbonat</div>
+      <div><b>Toksin</b> — antidotum spesifik</div>
+      <div><b>Hipo-/hiperkalemia</b> — kalsium, insulin-dekstrosa, bikarbonat, HD</div>
+      <div><b>Trombosis paru</b> — pertimbangkan fibrinolitik</div>
+      <div><b>Hipotermia</b> — penghangatan</div>
+      <div><b>Trombosis koroner</b> — reperfusi/angiografi</div>
+    </div>
+    <p class="note">Gunakan anamnesis, pemeriksaan fisik, lab POC, dan POCUS (saat jeda cek nadi, tanpa memperpanjang jeda).</p>
+  </section>
+
+  <section class="card ref" id="rosc">
+    <h2>Perawatan pasca-henti jantung (ROSC)</h2>
+    <ul class="bul">
+      <li>Amankan jalan napas; kapnografi gelombang; ventilasi ±10×/menit, target <b>PaCO₂ 35–45 mmHg</b>.</li>
+      <li>Titrasi O₂ untuk <b>SpO₂ 90–98%</b> — hindari hipoksemia & hiperoksia.</li>
+      <li>Hemodinamik: hindari hipotensi, target <b>MAP ≥65 mmHg</b> (kristaloid dan/atau vasopresor).</li>
+      <li><b>EKG 12 sadapan</b> segera; STEMI atau curiga penyebab kardiak dengan instabilitas → angiografi koroner emergensi.</li>
+      <li>Pasien tidak mengikuti perintah → <b>kontrol suhu terarah 32–37,5 °C</b> dan cegah demam (durasi sesuai protokol).</li>
+      <li>Cari & atasi penyebab; kendalikan glukosa; EEG bila curiga kejang; prognostikasi neurologis multimodal (jangan terlalu dini).</li>
+    </ul>
+  </section>
+
+  <section class="card ref" id="brady">
+    <h2>Bradikardia dengan nadi</h2>
+    <p class="sub">Tanda tidak stabil: hipotensi, penurunan kesadaran, tanda syok, nyeri dada iskemik, gagal jantung akut.</p>
+    <ol class="steps">
+      <li>Nilai ABC, O₂ bila SpO₂ rendah, monitor, akses IV, EKG 12 sadapan; cari penyebab (obat, iskemia, elektrolit).</li>
+      <li>Tidak stabil → <b>atropin 1 mg IV</b>, ulang tiap 3–5 menit (maks. 3 mg).</li>
+      <li>Atropin tidak efektif → <b>pacing transkutan</b> (laju 60–80/menit, naikkan mA sampai capture; konfirmasi nadi; analgesia/sedasi) <b>dan/atau</b> dopamin 5–20 mcg/kg/menit / epinefrin 2–10 mcg/menit.</li>
+      <li>Konsul kardiologi untuk <i>transvenous pacing</i>. Atropin sering tidak efektif pada AV blok derajat 2 tipe Mobitz II/derajat 3 dengan QRS lebar — jangan menunda pacing.</li>
+    </ol>
+  </section>
+
+  <section class="card ref" id="tachy">
+    <h2>Takikardia dengan nadi</h2>
+    <div class="cols">
+      <div class="path shock">
+        <h3>Tidak stabil</h3>
+        <ol class="steps">
+          <li><b>Kardioversi tersinkronisasi</b> segera (SYNC ON); sedasi bila memungkinkan tanpa menunda.</li>
+          <li>Energi: ikuti rekomendasi perangkat. AHA 2025: <b>AF ≥200 J bifasik</b>; flutter 200 J dapat dipertimbangkan; SVT & VT monomorfik umumnya ±100 J. Eskalasi bila gagal.</li>
+          <li>VT polimorfik/tanpa nadi → defibrilasi (unsynchronized).</li>
+        </ol>
+      </div>
+      <div class="path noshock">
+        <h3>Stabil</h3>
+        <ol class="steps">
+          <li>EKG 12 sadapan, akses IV, cari penyebab.</li>
+          <li><b>QRS sempit reguler</b>: manuver vagal → adenosin 6 mg → 12 mg → CCB/β-bloker.</li>
+          <li><b>QRS sempit ireguler (AF)</b>: kendali laju (CCB/β-bloker) bila TD baik; pertimbangkan antikoagulasi.</li>
+          <li><b>QRS lebar</b>: adenosin hanya bila reguler & monomorfik; antiaritmia (prokainamid/amiodaron 150 mg dalam 10 menit/sotalol); konsul ahli.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="card ref" id="ska">
+    <h2>Sindrom koroner akut / STEMI</h2>
+    <ul class="bul">
+      <li><b>EKG 12 sadapan ≤10 menit</b> sejak kontak pertama.</li>
+      <li>Aspirin 160–325 mg dikunyah; nitrat bila tidak ada kontraindikasi (SBP &lt;90, infark RV, PDE-5 inhibitor); O₂ hanya bila <b>SpO₂ &lt;90%</b>; morfin hanya untuk nyeri refrakter.</li>
+      <li>Reperfusi: PCI primer bila dapat dicapai ≤120 menit; bila tidak → <b>fibrinolitik ≤30 menit (door-to-needle)</b> pada onset ≤12 jam, lalu rujuk ke RS PCI (strategi farmako-invasif).</li>
+      <li>Bersama fibrinolitik: clopidogrel 300 mg (75 mg bila usia &gt;75 tahun) + antikoagulan parenteral.</li>
+      <li>Siaga aritmia ventrikel — pads siap pakai.</li>
+    </ul>
+  </section>
+
+  <section class="card ref" id="stroke">
+    <h2>Stroke iskemik akut</h2>
+    <ul class="bul">
+      <li>Catat <b>last known well</b>; aktifkan tim stroke; <b>cek gula darah</b>.</li>
+      <li>CT kepala non-kontras <b>≤20 menit</b> sejak tiba; NIHSS.</li>
+      <li>Kandidat trombolisis (≤4,5 jam): TD harus <b>&lt;185/110</b> sebelum dan <b>&lt;180/105</b> selama 24 jam setelahnya.</li>
+      <li><b>Door-to-needle ≤60 menit</b>: alteplase 0,9 mg/kg (maks. 90 mg; 10% bolus) atau tenekteplase 0,25 mg/kg (maks. 25 mg).</li>
+      <li>CTA untuk oklusi pembuluh besar → trombektomi mekanik pada pasien terpilih.</li>
+      <li>Tunda antiplatelet 24 jam pasca-trombolisis; hindari dekstrosa tanpa hipoglikemia; O₂ hanya bila SpO₂ &lt;94%.</li>
+    </ul>
+  </section>
+
+  <div class="disclaimer">
+    <strong>Sumber:</strong> AHA Guidelines for CPR &amp; ECC 2025 (Part 9: Adult Advanced Life Support; Post-Cardiac Arrest Care), pedoman AHA/ACC untuk STEMI, dan AHA/ASA untuk stroke iskemik akut. Ringkasan ini untuk tujuan edukasi dan dapat menyederhanakan rekomendasi; rujuk dokumen asli dan protokol institusi untuk keputusan klinis.
+  </div>
+</main>
+</body>
+</html>
