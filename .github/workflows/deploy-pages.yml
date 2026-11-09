@@ -1,0 +1,88 @@
+# Uji + deploy situs ke GitHub Pages.
+# - Setiap Pull Request: menjalankan seluruh test simulator (typecheck, unit, e2e).
+# - Setiap push ke main: test dulu; bila LULUS, situs lama + simulator digabung dan dideploy.
+#   Bila test gagal, deploy tidak dijalankan (situs yang sedang online tidak berubah).
+# Syarat sekali saja: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+name: Test & Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/resusitasi-neonatus
+
+jobs:
+  test:
+    name: Test simulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/resusitasi-neonatus/package-lock.json
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit test (engine & nilai klinis)
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: Pasang browser Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Test end-to-end (semua skenario)
+        run: npm run e2e
+      - name: Simpan laporan & screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: laporan-test
+          path: |
+            apps/resusitasi-neonatus/playwright-report
+            apps/resusitasi-neonatus/screenshots
+          retention-days: 14
+
+  deploy:
+    name: Deploy ke GitHub Pages
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/resusitasi-neonatus/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - name: Gabungkan situs lama + simulator
+        working-directory: .
+        run: bash apps/resusitasi-neonatus/scripts/assemble-site.sh _site
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
