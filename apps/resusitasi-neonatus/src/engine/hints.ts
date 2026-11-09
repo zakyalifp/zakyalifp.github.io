@@ -82,7 +82,7 @@ export function getHint(s: SimState, sc: Scenario): Hint | null {
   if (s.compressions.active) {
     if (!s.ett.placed && !s.lma) return { text: 'Kompresi sebaiknya disertai ventilasi lewat ETT/LMA.', actions: ['intubate', 'lma'] };
     if (s.ecg.placedAt === null && sc.equipment.ecgMonitor) return { text: 'Pasang EKG untuk HR akurat.', actions: ['ecg'] };
-    if (s.access.uvcAt === null && sc.equipment.uvc) return { text: 'Siapkan akses UVC untuk obat.', actions: ['uvc', 'call-help'] };
+    if (s.access.uvcAt === null && sc.equipment.uvc && !s.busy.some((b) => b.action === 'uvc')) return { text: 'Siapkan akses UVC untuk obat.', actions: ['uvc', 'call-help'] };
     if (s.compressions.totalS >= TIMING.COMPRESSIONS_REASSESS_S && s.hr < HEART_RATE.EPINEPHRINE_BELOW_BPM) {
       const lastEpi = [...s.drugs].reverse().find((d) => d.drug === 'epinefrin');
       if (!lastEpi || s.t - lastEpi.t >= TIMING.EPINEPHRINE_REPEAT_S.min)

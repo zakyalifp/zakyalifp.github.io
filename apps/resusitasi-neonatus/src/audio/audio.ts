@@ -112,17 +112,16 @@ export class SimAudio {
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(0.3, t + 0.02);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
-      o.stop(t + 0.36);
     } else {
       o.type = 'square';
       o.frequency.value = beat === 'satu' ? 1200 : 1000;
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(0.15, t + 0.003);
       g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04);
-      o.stop(t + 0.05);
     }
     o.connect(g).connect(this.master);
     o.start(t);
+    o.stop(t + (beat === 'napas' ? 0.36 : 0.05));
   }
 
   /** Tangis bayi sintetis: osilator gigi gergaji + filter formant + vibrato. */
@@ -170,6 +169,18 @@ export class SimAudio {
     void this.ctx?.close();
     this.ctx = null;
   }
+}
+
+/** Bungkus semua metode suara: kegagalan audio tidak boleh menghentikan simulasi. */
+for (const name of ['pulseBeep', 'heartbeat', 'alarm', 'metronome', 'cry'] as const) {
+  const orig = SimAudio.prototype[name] as (...a: unknown[]) => void;
+  (SimAudio.prototype as unknown as Record<string, unknown>)[name] = function (this: SimAudio, ...args: unknown[]) {
+    try {
+      orig.apply(this, args);
+    } catch (e) {
+      console.warn('Audio gagal diputar:', e);
+    }
+  };
 }
 
 let instance: SimAudio | null = null;

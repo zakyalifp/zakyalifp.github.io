@@ -38,7 +38,7 @@ export function ActionPanel({ s, sc, suggested, showHints, onAction }: Props) {
   const busyIds = new Set(s.busy.map((b) => b.action));
 
   return (
-    <section aria-label="Panel tindakan" className="flex min-h-0 flex-col">
+    <section aria-label="Panel tindakan" className="flex min-h-0 min-w-0 flex-col">
       <div role="tablist" aria-label="Kelompok tindakan" className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-2">
         {groups.map((g) => (
           <button

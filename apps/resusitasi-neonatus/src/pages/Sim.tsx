@@ -17,7 +17,7 @@ import { clock, cx, num } from '../lib/format';
 import { COMPRESSIONS, EPINEPHRINE, SIM } from '../clinical/guidelines';
 import type { SimAudio } from '../audio/audio';
 
-const SESSION_KEY = 'rn.active.v1';
+import { SESSION_KEY } from '../store/sim';
 
 export function SimPage({ id }: { id: string }) {
   const { scenario, state, mode, speed, paused, toasts } = useSim();
@@ -31,11 +31,14 @@ export function SimPage({ id }: { id: string }) {
   const [restored, setRestored] = useState(false);
   const audioRef = useRef<SimAudio | null>(null);
   const finishedRef = useRef(false);
+  const justFinished = useRef(false);
+  if (state) justFinished.current = true;
 
-  // ---- pulihkan sesi bila halaman dimuat ulang ----
+  // ---- pulihkan sesi bila halaman dimuat ulang (sekali saat halaman dibuka) ----
   useEffect(() => {
-    if (state || restored) return;
+    if (restored) return;
     setRestored(true);
+    if (useSim.getState().state) return;
     try {
       const raw = sessionStorage.getItem(SESSION_KEY);
       if (!raw) return;
@@ -67,13 +70,8 @@ export function SimPage({ id }: { id: string }) {
 
   // ---- selesai → debriefing ----
   useEffect(() => {
-    if (!state && debrief && !finishedRef.current && restored) {
+    if (!state && debrief && !finishedRef.current && restored && useSim.getState().debriefScenario?.id === id && justFinished.current) {
       finishedRef.current = true;
-      try {
-        sessionStorage.removeItem(SESSION_KEY);
-      } catch {
-        /* abaikan */
-      }
       navigate({ name: 'debrief' });
     }
   }, [state, debrief, restored]);
@@ -178,7 +176,7 @@ export function SimPage({ id }: { id: string }) {
   const doAction = (a: ActionDef) => {
     const avail = a.available(state, scenario);
     if (avail !== true) {
-      useSim.setState({ toasts: [...toasts, { id: Date.now(), kind: 'info', text: avail }].slice(-4) });
+      useSim.setState({ toasts: [...toasts, { id: Date.now(), kind: 'info' as const, text: avail }].slice(-4) });
       return;
     }
     if (a.id === 'auscultate' || (a.params && a.params(state, scenario).length)) setDialog(a);
@@ -236,7 +234,7 @@ export function SimPage({ id }: { id: string }) {
       </div>
 
       {prebirth ? (
-        <div className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.1fr] [&>*]:min-w-0">
           <div className="space-y-3 rounded-2xl bg-white p-5 ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
             <h2 className="font-bold text-slate-900 dark:text-white">Sebelum bayi lahir</h2>
             <p className="text-slate-800 dark:text-slate-200">{scenario.vignette}</p>
@@ -250,10 +248,10 @@ export function SimPage({ id }: { id: string }) {
         </div>
       ) : (
         obs && (
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] [&>*]:min-w-0">
             <div className="space-y-3">
               <Monitor obs={obs} t={state.t} speed={speed} paused={paused} onBeat={onBeat} />
-              <div className="grid grid-cols-[auto_1fr] items-start gap-3 rounded-2xl bg-white p-3 ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
+              <div className="grid grid-cols-1 items-start gap-3 rounded-2xl sm:grid-cols-[auto_1fr] bg-white p-3 ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
                 <Baby obs={obs} s={state} speed={speed} paused={paused} />
                 <div className="space-y-2">
                   <BabyStatus obs={obs} />

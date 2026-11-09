@@ -9,6 +9,16 @@ import { SIM } from '../clinical/guidelines';
 
 export type Mode = 'belajar' | 'ujian';
 
+/** Kunci sessionStorage untuk memulihkan simulasi bila halaman dimuat ulang. */
+export const SESSION_KEY = 'rn.active.v1';
+const clearSession = () => {
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch {
+    /* abaikan */
+  }
+};
+
 export interface Toast {
   id: number;
   kind: 'ok' | 'salah' | 'kritis' | 'info';
@@ -58,6 +68,7 @@ export const useSim = create<SimStore>((set, get) => ({
   start: (id, mode) => {
     const sc = getScenario(id);
     if (!sc) return false;
+    clearSession();
     set({ scenario: sc, mode, state: createSim(sc), speed: 1, paused: false, toasts: [] });
     return true;
   },
@@ -67,7 +78,7 @@ export const useSim = create<SimStore>((set, get) => ({
     if (!state || !scenario) return { ok: false, message: 'Tidak ada skenario aktif.' };
     const r = engineDispatch(state, scenario, actionId, params);
     if (!r.ok) {
-      if (mode === 'belajar' || r.message) set({ toasts: [...get().toasts, { id: toastId++, kind: 'info', text: r.message ?? 'Tidak dapat dilakukan.' }].slice(-4) });
+      if (mode === 'belajar' || r.message) set({ toasts: [...get().toasts, { id: toastId++, kind: 'info' as const, text: r.message ?? 'Tidak dapat dilakukan.' }].slice(-4) });
       return { ok: false, message: r.message };
     }
     const toasts = mode === 'belajar' ? [...get().toasts, ...r.newJudgements.map(judgementToToast)].slice(-4) : get().toasts;
@@ -107,6 +118,7 @@ export const useSim = create<SimStore>((set, get) => ({
       const r = engineDispatch(s, scenario, 'end');
       s = r.ok ? r.state : { ...s, phase: 'ended', endReason: 'selesai' };
     }
+    clearSession();
     const d = computeDebrief(s, scenario);
     useHistory.getState().add({
       id: `${Date.now()}`,
@@ -124,7 +136,10 @@ export const useSim = create<SimStore>((set, get) => ({
     set({ state: null, debrief: d, debriefScenario: scenario, debriefState: s, debriefMode: mode, toasts: [] });
   },
 
-  abandon: () => set({ state: null, scenario: null, toasts: [] }),
+  abandon: () => {
+    clearSession();
+    set({ state: null, scenario: null, toasts: [] });
+  },
 }));
 
 /** True bila sedang ada skenario Mode Ujian yang berjalan (referensi dikunci). */

@@ -1,7 +1,7 @@
 import type { Scenario } from './schema';
 import type { SimState } from './state';
 import { MODEL } from './model';
-import { AIRWAY, OXYGEN, SIM, VENTILATION, lmaAppropriate, spo2TargetAt, TEMPERATURE , needsPlasticWrap } from '../clinical/guidelines';
+import { AIRWAY, OXYGEN, SIM, VENTILATION, lmaAppropriate, spo2TargetAt, needsPlasticWrap } from '../clinical/guidelines';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 const approach = (cur: number, target: number, tau: number) => cur + (target - cur) / Math.max(1, tau);

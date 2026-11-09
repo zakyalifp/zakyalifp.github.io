@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { Observation } from '../engine/observe';
 import { clock, cx } from '../lib/format';
-import { COMPRESSIONS } from '../clinical/guidelines';
+import { COMPRESSIONS, SPO2_TARGETS } from '../clinical/guidelines';
 
 interface Props {
   obs: Observation;
@@ -170,7 +170,7 @@ export function Monitor({ obs, t, speed, paused, onBeat, compact }: Props) {
         ) : obs.spo2Acquiring ? (
           <span className="text-slate-400">Oksimeter mencari sinyal…</span>
         ) : (
-          <span className="text-slate-500">{obs.ecgOn ? 'EKG 3 sadapan' : 'EKG belum terpasang'}</span>
+          <span className="text-slate-400">{obs.ecgOn ? 'EKG 3 sadapan' : 'EKG belum terpasang'}</span>
         )}
       </div>
     </section>
@@ -184,7 +184,7 @@ function Spo2Band({ target, value }: { target: { min: number; max: number } | nu
     <div className="mt-2 px-1">
       <div className="mb-0.5 flex justify-between font-mono text-[10px] text-slate-400">
         <span>Target SpO₂ preduktal menit ini</span>
-        <span className="text-slate-200" data-testid="spo2-target">{target ? `${target.min}–${target.max}%` : 'belum berlaku (<1 menit)'}</span>
+        <span className="text-slate-200" data-testid="spo2-target">{target ? `${target.min}–${target.max}%` : `mulai menit ke-${SPO2_TARGETS[0].minute}`}</span>
       </div>
       <div className="relative h-3 rounded-full bg-white/10" aria-hidden="true">
         {target && <div className="absolute inset-y-0 rounded-full bg-[#38d6f0]/35 ring-1 ring-[#38d6f0]/70" style={{ left: pos(target.min), width: `calc(${pos(target.max)} - ${pos(target.min)})` }} />}
