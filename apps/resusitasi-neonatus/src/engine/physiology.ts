@@ -1,7 +1,7 @@
 import type { Scenario } from './schema';
 import type { SimState } from './state';
 import { MODEL } from './model';
-import { AIRWAY, OXYGEN, SIM, VENTILATION, lmaAppropriate, spo2TargetAt, TEMPERATURE } from '../clinical/guidelines';
+import { AIRWAY, OXYGEN, SIM, VENTILATION, lmaAppropriate, spo2TargetAt, TEMPERATURE , needsPlasticWrap } from '../clinical/guidelines';
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 const approach = (cur: number, target: number, tau: number) => cur + (target - cur) / Math.max(1, tau);
@@ -186,7 +186,7 @@ export function physiologyTick(s: SimState, sc: Scenario): void {
   const ga = h.gaWeeks;
   let loss = MODEL.TEMP_LOSS_BASE * MODEL.TEMP_GA_FACTOR(ga);
   if (s.wrapped) loss *= MODEL.TEMP_DRIED_OR_WRAPPED;
-  else if (s.dried) loss *= ga < TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS ? MODEL.TEMP_DRIED_VERY_PRETERM : MODEL.TEMP_DRIED_OR_WRAPPED;
+  else if (s.dried) loss *= needsPlasticWrap(ga, h.weightKg) ? MODEL.TEMP_DRIED_VERY_PRETERM : MODEL.TEMP_DRIED_OR_WRAPPED;
   if (s.hat) loss *= MODEL.TEMP_HAT;
   loss *= (s.temp - MODEL.TEMP_AMBIENT) / MODEL.TEMP_GRADIENT_REF;
   let gain = 0;

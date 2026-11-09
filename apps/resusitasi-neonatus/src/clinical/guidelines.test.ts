@@ -30,9 +30,12 @@ describe('guidelines.ts — nilai pedoman (AHA/AAP 2025, NRP)', () => {
     expect(G.OXYGEN.FIO2_DURING_COMPRESSIONS).toBe(100);
   });
   it('target SpO2 preduktal per menit', () => {
+    // AHA25 Fig. 2 / NRP9: tabel dimulai menit ke-2
     expect(G.spo2TargetAt(30)).toBeNull();
-    expect(G.spo2TargetAt(60)).toEqual({ min: 60, max: 65 });
+    expect(G.spo2TargetAt(90)).toBeNull();
+    expect(G.spo2TargetAt(120)).toEqual({ min: 65, max: 70 });
     expect(G.spo2TargetAt(150)).toEqual({ min: 65, max: 70 });
+    expect(G.spo2TargetAt(180)).toEqual({ min: 70, max: 75 });
     expect(G.spo2TargetAt(300)).toEqual({ min: 80, max: 85 });
     expect(G.spo2TargetAt(600)).toEqual({ min: 85, max: 95 });
     expect(G.spo2TargetAt(1200)).toEqual({ min: 85, max: 95 });
@@ -41,7 +44,7 @@ describe('guidelines.ts — nilai pedoman (AHA/AAP 2025, NRP)', () => {
     expect(mid.min).toBeLessThan(85);
     // monoton naik
     let prev = 0;
-    for (let t = 60; t <= 600; t += 10) {
+    for (let t = 120; t <= 600; t += 10) {
       const r = G.spo2TargetAt(t)!;
       expect(r.min).toBeGreaterThanOrEqual(prev);
       expect(r.max).toBeGreaterThan(r.min);
@@ -67,17 +70,35 @@ describe('guidelines.ts — nilai pedoman (AHA/AAP 2025, NRP)', () => {
     expect(ett.mg).toEqual({ min: 0.15, max: 0.3 });
     expect(ett.ml).toEqual({ min: 1.5, max: 3 });
   });
+  it('plastik: <32 minggu ATAU <1500 g (IDAI 2022)', () => {
+    expect(G.needsPlasticWrap(31, 1.6)).toBe(true);
+    expect(G.needsPlasticWrap(33, 1.4)).toBe(true);
+    expect(G.needsPlasticWrap(32, 1.7)).toBe(false);
+  });
+  it('CPAP IDAI 2022 & volume AHA 2025', () => {
+    expect(G.VENTILATION.CPAP_CMH2O).toBe(7);
+    expect(G.VOLUME_EXPANDER.DOSE_RANGE_ML_PER_KG).toEqual({ min: 10, max: 20 });
+    expect(G.EPINEPHRINE.FLUSH_ML).toBe(3);
+  });
   it('cairan & glukosa', () => {
     expect(G.volumeBolusMl(3.2)).toBe(32);
     expect(G.d10BolusMl(3)).toBe(6);
   });
   it('ETT & LMA', () => {
+    // NRP9 chart (kedalaman di gusi)
     expect(G.recommendedEttSize(0.8)).toBe(2.5);
-    expect(G.recommendedEttSize(1.5)).toBe(3.0);
-    expect(G.recommendedEttSize(2)).toBe(3.0);
+    expect(G.recommendedEttSize(1.2)).toBe(3.0);
+    expect(G.recommendedEttSize(1.6)).toBe(3.0);
+    expect(G.recommendedEttSize(2.0)).toBe(3.5);
     expect(G.recommendedEttSize(3.2)).toBe(3.5);
     expect(G.acceptableEttSizes(0.85, 26)).toEqual([2.5]);
+    expect(G.acceptableEttSizes(1.7, 32)).toEqual([2.5, 3.0]);
+    expect(G.acceptableEttSizes(3.0, 37)).toEqual([3.0, 3.5]);
+    expect(G.recommendedEttDepth(22)).toBe(5.0);
+    expect(G.recommendedEttDepth(24)).toBe(5.5);
     expect(G.recommendedEttDepth(26)).toBe(6.0);
+    expect(G.recommendedEttDepth(31)).toBe(7.0);
+    expect(G.recommendedEttDepth(36)).toBe(8.0);
     expect(G.recommendedEttDepth(39)).toBe(8.5);
     expect(G.recommendedEttDepth(41)).toBe(9.0);
     expect(G.lmaAppropriate(34, 2.1)).toBe(true);

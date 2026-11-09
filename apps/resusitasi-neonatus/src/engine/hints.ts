@@ -6,7 +6,7 @@
 import type { Scenario } from './schema';
 import type { SimState } from './state';
 import { observe } from './observe';
-import { HEART_RATE, OXYGEN, TEMPERATURE, TIMING, initialFio2Range } from '../clinical/guidelines';
+import { HEART_RATE, OXYGEN, TEMPERATURE, TIMING, initialFio2Range , needsPlasticWrap } from '../clinical/guidelines';
 
 export interface Hint {
   text: string;
@@ -33,7 +33,7 @@ export function getHint(s: SimState, sc: Scenario): Hint | null {
   // bayi bugar
   if (sc.vigorousAtBirth && !needsVent && s.vent.mode === 'none' && !s.compressions.active) {
     if (!s.skinToSkin && !s.warmer) return { text: 'Bayi bugar: keringkan, kontak kulit ke kulit dengan ibu, pantau napas, tonus, warna, dan suhu.', actions: ['dry', 'skin-to-skin'] };
-    if (!s.dried && ga >= TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS) return { text: 'Keringkan bayi.', actions: ['dry'] };
+    if (!s.dried && !needsPlasticWrap(ga, sc.hidden.weightKg)) return { text: 'Keringkan bayi.', actions: ['dry'] };
     if (!s.tempProbe) return { text: 'Ukur suhu aksila.', actions: ['temp-probe'] };
     return { text: 'Bayi stabil: hindari intervensi yang tidak perlu. Informasikan keluarga lalu akhiri skenario.', actions: ['inform-family', 'end'] };
   }
@@ -41,9 +41,9 @@ export function getHint(s: SimState, sc: Scenario): Hint | null {
   // termoregulasi awal
   if (!s.warmer && !s.skinToSkin && sc.equipment.radiantWarmer && (s.cord.clampedAt ?? Infinity) <= s.t)
     return { text: 'Bawa bayi ke penghangat radiant untuk langkah awal.', actions: ['warmer'] };
-  if (ga < TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS && !s.wrapped)
-    return { text: `Prematur <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu: bungkus plastik tanpa dikeringkan + topi.`, actions: ['wrap', 'hat'] };
-  if (ga >= TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS && !s.dried && s.t < 90) return { text: 'Keringkan dan stimulasi; posisikan kepala menghidu.', actions: ['dry', 'position'] };
+  if (needsPlasticWrap(ga, sc.hidden.weightKg) && !s.wrapped)
+    return { text: `Prematur <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu atau BL <${TEMPERATURE.PLASTIC_WRAP_BELOW_WEIGHT_KG * 1000} g: bungkus plastik tanpa dikeringkan (kecuali wajah) + topi.`, actions: ['wrap', 'hat'] };
+  if (!needsPlasticWrap(ga, sc.hidden.weightKg) && !s.dried && s.t < 90) return { text: 'Keringkan dan stimulasi; posisikan kepala menghidu.', actions: ['dry', 'position'] };
   if (!s.positioned && s.t < 90) return { text: 'Posisikan kepala menghidu; isap hanya bila ada sumbatan.', actions: ['position'] };
 
   // kelainan khas
@@ -67,7 +67,7 @@ export function getHint(s: SimState, sc: Scenario): Hint | null {
   if (s.vent.mode === 'ppv' && o.chest !== 'baik' && !s.busy.some((b) => b.interruptsVent)) {
     const next = !s.mr.M && s.vent.iface === 'mask' ? 'mr-m' : !s.mr.R && s.vent.iface === 'mask' ? 'mr-r' : !s.mr.S ? 'mr-s' : !s.mr.O && s.vent.iface === 'mask' ? 'mr-o' : s.mr.P < 2 ? 'mr-p' : !s.mr.A ? 'lma' : 'check-chest';
     if (s.pneumothorax.active) return { text: 'Perburukan mendadak dengan suara napas asimetris: curigai pneumotoraks — transiluminasi, lalu aspirasi jarum.', actions: ['check-chest', 'transillumination', 'needle'] };
-    return { text: 'Dada tidak mengembang: lakukan langkah koreksi MR. SOPA secara berurutan.', actions: [next] };
+    return { text: 'Dada tidak mengembang: lakukan langkah koreksi MR. SOPA (IDAI: SRIBTA) secara berurutan.', actions: [next] };
   }
   if (s.pneumothorax.active) return { text: 'Perburukan mendadak, suara napas asimetris: curigai pneumotoraks — transiluminasi, aspirasi jarum.', actions: ['check-chest', 'transillumination', 'needle'] };
 

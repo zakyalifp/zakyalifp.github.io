@@ -6,6 +6,7 @@ import { useHistory } from '../store/history';
 import { usePrefs } from '../store/prefs';
 import { DISCLAIMER, SITE } from '../config/site';
 import { cx } from '../lib/format';
+import { COMPRESSIONS } from '../clinical/guidelines';
 
 const DIFF = { 1: 'Dasar', 2: 'Menengah', 3: 'Lanjut' } as const;
 
@@ -35,7 +36,7 @@ export function Home({ onOnboarding }: { onOnboarding: () => void }) {
           <p className="text-sm font-semibold uppercase tracking-wider text-sky-200">{SITE.GUIDELINE_LABEL}</p>
           <h1 className="mt-1 text-2xl font-bold leading-tight sm:text-3xl">Latihan resusitasi neonatus real-time untuk dokter umum</h1>
           <p className="mt-3 text-sm text-slate-200 sm:text-base">
-            Pimpin resusitasi dari persiapan sampai rujukan: tali pusat, langkah awal, VTP & MR. SOPA, jalan napas lanjutan, kompresi 3:1, epinefrin dan cairan yang Anda hitung sendiri — di Puskesmas sampai RS tipe C.
+            Pimpin resusitasi dari persiapan sampai rujukan: tali pusat, langkah awal, VTP & MR. SOPA, jalan napas lanjutan, kompresi {COMPRESSIONS.RATIO_COMPRESSIONS}:{COMPRESSIONS.RATIO_BREATHS}, epinefrin dan cairan yang Anda hitung sendiri — di Puskesmas sampai RS tipe C.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <a href="#daftar" className="rounded-xl bg-white px-4 py-3 font-semibold text-slate-900 hover:bg-sky-50">

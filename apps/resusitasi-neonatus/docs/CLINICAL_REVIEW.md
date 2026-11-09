@@ -8,96 +8,118 @@ dari file tersebut, jadi isinya selalu sama dengan yang dipakai aplikasi.
 
 | Status | Arti | Yang perlu Anda lakukan |
 |---|---|---|
-| ✅ terverifikasi | Angka cocok dengan pedoman AHA/AAP 2025 lewat abstrak PubMed atau tinjauan sekunder yang mengutip teks pedoman secara langsung. | Cek cepat saja. |
-| ⚠️ VERIFY | Angka standar NRP/IDAI yang **belum bisa saya cocokkan kata per kata** dengan teks lengkap AHA 2025 / NRP edisi 9 (teks lengkap terkunci saat pembuatan). | **Wajib dicek manual** dengan buku NRP edisi 9 / teks lengkap Circulation 2025 / pedoman IDAI. |
+| ✅ terverifikasi | Dicocokkan langsung dengan **teks lengkap AHA/AAP 2025** (nomor halaman S3xx–S4xx, kelas rekomendasi & LOE), **bagan NRP edisi 9**, atau **bagan IDAI 2022**. | Cek cepat. |
+| ⚠️ VERIFY | **Tidak dimuat** di ketiga dokumen tersebut. Nilai berasal dari NRP edisi 8 / buku IDAI / kebiasaan klinis. | **Wajib dicek manual** (buku NRP 9 lengkap / Buku Panduan Resusitasi Neonatus IDAI). |
 | ℹ️ asumsi-sim | Parameter simulasi (mis. lama tindakan), **bukan** rekomendasi klinis. | Pastikan terasa realistis. |
-
-> **Catatan halaman:** teks lengkap AHA 2025 Part 5 (Circulation 2025;152 suppl 2:S385–S423)
-> tidak dapat diakses saat pembuatan, sehingga nomor halaman spesifik belum dicantumkan —
-> setiap entri menyebut **nama bagian (section)**. Mohon tambahkan nomor halaman saat review.
 
 ## Sumber yang dipakai
 
-1. **AHA25** — Lee HC, Strand ML, Finan E, et al. *Part 5: Neonatal Resuscitation: 2025 American Heart Association and American Academy of Pediatrics Guidelines for CPR and ECC.* Circulation. 2025;152(16 suppl 2):S385–S423. doi:[10.1161/CIR.0000000000001367](https://doi.org/10.1161/CIR.0000000000001367) (PMID 41122887). Versi simultan: Pediatrics 2026;157(1):e2025074352.
-2. **NRP9 / NRP8** — AAP/AHA. *Textbook of Neonatal Resuscitation*, edisi 9 (dan edisi 8, 2021, bila nilai belum dapat dicocokkan dengan edisi 9).
-3. **KARGER** — *2025 American and European Guidelines on Neonatal Resuscitation: Concordance and Differences.* Neonatology 2025. doi:[10.1159/000552450](https://doi.org/10.1159/000552450) — sumber sekunder utama yang mengutip angka AHA25 (PIP, PEEP, laju, FiO₂ per usia gestasi, 20 menit).
-4. **TROPDOCT** — Tripathy SK, Das S. *AHA/AAP 2025 neonatal resuscitation guideline update.* Trop Doct 2026. doi:[10.1177/00494755261476394](https://doi.org/10.1177/00494755261476394).
-5. **IDAI / KEMENKES** — UKK Neonatologi IDAI, *Buku Panduan Resusitasi Neonatus*; KMK HK.01.07/MENKES/214/2019 *PNPK Tata Laksana Asfiksia*.
+1. **AHA25** — Lee HC, Strand ML, Finan E, et al. *Part 5: Neonatal Resuscitation: 2025 American Heart Association and American Academy of Pediatrics Guidelines for CPR and ECC.* Circulation. 2025;152(suppl 2):S385–S423. doi:[10.1161/CIR.0000000000001367](https://doi.org/10.1161/CIR.0000000000001367). **Teks lengkap dibaca** (PDF dari pemilik proyek); rujukan ditulis sebagai nomor halaman jurnal.
+2. **NRP9** — AAP/AHA. *Neonatal Resuscitation Program®, 9th Edition — Reference Chart* (NRP209, © 2025): pengaturan ventilasi awal, tabel target SpO₂, tabel ETT (kedalaman **di gusi**), tabel obat.
+3. **IDAI22** — Ikatan Dokter Anak Indonesia. *Alur Resusitasi Neonatus 2022* (bagan).
+4. **NRP8** — *Textbook of Neonatal Resuscitation*, edisi 8 (2021) — hanya untuk nilai bertanda VERIFY.
+5. **ILCOR25** — Liley HG, et al. *Neonatal life support: 2025 ILCOR CoSTR.* Circulation 2025;152(suppl 1):S165–S204 (rujukan latar).
+
+## Perbedaan AHA 2025 vs IDAI 2022 — perlu keputusan Anda
+
+Simulator saat ini **menilai berdasarkan AHA 2025 / NRP 9** (sesuai brief), dan menampilkan nilai IDAI 2022 di halaman Referensi.
+
+| Topik | AHA 2025 / NRP 9 (dipakai menilai) | IDAI 2022 |
+|---|---|---|
+| Target SpO₂ preduktal | 2′ 65–70; 3′ 70–75; 4′ 75–80; 5′ 80–85; 10′ 85–95% (tanpa target menit ke-1) | 1′ 60–70; 2′ 65–85; 3′ 70–90; 4′ 75–90; 5′ 80–90; 10′ 85–90; >15′ 90–95% |
+| FiO₂ awal prematur | 32–34 mgg 21–30%; **<32 mgg 30–100%** | **<35 mgg 21–30%** |
+| Tekanan CPAP | Tidak disebut angka (COR 2a untuk CPAP pada prematur) | TPAE 7 cmH₂O; gagal bila 8 cmH₂O + FiO₂ >40% → simulator **memakai 7** |
+| Plastik | Prematur (tanpa batas UG) | UG <32 mgg **atau BL <1500 g** → simulator memakai kriteria IDAI |
+| Langkah koreksi | MR. SOPA | SRIBTA → label tombol menampilkan keduanya |
+
+## Perubahan setelah verifikasi teks lengkap (dibanding versi awal)
+
+- Target SpO₂: **target menit ke-1 dihapus**; tabel dimulai menit ke-2 (AHA25 Fig. 2, NRP9).
+- ETT: tabel diganti dengan tabel NRP 9 — **kedalaman diukur di gusi (tip-to-gum)**, bukan di bibir; ukuran mengikuti usia gestasi/berat (mis. 30–32 mgg 2,5–3,0 mm; 35–37 mgg 3,0–3,5 mm); baris <23 mgg (5,0–5,5 cm) ditambahkan.
+- Cairan: rentang **10–20 mL/kg** diterima (AHA25 S417); NRP 9 mengajarkan 10 mL/kg dalam 5–10 menit.
+- Epinefrin: dosis IV setelah dosis ETT kini **boleh langsung diberikan** begitu akses siap, tanpa menunggu interval 3–5 menit (AHA25 S415, COR 2a).
+- Suhu ruang prematur: **≥23 °C** (AHA25 S399), bukan 23–25 °C.
+- Intact cord milking pada bayi tidak bugar: **≥35 minggu** (AHA25 S395).
+- Sustained inflation >5 detik: berbahaya khusus **<28 minggu** (AHA25 S404, COR 3: Harm).
+- CPAP: 7 cmH₂O (IDAI 2022).
+- Waktu oksimeter mendapat sinyal di simulasi dinaikkan dari 30 menjadi **90 detik** (AHA25 S410: median 100–260 detik) — mendorong pemakaian EKG.
+- Natrium bikarbonat & nalokson **tidak dibahas** di AHA 2025 → tetap VERIFY (dasar NRP 8 / AHA 2020).
 
 ## Tabel parameter
 
 <!-- TABEL-OTOMATIS:MULAI -->
 | # | Parameter | Nilai di simulator | Sumber (bagian) | Status | Kunci di `guidelines.ts` | Dicek |
 |---|---|---|---|---|---|---|
-| 1 | Penundaan penjepitan tali pusat (bayi tidak perlu resusitasi segera) | ≥60 detik | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Umbilical Cord Management; abstrak PubMed 41122887 | ✅ terverifikasi | `CORD.DELAYED_CLAMP_MIN_S` | ☐ |
-| 2 | Intact cord milking tidak untuk usia gestasi | <28 minggu | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Umbilical Cord Management; KARGER | ✅ terverifikasi | `CORD.MILKING_MIN_GA_WEEKS` | ☐ |
-| 3 | Intact cord milking dapat dipertimbangkan pada bayi tidak bugar | 35–42 minggu | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Umbilical Cord Management | ⚠️ VERIFY | `CORD.MILKING_NONVIGOROUS_GA` | ☐ |
-| 4 | Target suhu aksila | 36.5–37.5 °C | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Temperature Management | ⚠️ VERIFY | `TEMPERATURE.TARGET_C` | ☐ |
-| 5 | Hipotermia (perlu tindakan) | <36 °C | WHO/IDAI | ⚠️ VERIFY | `TEMPERATURE.HYPOTHERMIA_MODERATE_BELOW_C` | ☐ |
-| 6 | Hipertermia (hindari) | >38 °C | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Temperature Management | ⚠️ VERIFY | `TEMPERATURE.HYPERTHERMIA_ABOVE_C` | ☐ |
-| 7 | Plastik tanpa dikeringkan + topi | <32 minggu | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Temperature Management | ⚠️ VERIFY | `TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS` | ☐ |
-| 8 | Suhu ruang bersalin untuk prematur | 23–25 °C | AHA 2020 / NRP | ⚠️ VERIFY | `TEMPERATURE.ROOM_TEMP_PRETERM_C` | ☐ |
-| 9 | Indikasi VTP | Apnea/megap-megap atau HR <100/menit | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Positive-Pressure Ventilation; KARGER | ✅ terverifikasi | `HEART_RATE.PPV_BELOW_BPM` | ☐ |
-| 10 | Indikasi kompresi dada | HR <60/menit setelah ventilasi efektif | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Chest Compressions; KARGER | ✅ terverifikasi | `HEART_RATE.COMPRESSIONS_BELOW_BPM` | ☐ |
-| 11 | Indikasi epinefrin | HR tetap <60/menit setelah kompresi + ventilasi adekuat | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Medications | ✅ terverifikasi | `HEART_RATE.EPINEPHRINE_BELOW_BPM` | ☐ |
-| 12 | HR normal pascatransisi | 100–160/menit | NRP | ⚠️ VERIFY | `HEART_RATE.NORMAL_RANGE_BPM` | ☐ |
-| 13 | Hitung HR dengan stetoskop | 6 detik × 10 | NRP | ⚠️ VERIFY | `HEART_RATE.AUSCULTATION_WINDOW_S` | ☐ |
-| 14 | VTP dimulai (menit emas) | ≤60 detik setelah lahir | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Positive-Pressure Ventilation | ⚠️ VERIFY | `TIMING.PPV_START_DEADLINE_S` | ☐ |
-| 15 | Nilai efektivitas ventilasi | setelah 15–30 detik VTP | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §PPV; KARGER | ✅ terverifikasi | `TIMING.PPV_ASSESS_AFTER_S` | ☐ |
-| 16 | Lama VTP efektif sebelum kompresi | ≥30 detik | NRP | ⚠️ VERIFY | `TIMING.PPV_EFFECTIVE_BEFORE_COMPRESSIONS_S` | ☐ |
-| 17 | Nilai ulang HR saat kompresi | setiap 60 detik | NRP | ⚠️ VERIFY | `TIMING.COMPRESSIONS_REASSESS_S` | ☐ |
-| 18 | Ulang epinefrin | setiap 3–5 menit | NRP | ⚠️ VERIFY | `TIMING.EPINEPHRINE_REPEAT_S` | ☐ |
-| 19 | Batas satu upaya intubasi | ±30 detik | NRP | ⚠️ VERIFY | `TIMING.INTUBATION_ATTEMPT_MAX_S` | ☐ |
-| 20 | Pertimbangan penghentian resusitasi | ±20 menit tanpa HR setelah semua langkah | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Withholding and Discontinuing; KARGER | ✅ terverifikasi | `TIMING.DISCONTINUE_CONSIDER_S` | ☐ |
-| 21 | PIP awal | 20–30 cmH₂O | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §PPV; KARGER | ✅ terverifikasi | `VENTILATION.PIP_INITIAL_CMH2O` | ☐ |
-| 22 | PIP awal prematur <32 minggu | 20–25 cmH₂O | NRP (Tabel 1 KARGER) | ✅ terverifikasi | `VENTILATION.PIP_PRETERM_CMH2O` | ☐ |
-| 23 | PIP maksimal (langkah P MR. SOPA) | 40 cmH₂O aterm / 30 cmH₂O prematur; naik 5 cmH₂O bertahap | NRP | ⚠️ VERIFY | `VENTILATION.PIP_MAX` | ☐ |
-| 24 | PEEP | 5 cmH₂O | NRP (Tabel 1 KARGER) | ✅ terverifikasi | `VENTILATION.PEEP_CMH2O` | ☐ |
-| 25 | Laju VTP | 30–60/menit | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §PPV; KARGER; PubMed 42599690 | ✅ terverifikasi | `VENTILATION.RATE_PER_MIN` | ☐ |
-| 26 | Waktu inflasi | 0.5–1 detik | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §PPV; KARGER | ✅ terverifikasi | `VENTILATION.INFLATION_TIME_S` | ☐ |
-| 27 | Inflasi berkepanjangan tidak dianjurkan | >5 detik (prematur) | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §PPV / ILCOR | ⚠️ VERIFY | `VENTILATION.SUSTAINED_INFLATION_MAX_S` | ☐ |
-| 28 | CPAP prematur bernapas spontan dengan distres | 5 cmH₂O (diterima 5–8) | NRP | ⚠️ VERIFY | `VENTILATION.CPAP_CMH2O` | ☐ |
-| 29 | FiO2 awal ≥35 minggu | 21% | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Oxygen Administration; KARGER | ✅ terverifikasi | `OXYGEN.FIO2_START_TERM` | ☐ |
-| 30 | FiO2 awal 32–34 minggu | 21–30% | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Oxygen Administration; KARGER | ✅ terverifikasi | `OXYGEN.FIO2_START_32_34` | ☐ |
-| 31 | FiO2 awal <32 minggu | 30–100% | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Oxygen Administration; KARGER; PubMed 42599690 | ✅ terverifikasi | `OXYGEN.FIO2_START_BELOW_32` | ☐ |
-| 32 | FiO2 saat kompresi dada | 100% | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Chest Compressions | ✅ terverifikasi | `OXYGEN.FIO2_DURING_COMPRESSIONS` | ☐ |
-| 33 | Turunkan FiO2 bila SpO2 | >95% | NRP | ⚠️ VERIFY | `OXYGEN.SPO2_HYPEROXIA_ABOVE` | ☐ |
-| 34 | FiO2 balon mengembang sendiri tanpa blender | udara 21%; O₂ tanpa reservoir ±40%; dengan reservoir ±90–100% | NRP | ⚠️ VERIFY | `OXYGEN.SIB_FIO2` | ☐ |
-| 35 | Target SpO2 preduktal | 1′ 60–65%; 2′ 65–70%; 3′ 70–75%; 4′ 75–80%; 5′ 80–85%; 10′ 85–95% | NRP 8/9; AHA25 (tabel AHA25 dimulai menit ke-2 menurut KARGER) | ⚠️ VERIFY | `SPO2_TARGETS` | ☐ |
-| 36 | Sungkup laring (LMA) | ≥34 minggu | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Ventilation Interface | ✅ terverifikasi | `AIRWAY.LMA_MIN_GA_WEEKS` | ☐ |
-| 37 | Ukuran LMA | Ukuran 1 untuk >2 kg | NRP | ⚠️ VERIFY | `AIRWAY.LMA_SIZE` | ☐ |
-| 38 | Ukuran ETT | <1 kg/<28 mgg: 2,5; 1–2 kg/28–34 mgg: 3,0; >2 kg/>34 mgg: 3,5 mm | NRP | ⚠️ VERIFY | `AIRWAY.ETT_SIZE_BY_WEIGHT` | ☐ |
-| 39 | Kedalaman ETT di bibir | 23–24 mgg: 5.5 cm; 25–26 mgg: 6 cm; 27–29 mgg: 6.5 cm; 30–32 mgg: 7 cm; 33–34 mgg: 7.5 cm; 35–37 mgg: 8 cm; 38–40 mgg: 8.5 cm; 41–43 mgg: 9 cm | NRP | ⚠️ VERIFY | `AIRWAY.ETT_DEPTH_BY_GA` | ☐ |
-| 40 | Bilah laringoskop | 00 prematur ekstrem; 0 prematur; 1 aterm | NRP | ⚠️ VERIFY | `AIRWAY.BLADE_BY_GA` | ☐ |
-| 41 | Pipa orogastrik | 8 Fr (10 Fr dengan isap pada hernia diafragmatika) | NRP | ⚠️ VERIFY | `AIRWAY.OGT_FR` | ☐ |
-| 42 | Pipa nasofaring (Pierre Robin) | ETT 2.5 mm via hidung | NRP | ⚠️ VERIFY | `AIRWAY.NASOPHARYNGEAL_TUBE_MM` | ☐ |
-| 43 | Rasio kompresi : ventilasi | 3:1 | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Chest Compressions | ✅ terverifikasi | `COMPRESSIONS.RATIO` | ☐ |
-| 44 | Laju kompresi | 90 kompresi + 30 napas = 120 kejadian/menit | NRP | ⚠️ VERIFY | `COMPRESSIONS.EVENTS_PER_MIN` | ☐ |
-| 45 | Teknik & kedalaman | Dua ibu jari melingkari dada, sepertiga bawah sternum, ±1/3 diameter AP | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Chest Compressions | ✅ terverifikasi | `COMPRESSIONS.TECHNIQUE` | ☐ |
-| 46 | UVC darurat | 3.5–5 Fr, masuk 2–4 cm sampai darah mengalir | NRP | ⚠️ VERIFY | `ACCESS.UVC` | ☐ |
-| 47 | Konsentrasi epinefrin | 0.1 mg/mL (1 mg/10 mL) | NRP | ⚠️ VERIFY | `EPINEPHRINE.CONCENTRATION_MG_PER_ML` | ☐ |
-| 48 | Epinefrin IV/IO | 0.01–0.03 mg/kg (0,1–0,3 mL/kg) | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Medications | ✅ terverifikasi | `EPINEPHRINE.IV_DOSE_MG_PER_KG` | ☐ |
-| 49 | Epinefrin endotrakeal | 0.05–0.1 mg/kg (0,5–1 mL/kg) | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Medications | ✅ terverifikasi | `EPINEPHRINE.ETT_DOSE_MG_PER_KG` | ☐ |
-| 50 | Bilas setelah epinefrin IV/IO | NaCl 0,9% 3 mL | NRP 8 | ⚠️ VERIFY | `EPINEPHRINE.FLUSH_ML` | ☐ |
-| 51 | Cairan (NaCl 0,9%/PRC O-neg) | 10 mL/kg dalam 5–10 menit, dapat diulang | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Volume Expansion / NRP | ⚠️ VERIFY | `VOLUME_EXPANDER.DOSE_ML_PER_KG` | ☐ |
-| 52 | Hipoglikemia (perlu tata laksana) | <45 mg/dL | IDAI/AAP | ⚠️ VERIFY | `GLUCOSE.HYPOGLYCEMIA_BELOW_MG_DL` | ☐ |
-| 53 | Bolus dekstrosa 10% | 2 mL/kg IV | IDAI/NRP | ⚠️ VERIFY | `GLUCOSE.D10_BOLUS_ML_PER_KG` | ☐ |
-| 54 | Natrium bikarbonat | Tidak dianjurkan rutin | AHA25 (Circulation 2025;152 suppl 2:S385–S423); KARGER | ✅ terverifikasi | `NOT_RECOMMENDED.SODIUM_BICARBONATE` | ☐ |
-| 55 | Nalokson saat resusitasi | Tidak dianjurkan; fokus ventilasi | NRP / AHA | ⚠️ VERIFY | `NOT_RECOMMENDED.NALOXONE` | ☐ |
-| 56 | Isap trakea rutin (mekonium, tidak bugar) | Tidak dianjurkan; mulai VTP | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Meconium | ⚠️ VERIFY | `NOT_RECOMMENDED.ROUTINE_TRACHEAL_SUCTION_MECONIUM` | ☐ |
-| 57 | Terapi hipotermia (HIE sedang–berat) | ≥36 mgg, mulai <6 jam di fasilitas berprotokol | AHA25 (Circulation 2025;152 suppl 2:S385–S423) §Postresuscitation Care | ⚠️ VERIFY | `POST_RESUSCITATION.HYPOTHERMIA_THERAPY` | ☐ |
-| 58 | Aspirasi jarum pneumotoraks | Kateter 18–20 G, SIC 4 LAA atau SIC 2 LMK | NRP | ⚠️ VERIFY | `PNEUMOTHORAX.NEEDLE_GAUGE` | ☐ |
-| 59 | Waktu oksimeter mendapat sinyal (simulasi) | 30 detik | Asumsi simulator (NRP: dapat 1–2 menit) | ℹ️ asumsi-sim | `SIM.PULSE_OX_ACQUIRE_S` | ☐ |
-| 60 | Durasi tindakan (simulasi) | intubasi 25 dtk; LMA 15 dtk; UVC 90 dtk; IO 60 dtk; siapkan obat 25 dtk; aspirasi jarum 40 dtk | Asumsi simulator | ℹ️ asumsi-sim | `SIM.DURATION_S` | ☐ |
+| 1 | Penundaan penjepitan tali pusat (tanpa kebutuhan resusitasi segera) | ≥60 detik (aterm: COR 2a; <37 mgg: COR 1) | AHA25 S395 (2a, B-R), S396 (1, A) | ✅ terverifikasi | `CORD.DELAYED_CLAMP_MIN_S` | ☐ |
+| 2 | Intact cord milking dilarang pada | <28+0 minggu (COR 3: Harm) | AHA25 S396 (3: Harm, B-R) | ✅ terverifikasi | `CORD.MILKING_MIN_GA_WEEKS` | ☐ |
+| 3 | Intact cord milking dapat dipertimbangkan pada bayi tidak bugar | ≥35 minggu (COR 2b) | AHA25 S395 (2b, B-R) | ✅ terverifikasi | `CORD.MILKING_NONVIGOROUS_GA` | ☐ |
+| 4 | Intact cord milking bila DCC tidak bisa (prematur, tanpa resusitasi segera) | 28+0–36+6 minggu (COR 2b) | AHA25 S396 (2b, B-R) | ✅ terverifikasi | `CORD.MILKING_PRETERM_GA` | ☐ |
+| 5 | Target suhu | 36.5–37.5 °C | AHA25 S398 (1, B-NR) | ✅ terverifikasi | `TEMPERATURE.TARGET_C` | ☐ |
+| 6 | Hipotermia (cegah; hangatkan kembali) | <36 °C | AHA25 S398 (1, B-NR), S418 (1, C-LD) | ✅ terverifikasi | `TEMPERATURE.HYPOTHERMIA_MODERATE_BELOW_C` | ☐ |
+| 7 | Hipertermia (cegah) | >38 °C | AHA25 S398 (1, B-NR) | ✅ terverifikasi | `TEMPERATURE.HYPERTHERMIA_ABOVE_C` | ☐ |
+| 8 | Plastik tanpa dikeringkan (kecuali wajah) + topi | UG <32 mgg atau BL <1500 g | IDAI 2022 (Alur Resusitasi Neonatus) catatan *; AHA25 S399 (2a, B-R) tanpa batas UG | ✅ terverifikasi | `TEMPERATURE.PLASTIC_WRAP` | ☐ |
+| 9 | Suhu ruang untuk prematur | ≥23 °C | AHA25 S399 | ✅ terverifikasi | `TEMPERATURE.ROOM_TEMP_PRETERM_MIN_C` | ☐ |
+| 10 | Indikasi ventilasi | Apnea/megap-megap atau HR <100/menit | AHA25 S403 (1, B-NR), Fig. 2 S389 | ✅ terverifikasi | `HEART_RATE.PPV_BELOW_BPM` | ☐ |
+| 11 | Indikasi kompresi | HR <60/menit meski 30 dtk ventilasi yang mengembangkan paru | AHA25 S411 (1, C-EO) | ✅ terverifikasi | `HEART_RATE.COMPRESSIONS_BELOW_BPM` | ☐ |
+| 12 | Indikasi epinefrin | HR <60/menit setelah ventilasi & kompresi dioptimalkan | AHA25 S415 (1, B-NR) | ✅ terverifikasi | `HEART_RATE.EPINEPHRINE_BELOW_BPM` | ☐ |
+| 13 | HR normal pascatransisi | 100–160/menit | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `HEART_RATE.NORMAL_RANGE_BPM` | ☐ |
+| 14 | Hitung HR dengan stetoskop | 6 detik × 10 | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `HEART_RATE.AUSCULTATION_WINDOW_S` | ☐ |
+| 15 | EKG untuk HR | Berguna untuk HR cepat & akurat (2a); WAJIB saat kompresi (1) | AHA25 S401 (2a, B-NR), S402 (1, C-EO) | ✅ terverifikasi | `HEART_RATE.ECG` | ☐ |
+| 16 | Ventilasi dimulai | ≤60 detik setelah lahir | AHA25 S403 (1, B-NR) | ✅ terverifikasi | `TIMING.PPV_START_DEADLINE_S` | ☐ |
+| 17 | Nilai efektivitas VTP | dalam 15 detik (gerak dada), HR setelah ±30 detik | IDAI 2022 (Alur Resusitasi Neonatus) ("VTP efektif dalam 15 detik") | ✅ terverifikasi | `TIMING.PPV_ASSESS_AFTER_S` | ☐ |
+| 18 | Ventilasi efektif sebelum kompresi | ≥30 detik, sebaiknya via ETT/LMA | AHA25 S393, S411 (1, C-EO) | ✅ terverifikasi | `TIMING.PPV_EFFECTIVE_BEFORE_COMPRESSIONS_S` | ☐ |
+| 19 | Kompresi sebelum epinefrin | ≥60 detik | AHA25 S393 | ✅ terverifikasi | `TIMING.COMPRESSIONS_REASSESS_S` | ☐ |
+| 20 | Ulang epinefrin | setiap 3–5 menit; dosis IV segera setelah akses siap bila respons ETT tidak adekuat | AHA25 S415 (2a, B-NR), S416 (2b, C-LD); NRP9 Reference Chart (2025) | ✅ terverifikasi | `TIMING.EPINEPHRINE_REPEAT_S` | ☐ |
+| 21 | Batas satu upaya intubasi | ±30 detik | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `TIMING.INTUBATION_ATTEMPT_MAX_S` | ☐ |
+| 22 | Diskusi penghentian resusitasi | ±20 menit tanpa HR setelah semua langkah | AHA25 S419 (1, C-LD) | ✅ terverifikasi | `TIMING.DISCONTINUE_CONSIDER_S` | ☐ |
+| 23 | PIP awal (AHA) | 20–30 cmH₂O | AHA25 S403 (2a, C-LD) | ✅ terverifikasi | `VENTILATION.PIP_INITIAL_CMH2O` | ☐ |
+| 24 | PIP awal (NRP9) | 25 cmH₂O; 25–30 (≥32 mgg), 20–25 (<32 mgg) | NRP9 Reference Chart (2025) | ✅ terverifikasi | `VENTILATION.PIP_NRP9` | ☐ |
+| 25 | PIP maksimal saat koreksi | 40 cmH₂O aterm / 30 prematur; naik 5 cmH₂O bertahap (AHA25 S403: PIP berlebihan = Harm) | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `VENTILATION.PIP_MAX` | ☐ |
+| 26 | PEEP | 5 cmH₂O | NRP9 Reference Chart (2025); AHA25 S403 (2b, C-LD) | ✅ terverifikasi | `VENTILATION.PEEP_CMH2O` | ☐ |
+| 27 | Laju ventilasi | 30–60/menit | AHA25 S404 (2a, C-LD); NRP9 Reference Chart (2025) | ✅ terverifikasi | `VENTILATION.RATE_PER_MIN` | ☐ |
+| 28 | Waktu inflasi | 0.5–1 detik | AHA25 S404 (2a, C-LD) | ✅ terverifikasi | `VENTILATION.INFLATION_TIME_S` | ☐ |
+| 29 | Sustained inflation >5 detik | Berbahaya pada <28 minggu (COR 3: Harm) | AHA25 S404 (3: Harm, B-R) | ✅ terverifikasi | `VENTILATION.SUSTAINED_INFLATION` | ☐ |
+| 30 | Aliran gas | 10 L/menit | NRP9 Reference Chart (2025) | ✅ terverifikasi | `VENTILATION.GAS_FLOW_L_MIN` | ☐ |
+| 31 | CPAP (TPAE) | 7 cmH₂O; gagal bila 8 cmH₂O masih distres berat / FiO₂ >40% → intubasi | IDAI 2022 (Alur Resusitasi Neonatus); AHA25 S407 (2a, A) tanpa angka tekanan | ✅ terverifikasi | `VENTILATION.CPAP_CMH2O` | ☐ |
+| 32 | FiO₂ awal ≥35 minggu | 21% | AHA25 S409 (2b, C-LD); NRP9 Reference Chart (2025); IDAI 2022 (Alur Resusitasi Neonatus) | ✅ terverifikasi | `OXYGEN.FIO2_START_TERM` | ☐ |
+| 33 | FiO₂ awal 32–34+6 minggu | 21–30% | AHA25 S409 (2b, C-LD); NRP9 Reference Chart (2025) | ✅ terverifikasi | `OXYGEN.FIO2_START_32_34` | ☐ |
+| 34 | FiO₂ awal <32 minggu | 30–100% (IDAI22: 21–30% untuk <35 mgg) | AHA25 S409 (2b, C-LD); NRP9 Reference Chart (2025) | ✅ terverifikasi | `OXYGEN.FIO2_START_BELOW_32` | ☐ |
+| 35 | FiO₂ saat kompresi | 100%, lalu titrasi setelah ROSC | AHA25 S411 (2b, C-EO), Fig. 2 | ✅ terverifikasi | `OXYGEN.FIO2_DURING_COMPRESSIONS` | ☐ |
+| 36 | Turunkan FiO₂ bila SpO₂ | >95% (batas atas tabel menit ke-10) | AHA25 Fig. 2 S389 | ✅ terverifikasi | `OXYGEN.SPO2_HYPEROXIA_ABOVE` | ☐ |
+| 37 | FiO₂ balon mengembang sendiri tanpa blender | udara 21%; O₂ tanpa reservoir ±40%; dengan reservoir ±90–100% | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `OXYGEN.SIB_FIO2` | ☐ |
+| 38 | Target SpO₂ preduktal (dipakai penilaian) | 2′ 65–70%; 3′ 70–75%; 4′ 75–80%; 5′ 80–85%; 10′ 85–95% | AHA25 Fig. 2 S389; NRP9 Reference Chart (2025) | ✅ terverifikasi | `SPO2_TARGETS` | ☐ |
+| 39 | Target SpO₂ preduktal IDAI (referensi) | 1 menit 60–70%; 2 menit 65–85%; 3 menit 70–90%; 4 menit 75–90%; 5 menit 80–90%; 10 menit 85–90%; >15 menit 90–95% | IDAI 2022 (Alur Resusitasi Neonatus) | ✅ terverifikasi | `IDAI_SPO2_TARGETS` | ☐ |
+| 40 | Lokasi oksimeter | Tangan/pergelangan kanan (preduktal), dipasang sedini mungkin | AHA25 S409 (1, C-LD) | ✅ terverifikasi | `PULSE_OX.SITE` | ☐ |
+| 41 | Laryngeal mask | ≥34+0 minggu: alternatif bila masker gagal (2a) / antarmuka primer (2b) | AHA25 S405 | ✅ terverifikasi | `AIRWAY.LMA_MIN_GA_WEEKS` | ☐ |
+| 42 | Batas berat LMA | 2 kg (batas produsen; <2 kg = kesenjangan bukti) | AHA25 S406, S421 | ✅ terverifikasi | `AIRWAY.LMA_MIN_WEIGHT_KG` | ☐ |
+| 43 | Ukuran LMA | 1 | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `AIRWAY.LMA_SIZE` | ☐ |
+| 44 | ETT: kedalaman DI GUSI & ukuran | <23 mgg: 5 cm, 2/2.5 mm; 23–24 mgg: 5.5 cm, 2/2.5 mm; 25–26 mgg: 6 cm, 2.5 mm; 27–29 mgg: 6.5 cm, 2.5 mm; 30–32 mgg: 7 cm, 2.5/3 mm; 33–34 mgg: 7.5 cm, 3 mm; 35–37 mgg: 8 cm, 3/3.5 mm; 38–40 mgg: 8.5 cm, 3.5 mm; 41–44 mgg: 9 cm, 3.5 mm | NRP9 Reference Chart (2025) | ✅ terverifikasi | `ETT_TABLE` | ☐ |
+| 45 | Bilah laringoskop | 00 prematur ekstrem; 0 prematur; 1 aterm | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `AIRWAY.BLADE_BY_GA` | ☐ |
+| 46 | Pipa orogastrik | 8 Fr (10 Fr dengan isap pada HDK) | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `AIRWAY.OGT_FR` | ☐ |
+| 47 | Pipa nasofaring (Pierre Robin) | ETT 2.5 mm via hidung | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `AIRWAY.NASOPHARYNGEAL_TUBE_MM` | ☐ |
+| 48 | Isap jalan napas | Rutin TIDAK dianjurkan (jernih/mekonium); mulut-hidung bila perlu ventilasi & tampak tersumbat; isap trakea bila bukti obstruksi trakea saat ventilasi | AHA25 S400 (3: No Benefit B-R; 2a C-EO) | ✅ terverifikasi | `SUCTION` | ☐ |
+| 49 | Rasio kompresi : ventilasi | 3:1 | AHA25 S412 (2b, C-LD) | ✅ terverifikasi | `COMPRESSIONS.RATIO` | ☐ |
+| 50 | Laju kompresi | 90 kompresi + 30 inflasi per menit | AHA25 S393 | ✅ terverifikasi | `COMPRESSIONS.EVENTS_PER_MIN` | ☐ |
+| 51 | Teknik & kedalaman | Dua ibu jari melingkari dada; sepertiga bawah sternum di atas xifoid; 1/3 diameter AP | AHA25 S412 (2b, C-LD) | ✅ terverifikasi | `COMPRESSIONS.TECHNIQUE` | ☐ |
+| 52 | Ganti petugas kompresi | tiap 2–5 menit, saat penilaian HR | AHA25 S412 (2b, C-EO) | ✅ terverifikasi | `COMPRESSIONS.ROTATE` | ☐ |
+| 53 | Jalan napas saat kompresi | ETT direkomendasikan (1); LMA bila ETT gagal pada ≥34 mgg (2b) | AHA25 S411 | ✅ terverifikasi | `COMPRESSIONS.AIRWAY` | ☐ |
+| 54 | Akses vaskular darurat | UVC (1); IO bila IV gagal/tidak mungkin (2a) | AHA25 S414 (C-LD) | ✅ terverifikasi | `ACCESS.ROUTE` | ☐ |
+| 55 | Ukuran & kedalaman UVC | 3.5–5 Fr, 2–4 cm sampai darah mengalir | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `ACCESS.UVC` | ☐ |
+| 56 | Konsentrasi epinefrin | 0.1 mg/mL (1 mg/10 mL) | NRP9 Reference Chart (2025) | ✅ terverifikasi | `EPINEPHRINE.CONCENTRATION_MG_PER_ML` | ☐ |
+| 57 | Epinefrin IV/IO | 0.01–0.03 mg/kg; NRP9: 0.02 mg/kg = 0,2 mL/kg | AHA25 S415 (1, B-NR); NRP9 Reference Chart (2025) | ✅ terverifikasi | `EPINEPHRINE.IV_DOSE_MG_PER_KG` | ☐ |
+| 58 | Epinefrin endotrakeal | 0.05–0.1 mg/kg; NRP9: 0.1 mg/kg = 1 mL/kg, tanpa bilas | AHA25 S415 (2a, C-LD); NRP9 Reference Chart (2025) | ✅ terverifikasi | `EPINEPHRINE.ETT_DOSE_MG_PER_KG` | ☐ |
+| 59 | Bilas setelah epinefrin IV/IO | NaCl 0,9% 3 mL (berapa pun berat lahir) | AHA25 S416; NRP9 Reference Chart (2025) | ✅ terverifikasi | `EPINEPHRINE.FLUSH_ML` | ☐ |
+| 60 | Cairan (NaCl 0,9% / darah O-neg) | 10–20 mL/kg (NRP9: 10 mL/kg) dalam 5–10 menit; indikasi: bukti hipovolemia dan tetap bradikardia meski ventilasi, kompresi, epinefrin | AHA25 S417 (2b, C-EO); NRP9 Reference Chart (2025) | ✅ terverifikasi | `VOLUME_EXPANDER.DOSE_ML_PER_KG` | ☐ |
+| 61 | Ambang hipoglikemia | <45 mg/dL (AHA25 S418: pantau glukosa dini, tanpa angka) | IDAI/AAP | ⚠️ VERIFY | `GLUCOSE.HYPOGLYCEMIA_BELOW_MG_DL` | ☐ |
+| 62 | Bolus dekstrosa 10% | 2 mL/kg IV | IDAI/NRP8 | ⚠️ VERIFY | `GLUCOSE.D10_BOLUS_ML_PER_KG` | ☐ |
+| 63 | Natrium bikarbonat | Tidak dianjurkan (tidak dibahas di AHA25) | NRP8 / AHA 2020 | ⚠️ VERIFY | `NOT_RECOMMENDED.SODIUM_BICARBONATE` | ☐ |
+| 64 | Nalokson saat resusitasi | Tidak dianjurkan; fokus ventilasi (tidak dibahas di AHA25) | NRP8 / AHA 2020 | ⚠️ VERIFY | `NOT_RECOMMENDED.NALOXONE` | ☐ |
+| 65 | Terapi hipotermia (HIE sedang–berat) | ≥36 mgg; 33.5–34.5 °C, mulai <6 jam, 72 jam, dengan protokol | AHA25 S418 (1, A) | ✅ terverifikasi | `POST_RESUSCITATION.HYPOTHERMIA_THERAPY` | ☐ |
+| 66 | Laju napas normal | 40–60/menit | IDAI | ⚠️ VERIFY | `POST_RESUSCITATION.RESP_RATE_NORMAL` | ☐ |
+| 67 | Aspirasi jarum pneumotoraks | Kateter 18–20 G, SIC 4 LAA atau SIC 2 LMK | NRP8 (2021) — tidak dimuat AHA25/NRP9 chart/IDAI22 | ⚠️ VERIFY | `PNEUMOTHORAX.NEEDLE_GAUGE` | ☐ |
+| 68 | Waktu oksimeter mendapat sinyal (simulasi) | 90 detik (data: median 100–260 dtk) | Asumsi simulator; AHA25 S410 | ℹ️ asumsi-sim | `SIM.PULSE_OX_ACQUIRE_S` | ☐ |
+| 69 | Durasi tindakan (simulasi) | intubasi 25 dtk; LMA 15 dtk; UVC 90 dtk; IO 60 dtk; siapkan obat 25 dtk; aspirasi jarum 40 dtk | Asumsi simulator | ℹ️ asumsi-sim | `SIM.DURATION_S` | ☐ |
 <!-- TABEL-OTOMATIS:SELESAI -->
-
-## Hal-hal yang paling penting dicek
-
-1. **Tabel target SpO₂ preduktal per menit.** Simulator memakai tabel NRP (1′ 60–65% … 10′ 85–95%). Menurut tinjauan KARGER, tabel AHA 2025 **dimulai dari menit ke-2**. Bila tabel 2025 berbeda, ubah `SPO2_TARGETS` di `guidelines.ts`.
-2. **FiO₂ awal prematur.** Simulator: ≥35 mgg 21%; 32–34 mgg 21–30%; <32 mgg 30–100% (≥30%). Nilai ini terverifikasi dari dua sumber sekunder, tetapi mohon cocokkan dengan teks lengkap.
-3. **Dosis epinefrin.** IV/IO 0,01–0,03 mg/kg; ETT 0,05–0,1 mg/kg; konsentrasi 0,1 mg/mL; bilas 3 mL NaCl 0,9%; ulang 3–5 menit.
-4. **Ukuran & kedalaman ETT, ukuran LMA, UVC.** Diambil dari tabel NRP — mohon cocokkan dengan NRP edisi 9 dan pedoman IDAI.
-5. **Konteks Indonesia.** FiO₂ balon tanpa blender (21% / ±40% / ±90–100%), metode kanguru untuk transport, komunikasi SISRUTE, dan ambang hipoglikemia (<45 mg/dL) — mohon cocokkan dengan pedoman IDAI/Kemenkes yang berlaku.
 
 ## Model fisiologi
 

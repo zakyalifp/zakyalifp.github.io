@@ -25,6 +25,7 @@ import {
   acceptableEttSizes,
   initialFio2Range,
   lmaAppropriate,
+  needsPlasticWrap,
   pipMax,
   pipRange,
   recommendedBlade,
@@ -232,7 +233,7 @@ export const EQUIPMENT_ITEMS: Array<{ id: string; label: string; needed: (sc: Sc
   { id: 'lma-ett', label: `LMA ukuran ${AIRWAY.LMA_SIZE}, laringoskop, ETT, detektor CO₂`, needed: () => true, avail: (sc) => sc.equipment.lma || sc.equipment.intubation },
   { id: 'obat', label: `Epinefrin ${fmt(EPINEPHRINE.CONCENTRATION_MG_PER_ML, 2)} mg/mL, NaCl 0,9%, spuit`, needed: () => true, avail: (sc) => sc.equipment.epinephrine },
   { id: 'uvc', label: 'Set kateter umbilikal / jarum IO', needed: () => true, avail: (sc) => sc.equipment.uvc || sc.equipment.io },
-  { id: 'plastik-topi', label: 'Plastik polietilen & topi', needed: (sc) => sc.hidden.gaWeeks < TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS, avail: () => true },
+  { id: 'plastik-topi', label: 'Plastik polietilen & topi', needed: (sc) => needsPlasticWrap(sc.hidden.gaWeeks, sc.hidden.weightKg), avail: () => true },
   { id: 'cpap', label: 'Perangkat CPAP / T-piece dengan PEEP', needed: (sc) => sc.hidden.gaWeeks < OXYGEN.GA_TERM_THRESHOLD_WEEKS, avail: (sc) => sc.equipment.tPiece },
   { id: 'ogt', label: 'Pipa orogastrik', needed: (sc) => sc.hidden.cdh, avail: () => true },
 ];
@@ -434,15 +435,15 @@ export const ACTIONS: ActionDef[] = [
     id: 'dry',
     label: 'Keringkan & ganti kain basah',
     group: 'langkah-awal',
-    rationale: `Mengeringkan mengurangi kehilangan panas dan sekaligus menstimulasi napas. Bayi <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu: JANGAN dikeringkan — langsung dibungkus plastik.`,
+    rationale: `Mengeringkan mengurangi kehilangan panas dan sekaligus menstimulasi napas. Bayi <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu atau BL <${fmt(TEMPERATURE.PLASTIC_WRAP_BELOW_WEIGHT_KG * 1000, 0)} g: JANGAN dikeringkan (kecuali wajah) — langsung dibungkus plastik.`,
     available: (s) => (s.phase !== 'running' ? 'Tersedia setelah bayi lahir.' : s.dried ? 'Sudah dikeringkan.' : true),
     duration: () => SIM.DURATION_S.dry,
     hands: () => 1,
     complete: (c) => {
       c.s.dried = true;
       c.s.stimulated = true;
-      const vp = c.sc.hidden.gaWeeks < TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS;
-      if (vp) c.judge('dry-very-preterm', false, 'langkahAwal', `Bayi <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu sebaiknya langsung dibungkus plastik tanpa dikeringkan.`);
+      const vp = needsPlasticWrap(c.sc.hidden.gaWeeks, c.sc.hidden.weightKg);
+      if (vp) c.judge('dry-very-preterm', false, 'langkahAwal', `Bayi <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu atau BL <${fmt(TEMPERATURE.PLASTIC_WRAP_BELOW_WEIGHT_KG * 1000, 0)} g sebaiknya langsung dibungkus plastik tanpa dikeringkan (kecuali wajah).`);
       else c.judge('dry', true, 'langkahAwal', 'Bayi dikeringkan (juga menstimulasi napas).');
     },
   },
@@ -493,7 +494,7 @@ export const ACTIONS: ActionDef[] = [
     id: 'wrap',
     label: 'Bungkus plastik polietilen (tanpa dikeringkan)',
     group: 'langkah-awal',
-    rationale: `Untuk bayi <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu: bungkus tubuh dengan plastik tanpa dikeringkan, beri topi, di bawah penghangat.`,
+    rationale: `Untuk bayi <${TEMPERATURE.PLASTIC_WRAP_BELOW_GA_WEEKS} minggu atau BL <${fmt(TEMPERATURE.PLASTIC_WRAP_BELOW_WEIGHT_KG * 1000, 0)} g: bungkus tubuh dengan plastik tanpa dikeringkan, beri topi, di bawah penghangat.`,
     available: (s) => (s.phase !== 'running' ? 'Tersedia setelah bayi lahir.' : s.wrapped ? 'Sudah dibungkus.' : true),
     duration: () => SIM.DURATION_S.wrap,
     hands: () => 1,
@@ -721,7 +722,7 @@ export const ACTIONS: ActionDef[] = [
   },
   {
     id: 'mr-m',
-    label: 'M — Mask: rapatkan/posisikan ulang masker',
+    label: 'M — Mask / S (IDAI: Sungkup): rapatkan masker',
     group: 'ventilasi',
     rationale: 'Langkah koreksi pertama bila dada tidak mengembang: kebocoran masker sangat sering. Teknik dua tangan membantu.',
     available: (s) => (s.vent.mode === 'ppv' && s.vent.iface === 'mask' ? true : 'Hanya saat VTP dengan masker.'),
@@ -734,7 +735,7 @@ export const ACTIONS: ActionDef[] = [
   },
   {
     id: 'mr-r',
-    label: 'R — Reposition: reposisi kepala (menghidu)',
+    label: 'R — Reposisi kepala (menghidu)',
     group: 'ventilasi',
     rationale: 'Posisi kepala netral–sedikit ekstensi membuka jalan napas.',
     available: (s) => (s.vent.mode === 'ppv' && s.vent.iface === 'mask' ? true : 'Hanya saat VTP dengan masker.'),
@@ -746,7 +747,7 @@ export const ACTIONS: ActionDef[] = [
   },
   {
     id: 'mr-s',
-    label: 'S — Suction: isap mulut & hidung',
+    label: 'S — Suction / I (IDAI: Isap): isap mulut & hidung',
     group: 'ventilasi',
     rationale: 'Bila M dan R belum berhasil, isap sekret kental yang mungkin menyumbat.',
     available: (s) => (s.vent.mode === 'ppv' ? true : 'Hanya saat VTP.'),
@@ -759,7 +760,7 @@ export const ACTIONS: ActionDef[] = [
   },
   {
     id: 'mr-o',
-    label: 'O — Open mouth: buka mulut sedikit',
+    label: 'O — Open mouth / B (IDAI: Buka mulut)',
     group: 'ventilasi',
     rationale: 'Membuka mulut dan mengangkat rahang membantu aliran udara.',
     available: (s) => (s.vent.mode === 'ppv' && s.vent.iface === 'mask' ? true : 'Hanya saat VTP dengan masker.'),
@@ -770,7 +771,7 @@ export const ACTIONS: ActionDef[] = [
   },
   {
     id: 'mr-p',
-    label: `P — Pressure: naikkan PIP +${VENTILATION.PIP_STEP_CMH2O} cmH₂O`,
+    label: `P — Pressure / T (IDAI: Tekanan): PIP +${VENTILATION.PIP_STEP_CMH2O} cmH₂O`,
     group: 'ventilasi',
     rationale: `Naikkan tekanan bertahap ${VENTILATION.PIP_STEP_CMH2O}–10 cmH₂O sampai dada bergerak; batas ${VENTILATION.PIP_MAX_TERM_CMH2O} cmH₂O aterm / ${VENTILATION.PIP_MAX_PRETERM_CMH2O} prematur.`,
     available: (s) => (s.vent.mode === 'ppv' ? true : 'Hanya saat VTP.'),
@@ -891,12 +892,12 @@ export const ACTIONS: ActionDef[] = [
     id: 'intubate',
     label: 'Intubasi endotrakeal',
     group: 'jalan-napas',
-    rationale: `Pilih ETT sesuai berat/usia gestasi dan kedalaman di bibir dari tabel. Satu upaya ±${TIMING.INTUBATION_ATTEMPT_MAX_S} detik; VTP terhenti selama upaya.`,
+    rationale: `Pilih ETT sesuai berat/usia gestasi dan kedalaman DI GUSI (tip-to-gum, tabel NRP edisi 9). Satu upaya ±${TIMING.INTUBATION_ATTEMPT_MAX_S} detik; VTP terhenti selama upaya.`,
     available: (s, sc) =>
       s.phase !== 'running' ? 'Tersedia setelah bayi lahir.' : !sc.equipment.intubation ? 'Peralatan intubasi tidak tersedia di fasilitas ini.' : s.ett.placed ? 'ETT sudah terpasang.' : true,
     params: () => [
       { name: 'ukuran', label: 'Ukuran ETT (diameter dalam)', type: 'select', options: AIRWAY.ETT_SIZES_MM.map((v) => ({ value: v, label: `${fmt(v, 1)} mm` })) },
-      { name: 'kedalaman', label: 'Kedalaman di bibir', type: 'select', options: UI_OPTIONS.ETT_DEPTH_CM.map((v) => ({ value: v, label: `${fmt(v, 1)} cm` })) },
+      { name: 'kedalaman', label: 'Kedalaman di gusi (tip-to-gum)', type: 'select', options: UI_OPTIONS.ETT_DEPTH_CM.map((v) => ({ value: v, label: `${fmt(v, 1)} cm` })) },
       { name: 'bilah', label: 'Bilah laringoskop', type: 'select', options: UI_OPTIONS.BLADES.map((v) => ({ value: v, label: `Miller ${v}` })) },
     ],
     duration: () => SIM.DURATION_S.intubation,
@@ -940,14 +941,14 @@ export const ACTIONS: ActionDef[] = [
         'ett-depth',
         depthOk,
         'ventilasi',
-        depthOk ? `Kedalaman ${fmt(depth, 1)} cm sesuai.` : `Kedalaman yang dianjurkan untuk ${sc.hidden.gaWeeks} minggu ±${fmt(recDepth, 1)} cm di bibir.`,
+        depthOk ? `Kedalaman ${fmt(depth, 1)} cm sesuai.` : `Kedalaman yang dianjurkan untuk ${sc.hidden.gaWeeks} minggu ±${fmt(recDepth, 1)} cm di gusi.`,
       );
       if (blade !== recommendedBlade(sc.hidden.gaWeeks)) c.judge('blade', false, 'ventilasi', `Bilah yang lazim untuk bayi ini: Miller ${recommendedBlade(sc.hidden.gaWeeks)}.`);
       s.ett = { ...s.ett, placed: true, size, depth, position: pos, confirmed: false };
       s.mr.A = true;
       s.vent.iface = 'ett';
       s.lma = false;
-      c.note(`ETT ${fmt(size, 1)} mm terpasang, ${fmt(depth, 1)} cm di bibir.`);
+      c.note(`ETT ${fmt(size, 1)} mm terpasang, ${fmt(depth, 1)} cm di gusi.`);
     },
   },
   {
@@ -994,7 +995,7 @@ export const ACTIONS: ActionDef[] = [
       s.ett.depth = round3(s.ett.depth + num(c.p, 'ubah'));
       const diff = s.ett.depth - recommendedEttDepth(sc.hidden.gaWeeks);
       s.ett.position = diff >= AIRWAY.ETT_DEPTH_MALPOSITION_CM ? 'right-main' : diff <= -AIRWAY.ETT_DEPTH_MALPOSITION_CM ? 'shallow' : 'trachea';
-      c.note(`ETT kini ${fmt(s.ett.depth, 1)} cm di bibir.`);
+      c.note(`ETT kini ${fmt(s.ett.depth, 1)} cm di gusi.`);
     },
   },
   {
@@ -1233,8 +1234,11 @@ export const ACTIONS: ActionDef[] = [
         c.judge('epi-indication', false, 'obat', `Epinefrin diberikan sebelum ${TIMING.COMPRESSIONS_REASSESS_S} detik kompresi terkoordinasi dengan ventilasi efektif.`);
       else c.judge('epi-indication', true, 'obat', 'Indikasi epinefrin tepat.');
       const prev = s.drugs.filter((d) => d.drug === 'epinefrin');
-      if (prev.length) {
-        const gap = s.t - prev[prev.length - 1].t;
+      const last = prev[prev.length - 1];
+      // AHA25 S415 (2a): bila respons dosis ETT tidak adekuat, berikan IV segera setelah
+      // akses siap tanpa menunggu interval.
+      if (last && !(last.route === 'ett' && route !== 'ett')) {
+        const gap = s.t - last.t;
         if (gap < TIMING.EPINEPHRINE_REPEAT_S.min)
           c.judge('epi-interval', false, 'obat', `Dosis ulang terlalu cepat (${gap} detik); interval ${TIMING.EPINEPHRINE_REPEAT_S.min / 60}–${TIMING.EPINEPHRINE_REPEAT_S.max / 60} menit.`);
       }
@@ -1295,9 +1299,11 @@ export const ACTIONS: ActionDef[] = [
       const ml = num(p, 'volumeMl');
       const dur = num(p, 'durasiMenit') * 60;
       const perKg = ml / w;
-      const ok = Math.abs(perKg - VOLUME_EXPANDER.DOSE_ML_PER_KG) <= VOLUME_EXPANDER.DOSE_TOLERANCE_ML_PER_KG;
-      const excess = perKg > VOLUME_EXPANDER.DOSE_ML_PER_KG * VOLUME_EXPANDER.EXCESS_FACTOR;
-      c.judge('volume-dose', ok, 'obat', ok ? `Volume tepat: ${fmt(perKg, 1)} mL/kg.` : `Volume ${fmt(perKg, 1)} mL/kg; dosis ${VOLUME_EXPANDER.DOSE_ML_PER_KG} mL/kg (${fmt(VOLUME_EXPANDER.DOSE_ML_PER_KG * w, 1)} mL).`, excess);
+      const r = VOLUME_EXPANDER.DOSE_RANGE_ML_PER_KG;
+      const tol = VOLUME_EXPANDER.DOSE_TOLERANCE_ML_PER_KG;
+      const ok = perKg >= r.min - tol && perKg <= r.max + tol;
+      const excess = perKg > r.max * VOLUME_EXPANDER.EXCESS_FACTOR;
+      c.judge('volume-dose', ok, 'obat', ok ? `Volume tepat: ${fmt(perKg, 1)} mL/kg.` : `Volume ${fmt(perKg, 1)} mL/kg; dosis ${r.min}–${r.max} mL/kg (NRP: ${VOLUME_EXPANDER.DOSE_ML_PER_KG} mL/kg = ${fmt(VOLUME_EXPANDER.DOSE_ML_PER_KG * w, 1)} mL).`, excess);
       const durOk = dur >= VOLUME_EXPANDER.INFUSION_DURATION_S.min && dur <= VOLUME_EXPANDER.INFUSION_DURATION_S.max;
       c.judge('volume-rate', durOk, 'obat', durOk ? 'Kecepatan bolus sesuai.' : `Berikan dalam ${VOLUME_EXPANDER.INFUSION_DURATION_S.min / 60}–${VOLUME_EXPANDER.INFUSION_DURATION_S.max / 60} menit (bolus cepat berisiko perdarahan intraventrikular pada prematur).`);
       if (sc.hidden.volumeDeficit === 0) c.judge('volume-indication', false, 'obat', 'Tidak ada tanda/riwayat hipovolemia — cairan bukan prioritas.');
