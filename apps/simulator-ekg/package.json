@@ -1,0 +1,42 @@
+{
+  "name": "simulator-ekg",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Simulator EKG 12-Lead untuk dokter umum dan residen kardiologi di Indonesia.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && vite build --config vite.lib.config.ts",
+    "preview": "vite preview --port 4174 --strictPort",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate:cases": "vite-node scripts/validate-cases.ts",
+    "e2e": "playwright test --trace off",
+    "test:all": "npm run typecheck && npm run test && npm run validate:cases && npm run build && npm run e2e",
+    "docs:clinical": "vite-node scripts/gen-clinical-review.ts",
+    "icons": "node scripts/gen-icons.mjs"
+  },
+  "dependencies": {
+    "jspdf": "^3.0.4",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "tailwindcss": "^4.3.5",
+    "typescript": "~5.8.3",
+    "vite": "^7.3.8",
+    "vite-node": "^3.2.4",
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^3.2.7",
+    "workbox-window": "^7.4.1"
+  }
+}
