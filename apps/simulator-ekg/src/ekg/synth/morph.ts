@@ -106,6 +106,8 @@ export interface MorphSpec {
   deltaS?: number;
   pMorph?: PMorph;
   pScale?: number;
+  /** Pola sinus (sine wave) hiperkalemia berat: QRS sangat lebar menyatu dengan T. */
+  sineWave?: boolean;
 }
 
 export interface VentricularTemplate {
@@ -311,6 +313,18 @@ export function buildVentricular(spec: MorphSpec, o: BuildOpts): VentricularTemp
   if (qs !== 1) qrs = qrs.map((q) => ({ ...q, v: scale(q.v, qs) }));
   const widen = (spec.qrsWiden ?? 1) * (o.fusion ?? 1);
   if (widen !== 1) qrs = qrs.map((q) => ({ ...q, c: q.c * widen, sL: q.sL * widen, sR: q.sR * widen }));
+
+  // Hiperkalemia berat: QRS sangat lebar, gelombang S lebar langsung menyatu dengan T yang
+  // lebar (tanpa segmen ST isoelektrik) → tampak seperti gelombang sinus.
+  if (spec.sineWave && conducted) {
+    const main = norm([0.75, 0.55, 0.1]);
+    qrs = [
+      { c: 0.07, sL: 0.045, sR: 0.04, v: scale(main, 0.85) },
+      { c: 0.19, sL: 0.045, sR: 0.05, v: scale(main, -0.55) },
+    ];
+    const tOnly: Kernel = { c: 0.34, sL: 0.06, sR: 0.06, v: scale(norm([0.55, 0.45, -0.3]), 0.55) };
+    return { qrs, t: [tOnly], u: [], local, st: [], qrsDur: 0.3, qt: 0.49, tPeak: 0.34, spikes: [] };
+  }
 
   const qrsEnd = Math.max(...qrs.map((q) => q.c + 2.5 * q.sR));
   const qrsDur = qrsEnd;

@@ -4,13 +4,13 @@ import { SITE, DISCLAIMER } from '../config/site';
 import { usePrefs, type Theme } from '../store/prefs';
 import { cx } from '../lib/format';
 
-const NAV: Array<{ r: Route; label: string; match: Route['name'][] }> = [
-  { r: { name: 'home' }, label: 'Beranda', match: ['home'] },
+const NAV: Array<{ r: Route; label: string; match: Route['name'][]; wide?: boolean }> = [
+  { r: { name: 'home' }, label: 'Beranda', match: ['home'], wide: true },
   { r: { name: 'kurikulum' }, label: 'Kurikulum', match: ['kurikulum', 'latihan', 'klinis', 'monitor', 'debriefing'] },
   { r: { name: 'bank' }, label: 'Bank Kasus', match: ['bank', 'kasus'] },
   { r: { name: 'progres' }, label: 'Progres', match: ['progres'] },
-  { r: { name: 'sumber' }, label: 'Sumber Data', match: ['sumber'] },
-  { r: { name: 'tentang' }, label: 'Tentang', match: ['tentang', 'panduan'] },
+  { r: { name: 'sumber' }, label: 'Sumber Data', match: ['sumber'], wide: true },
+  { r: { name: 'tentang' }, label: 'Tentang', match: ['tentang', 'panduan'], wide: true },
 ];
 
 export function Layout({ route, children }: { route: Route; children: ReactNode }) {
@@ -28,13 +28,13 @@ export function Layout({ route, children }: { route: Route; children: ReactNode 
           <a href={href({ name: 'home' })} className="flex shrink-0 items-center gap-2 font-bold text-slate-900 dark:text-white">
             <img src={`${import.meta.env.BASE_URL}icon.svg`} alt="" width="28" height="28" className="h-7 w-7" />
             <span className="hidden md:inline">{SITE.APP_NAME}</span>
-            <span className="md:hidden">EKG</span>
+            <span className="sr-only md:hidden">Beranda Simulator EKG</span>
           </a>
           <nav aria-label="Navigasi utama" className="ml-auto flex items-center gap-1 overflow-x-auto">
-            {NAV.map(({ r, label, match }) => {
+            {NAV.map(({ r, label, match, wide }) => {
               const on = match.includes(route.name);
               return (
-                <a key={label} href={href(r)} aria-current={on ? 'page' : undefined} className={cx('shrink-0 rounded-lg px-2.5 py-2 text-sm font-medium', on ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>
+                <a key={label} href={href(r)} aria-current={on ? 'page' : undefined} className={cx('shrink-0 rounded-lg px-2 py-2 text-sm font-medium sm:px-2.5', wide && 'hidden sm:inline-block', on ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800')}>
                   {label}
                 </a>
               );
@@ -58,7 +58,7 @@ export function Layout({ route, children }: { route: Route; children: ReactNode 
             <a className="underline" href={SITE.MAIN_SITE_URL}>
               Situs utama
             </a>{' '}
-            · v{SITE.VERSION}
+            · <a className="underline" href={href({ name: 'tentang' })}>Tentang &amp; panduan</a> · v{SITE.VERSION}
           </p>
         </div>
       </footer>

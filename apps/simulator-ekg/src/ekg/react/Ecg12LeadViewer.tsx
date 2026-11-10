@@ -86,7 +86,7 @@ export const Ecg12LeadViewer = forwardRef<Ecg12LeadViewerHandle, Ecg12LeadViewer
     if (!el) return;
     const upd = () => {
       const core = coreRef.current;
-      if (core) setH(Math.max(180, core.idealHeight(el.clientWidth)));
+      if (core) setH(p.settings.layout === 'single' && el.clientWidth < 700 ? 300 : Math.max(180, core.idealHeight(el.clientWidth)));
     };
     upd();
     const ro = new ResizeObserver(upd);

@@ -38,10 +38,16 @@ export default defineConfig({
         // Hanya cangkang aplikasi yang di-precache. Data kasus TIDAK di-precache:
         // di-cache saat dibuka (runtime) atau lewat tombol "unduh paket offline".
         globPatterns: ['**/*.{js,css,html,svg,png,webmanifest}'],
-        globIgnores: ['cases/**', 'lib/**'],
+        // Pustaka PDF (besar) tidak di-precache; di-cache saat pertama dipakai.
+        globIgnores: ['cases/**', 'lib/**', '**/jspdf*', '**/html2canvas*', '**/purify*', '**/index.es-*'],
         navigateFallback: `${BASE}index.html`,
         cleanupOutdatedCaches: true,
         runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.startsWith(`${BASE}assets/`),
+            handler: 'CacheFirst',
+            options: { cacheName: 'ekg-assets', expiration: { maxEntries: 60 } },
+          },
           {
             urlPattern: ({ url }) => url.pathname.startsWith(`${BASE}cases/`),
             handler: 'CacheFirst',

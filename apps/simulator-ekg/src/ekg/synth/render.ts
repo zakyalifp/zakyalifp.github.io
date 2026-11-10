@@ -163,7 +163,7 @@ export function renderRange(inp: RenderInput, o: RenderOpts): Partial<Record<Lea
     const m = morphAt(a.t);
     const p = buildP(m, a.kind);
     for (const k of p.kernels) addKernel(X, Y, Z, k, a.t, 1, fs, i0);
-    if (a.spike) spikesV.push({ i: Math.round(a.t * fs) - i0, v: [0.5, 0.9, -0.3] });
+    if (a.spike) spikesV.push({ i: Math.round(a.t * fs) - i0, v: [0.2, 0.4, -0.12] });
   }
 
   // Ventrikel
@@ -171,7 +171,7 @@ export function renderRange(inp: RenderInput, o: RenderOpts): Partial<Record<Lea
   for (const ev of inp.vent) {
     idx++;
     if (ev.t > tB + 0.05 || ev.t < tA - 0.9) continue;
-    if (ev.spike) spikesV.push({ i: Math.round((ev.t - 0.004) * fs) - i0, v: [0.9, -1.6, 1.0] });
+    if (ev.spike) spikesV.push({ i: Math.round((ev.t - 0.004) * fs) - i0, v: [0.3, -0.5, 0.32] });
     if (ev.spikeOnly) continue;
     const m = morphAt(ev.t);
     const tpl = templateFor(ev, m, idx);

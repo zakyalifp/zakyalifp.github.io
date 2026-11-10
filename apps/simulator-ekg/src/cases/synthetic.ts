@@ -167,7 +167,7 @@ export const SYNTHETIC_CASES: SynthCase[] = [
     { leads: RHY, label: 'P datar, PR memanjang', text: 'P melebar/mendatar dan PR memanjang.', kind: 'gelombang-p' },
     { leads: ['V2', 'V3', 'V4'], label: 'T runcing + QRS lebar', text: 'QRS mulai melebar dengan T runcing.', kind: 'qrs' },
   ], { id: 'syn-hyperk-2' }),
-  c('hyperk-3', 58, 'L', { rhythm: { kind: 'junctional', rate: 58, retro: 'hidden' }, morph: { tPeaked: 1, qrsWiden: 2.4, pMorph: 'none', tScale: 0.8 } }, [
+  c('hyperk-3', 58, 'L', { rhythm: { kind: 'junctional', rate: 96, retro: 'hidden' }, morph: { sineWave: true, pMorph: 'none' } }, [
     { leads: ALL, label: 'Pola sine wave', text: 'P hilang, QRS sangat lebar menyatu dengan T membentuk gelombang sinus: pra-henti jantung.', kind: 'qrs' },
   ], { id: 'syn-hyperk-3' }),
   c('hyperk-1', 64, 'P', { rhythm: sinus(84), morph: { tPeaked: 0.8, qrsScale: 0.9 } }, [{ leads: ['V2', 'V3', 'V4'], label: 'T runcing', text: 'T runcing berbasis sempit di prekordial.', kind: 'gelombang-t' }], { id: 'syn-hyperk-1b' }),
@@ -285,7 +285,7 @@ export const SERIAL_SYNTH: SynthCase[] = [
   c('stemi-anterior', 56, 'L', { rhythm: sinus(94), morph: { st: [{ territory: 'anteriorProximal', mm: 4.5, shape: 'convex' }], tExtra: [{ territory: 'anterior', mm: 5 }] } }, [{ leads: ['V1', 'V2', 'V3', 'V4', 'aVL'], label: 'Elevasi ST', text: 'Elevasi ST anterior dengan resiprokal inferior.', kind: 'st-elevasi' }, { leads: INF, label: 'Resiprokal', text: 'Depresi ST inferior.', kind: 'st-depresi' }], { id: 'ser-stemi-2' }),
   c('old-mi-anterior', 56, 'L', { rhythm: sinus(76), morph: { oldMi: ['anteroseptal'], st: [{ territory: 'anterior', mm: 0.8 }], tExtra: [{ territory: 'anterior', mm: -3 }] } }, [{ leads: ['V1', 'V2', 'V3', 'V4'], label: 'Evolusi', text: 'Q/QS anterior dengan T inversi (evolusi pasca-reperfusi).', kind: 'qrs' }], { id: 'ser-stemi-3' }),
   c('hyperk-1', 63, 'P', { rhythm: sinus(80), morph: { tPeaked: 0.6 } }, [{ leads: ['V2', 'V3', 'V4'], label: 'T runcing tersisa', text: 'Setelah terapi: QRS kembali sempit, T masih runcing.', kind: 'gelombang-t' }], { id: 'ser-hyperk-after' }),
-  c('hyperk-3', 63, 'P', { rhythm: { kind: 'junctional', rate: 54, retro: 'hidden' }, morph: { tPeaked: 1, qrsWiden: 2.2, pMorph: 'none', tScale: 0.85 } }, [{ leads: ALL, label: 'Sine wave', text: 'P hilang, QRS sangat lebar menyatu dengan T.', kind: 'qrs' }], { id: 'ser-hyperk-before' }),
+  c('hyperk-3', 63, 'P', { rhythm: { kind: 'junctional', rate: 88, retro: 'hidden' }, morph: { sineWave: true, pMorph: 'none', qrsScale: 0.9 } }, [{ leads: ALL, label: 'Sine wave', text: 'P hilang, QRS sangat lebar menyatu dengan T.', kind: 'qrs' }], { id: 'ser-hyperk-before' }),
   c('sinus-normal', 27, 'P', { rhythm: sinus(84) }, [{ leads: RHY, label: 'Sinus', text: 'Irama sinus setelah konversi.', kind: 'irama' }], { id: 'ser-svt-after', reference: true }),
   c('vt-mono', 64, 'L', { rhythm: { kind: 'vt', rate: 165, origin: 'lv-inferoapical', sinusRate: 80, captureAt: [10] } }, [{ leads: ALL, label: 'VT', text: 'Takikardia QRS lebar dengan disosiasi AV.', kind: 'irama' }], { id: 'ser-vt' }),
 ];

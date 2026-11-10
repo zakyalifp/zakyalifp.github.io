@@ -91,7 +91,7 @@ export class EcgViewerCore {
   private raf = 0;
   private pointers = new Map<number, { x: number; y: number }>();
   private pinch: { d: number; zoom: number; mid: { x: number; y: number }; offX: number; offY: number } | null = null;
-  private drag: { x: number; y: number; offX: number; offY: number; mode: 'pan' | 'cal-new' | 'cal-1' | 'cal-2' | 'cal-move' | 'amp-new' | 'amp-1' | 'amp-2' } | null = null;
+  private drag: { x: number; y: number; offX: number; offY: number; cy?: number; mode: 'pan' | 'cal-new' | 'cal-1' | 'cal-2' | 'cal-move' | 'amp-new' | 'amp-1' | 'amp-2' } | null = null;
   private caliper: Caliper | null = null;
   private amp: AmpCaliper | null = null;
   private ruler: { x: number; y: number } | null = null;
@@ -227,7 +227,12 @@ export class EcgViewerCore {
     const dpr = Math.min(3, window.devicePixelRatio || 1);
     this.canvas.width = Math.round(this.cssW * dpr);
     this.canvas.height = Math.round(this.cssH * dpr);
-    if (this.layout) this.fitScale = Math.min(this.cssW / this.layout.width, this.cssH / this.layout.height);
+    if (this.layout) {
+      const wf = this.cssW / this.layout.width;
+      const hf = this.cssH / this.layout.height;
+      // Satu sadapan di layar sempit: skala mengikuti tinggi (terbaca), geser horizontal.
+      this.fitScale = this.settings.layout === 'single' ? Math.max(wf, Math.min(hf, 4)) : Math.min(wf, hf);
+    }
     this.clampOffset();
     this.request();
   }
@@ -580,7 +585,7 @@ export class EcgViewerCore {
       this.opts.onMeasure?.({ kind: 'ruler' });
       this.request();
     } else {
-      this.drag = { ...p, offX: this.offX, offY: this.offY, mode: 'pan' };
+      this.drag = { ...p, offX: this.offX, offY: this.offY, cy: e.clientY, mode: 'pan' };
       this.canvas.style.cursor = 'grabbing';
     }
   };
@@ -609,7 +614,13 @@ export class EcgViewerCore {
     const m = this.toMm(p.x, p.y);
     if (d.mode === 'pan') {
       this.offX = d.offX + (p.x - d.x);
-      this.offY = d.offY + (p.y - d.y);
+      const L = this.layout;
+      const fitsV = !L || L.height * this.fitScale * this.zoom <= this.cssH + 1;
+      if (fitsV && d.cy !== undefined && e.pointerType !== 'mouse') {
+        // Kertas tidak bisa digeser vertikal: teruskan seret vertikal sebagai scroll halaman.
+        window.scrollBy(0, d.cy - e.clientY);
+        d.cy = e.clientY;
+      } else this.offY = d.offY + (p.y - d.y);
       this.clampOffset();
     } else if (this.caliper && (d.mode === 'cal-new' || d.mode === 'cal-2')) this.caliper.x2 = m.x;
     else if (this.caliper && d.mode === 'cal-1') this.caliper.x1 = m.x;
