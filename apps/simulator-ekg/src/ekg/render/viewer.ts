@@ -530,13 +530,13 @@ export class EcgViewerCore {
     ctx.fillText(text, x + 1.2, y);
   }
 
-  private emitMeasure(): void {
+  private emitMeasure(kind: 'caliper' | 'amp'): void {
     const L = this.layout;
     if (!L) return;
-    if (this.caliper) {
+    if (kind === 'caliper' && this.caliper) {
       const ms = mmToMs(Math.abs(this.caliper.x2 - this.caliper.x1), L.speed);
       this.opts.onMeasure?.({ kind: 'caliper', ms: Math.round(ms), bpm: ms > 0 ? Math.round(60000 / ms) : undefined });
-    } else if (this.amp) {
+    } else if (kind === 'amp' && this.amp) {
       const mm = Math.abs(this.amp.y2 - this.amp.y1);
       const hit = hitPanel(L, this.amp.x, (this.amp.y1 + this.amp.y2) / 2);
       this.opts.onMeasure?.({ kind: 'amp', mm: Math.round(mm * 10) / 10, mv: Math.round((mm / L.gain) * 100) / 100, lead: hit?.panel.lead });
@@ -621,7 +621,7 @@ export class EcgViewerCore {
   private onUp = (e: PointerEvent): void => {
     this.pointers.delete(e.pointerId);
     if (this.pointers.size < 2) this.pinch = null;
-    if (this.drag && this.drag.mode !== 'pan') this.emitMeasure();
+    if (this.drag && this.drag.mode !== 'pan') this.emitMeasure(this.drag.mode.startsWith('amp') ? 'amp' : 'caliper');
     this.drag = null;
     if (this.tool === 'pan') this.canvas.style.cursor = 'grab';
   };

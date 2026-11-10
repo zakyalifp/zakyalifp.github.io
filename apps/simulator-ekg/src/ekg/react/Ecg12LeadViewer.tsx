@@ -49,9 +49,13 @@ export const Ecg12LeadViewer = forwardRef<Ecg12LeadViewerHandle, Ecg12LeadViewer
       label: p.label,
     });
     coreRef.current = core;
+    // Hook uji end-to-end (hanya saat dikendalikan otomatis)
+    const w = window as unknown as { __ekgViewers?: EcgViewerCore[] };
+    if (navigator.webdriver) (w.__ekgViewers ??= []).push(core);
     return () => {
       core.destroy();
       coreRef.current = null;
+      if (w.__ekgViewers) w.__ekgViewers = w.__ekgViewers.filter((x) => x !== core);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

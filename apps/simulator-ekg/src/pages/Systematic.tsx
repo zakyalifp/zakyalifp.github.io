@@ -64,7 +64,7 @@ function Runner({ list, level }: { list: CaseMeta[]; level?: Level }) {
   };
   const sr = (k: string) => res?.find((s) => s.step === k);
   const dxOptions = Object.values(DIAGNOSES).sort((a, b) => a.label.localeCompare(b.label, 'id'));
-  const useCal = (k: NumKey) => {
+  const fromCaliper = (k: NumKey) => {
     if (!last || last.kind !== 'caliper' || !last.ms) return;
     if (k === 'hr') set({ hr: last.bpm ?? null });
     else set({ [k]: last.ms } as Partial<SystematicAnswer>);
@@ -83,7 +83,7 @@ function Runner({ list, level }: { list: CaseMeta[]; level?: Level }) {
         />
         <span className="text-sm">{unit}</span>
         {!res && (
-          <button type="button" className="ctrl" disabled={!last || last.kind !== 'caliper'} onClick={() => useCal(k)} title="Isi dari hasil kaliper terakhir">
+          <button type="button" className="ctrl" disabled={!last || last.kind !== 'caliper'} onClick={() => fromCaliper(k)} title="Isi dari hasil kaliper terakhir">
             ← kaliper
           </button>
         )}
@@ -135,9 +135,9 @@ function Runner({ list, level }: { list: CaseMeta[]; level?: Level }) {
           {num({ k: 'hr', label: '1. Laju (/menit)', unit: '/menit' })}
           {sel({ k: 'rhythm', label: '2. Irama', opts: RHYTHM_LABEL })}
           <Field n="3. Aksis (°)" r={sr('axis')}>
-            <div className="flex flex-wrap gap-2">
-              <input className="input !w-28" inputMode="numeric" aria-label="Aksis derajat" value={ans.axis ?? ''} disabled={!!res} onChange={(e) => set({ axis: e.target.value === '' || e.target.value === '-' ? null : Number(e.target.value) })} data-testid="f-axis" />
-              <select className="select !w-auto flex-1" aria-label="Kategori aksis" value={ans.axisCat ?? ''} disabled={!!res} onChange={(e) => set({ axisCat: e.target.value as SystematicAnswer['axisCat'] })}>
+            <div className="flex gap-2">
+              <input className="input !w-24 shrink-0" inputMode="numeric" aria-label="Aksis derajat" value={ans.axis ?? ''} disabled={!!res} onChange={(e) => set({ axis: e.target.value === '' || e.target.value === '-' ? null : Number(e.target.value) })} data-testid="f-axis" />
+              <select className="select min-w-0 flex-1" aria-label="Kategori aksis" value={ans.axisCat ?? ''} disabled={!!res} onChange={(e) => set({ axisCat: e.target.value as SystematicAnswer['axisCat'] })}>
                 <option value="">atau kategori…</option>
                 {Object.entries(AXIS_LABEL).map(([v, l]) => (
                   <option key={v} value={v}>

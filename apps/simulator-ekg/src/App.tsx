@@ -18,6 +18,7 @@ const Progress = lazy(() => import('./pages/Progress'));
 const Sources = lazy(() => import('./pages/Sources'));
 const About = lazy(() => import('./pages/About'));
 const Reviewer = lazy(() => import('./pages/Reviewer'));
+const Gallery = lazy(() => import('./pages/Gallery'));
 
 const TITLES: Record<string, string> = {
   home: 'Beranda',
@@ -33,6 +34,7 @@ const TITLES: Record<string, string> = {
   tentang: 'Tentang',
   panduan: 'Panduan',
   reviewer: 'Mode Reviewer',
+  galeri: 'Galeri pola sintetis',
   notfound: 'Tidak ditemukan',
 };
 
@@ -106,6 +108,9 @@ export function App() {
       break;
     case 'reviewer':
       page = <Reviewer />;
+      break;
+    case 'galeri':
+      page = <Gallery page={route.page} />;
       break;
     default:
       page = (

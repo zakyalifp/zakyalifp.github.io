@@ -15,6 +15,7 @@ export type Route =
   | { name: 'tentang' }
   | { name: 'panduan' }
   | { name: 'reviewer' }
+  | { name: 'galeri'; page: number }
   | { name: 'notfound' };
 
 function parseQuery(q: string | undefined): Record<string, string> {
@@ -58,6 +59,8 @@ export function parseHash(hash: string): Route {
       return { name: 'panduan' };
     case 'reviewer':
       return { name: 'reviewer' };
+    case 'galeri':
+      return { name: 'galeri', page: Math.max(1, Number(q.hal ?? 1) || 1) };
     default:
       return { name: 'notfound' };
   }
@@ -77,6 +80,8 @@ export function href(r: Route): string {
       return r.id ? `#/latihan/klinis?id=${encodeURIComponent(r.id)}` : '#/latihan/klinis';
     case 'monitor':
       return '#/latihan/monitor';
+    case 'galeri':
+      return `#/galeri?hal=${r.page}`;
     default:
       return `#/${r.name}`;
   }
