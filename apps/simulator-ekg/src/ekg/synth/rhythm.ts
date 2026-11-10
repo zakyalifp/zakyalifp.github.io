@@ -139,6 +139,12 @@ export class Scheduler {
     }
     this.atrialT = this.tNext - 0.16;
     this.escapeT = this.tNext + this.rng.range(0, 0.4);
+    // Hanya irama dengan aktivitas atrium/lolos independen yang memakai penanda ini;
+    // selain itu diset tak hingga agar tidak menahan "frontier" penjadwal.
+    const usesAtrial = spec.kind === 'at' || spec.kind === 'aivr' || spec.kind === 'vt' || spec.kind === 'avb' || (spec.kind === 'asystole' && !!spec.pRate);
+    const usesEscape = (spec.kind === 'avb' && spec.degree === 3) || (spec.kind === 'paced' && spec.fault === 'undersensing');
+    if (!usesAtrial) this.atrialT = Infinity;
+    if (!usesEscape) this.escapeT = Infinity;
   }
 
   /** Jadwalkan kejadian hingga waktu `horizon`. */

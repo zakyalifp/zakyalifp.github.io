@@ -359,8 +359,9 @@ export function buildVentricular(spec: MorphSpec, o: BuildOpts): VentricularTemp
   // Segmen ST
   if (base.st && conducted) st.push({ v: base.st, shape: 'plateau' });
   if (base.st && beat === 'paced') st.push({ v: base.st, shape: 'plateau' });
+  // Arus injuri (ST) juga tampak pada denyut pacu (dasar kriteria Sgarbossa pada irama pacu)
+  if (conducted || beat === 'paced') for (const s of spec.st ?? []) st.push({ v: territoryVector(s.territory, s.mm / 10, s.index), shape: s.shape ?? 'plateau' });
   if (conducted) {
-    for (const s of spec.st ?? []) st.push({ v: territoryVector(s.territory, s.mm / 10, s.index), shape: s.shape ?? 'plateau' });
     if (spec.strain === 'lv') st.push({ v: [-0.11, -0.02, -0.07], shape: 'downsloping' });
     if (spec.strain === 'rv') st.push({ v: [0.04, 0.02, 0.08], shape: 'downsloping' });
   }
