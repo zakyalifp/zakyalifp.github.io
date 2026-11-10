@@ -619,8 +619,10 @@ export const SCORING = {
   QT_TOL_MS: 40,
   QTC_TOL_MS: 40,
   AXIS_TOL_DEG: 30,
-  // Batas lulus sesi & tingkat. [asumsi-sim]
-  PASS_SCORE: 70,
+  // Batas lulus sesi & tingkat — sama dengan simulator neonatus di repo ini (lulus 75,
+  // skor dibatasi 59 bila ada kesalahan kritis, mis. melewatkan oklusi koroner/VF). [asumsi-sim]
+  PASS_SCORE: 75,
+  CRITICAL_SCORE_CAP: 59,
   LEVEL_PASS_SCORE: 75,
   LEVEL_MIN_CASES: 10,
   // Diagnosis cepat: batas waktu per kasus (detik). [asumsi-sim]
@@ -700,6 +702,6 @@ export const CRITERIA_REGISTRY: RegistryRow[] = [
   { key: 'ACS_TIMING.LYSIS_WITHIN_MIN', parameter: 'Fibrinolitik', value: 'Mulai ≤10 menit sejak diagnosis STEMI', source: 'ESC23 (teks)', status: 'terverifikasi' },
   { key: 'ACS_TIMING.REPERFUSION_WINDOW_H', parameter: 'Jendela reperfusi', value: 'Gejala ≤12 jam (atau >12 jam bila iskemia berlangsung)', source: 'ESC23, PNPK26', status: 'terverifikasi' },
   { key: 'ACS_TIMING.POST_LYSIS', parameter: 'Pasca-fibrinolisis', value: 'Angiografi 2–24 jam; rescue PCI bila resolusi ST <50% dalam 60–90 menit', source: 'ESC23, PNPK26', status: 'terverifikasi' },
-  { key: 'SCORING', parameter: 'Toleransi penilaian', value: 'HR ±10% (min ±8); PR ±30; QRS ±25; QT/QTc ±40 ms; aksis ±30°; lulus 70', source: 'Asumsi simulator', status: 'asumsi-sim' },
+  { key: 'SCORING', parameter: 'Toleransi penilaian', value: 'HR ±10% (min ±8); PR ±30; QRS ±25; QT/QTc ±40 ms; aksis ±30°; lulus 75; kesalahan kritis → skor maks. 59', source: 'Asumsi simulator', status: 'asumsi-sim' },
   { key: 'SYNTH.DOWER', parameter: 'Model sintetis: proyeksi VCG → 12 sadapan', value: 'Matriks Dower (1980); sadapan V3R–V5R/V7–V9 = ekstrapolasi model', source: 'Dower GE, et al. 1980; Sameni R, et al. 2007 (model dinamis 3D)', status: 'asumsi-sim' },
 ];

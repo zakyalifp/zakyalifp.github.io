@@ -30,9 +30,7 @@ export interface SynthCase {
   reference?: boolean;
 }
 
-const ANT: LeadName[] = ['V1', 'V2', 'V3', 'V4'];
 const INF: LeadName[] = ['II', 'III', 'aVF'];
-const LAT: LeadName[] = ['I', 'aVL', 'V5', 'V6'];
 const PREC: LeadName[] = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6'];
 const LIMB: LeadName[] = ['I', 'II', 'III', 'aVR', 'aVL', 'aVF'];
 const ALL: LeadName[] = [...LIMB, ...PREC];
