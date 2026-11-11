@@ -1,0 +1,9 @@
+node_modules
+dist
+test-results
+playwright-report
+screenshots/*.tmp.png
+*.tsbuildinfo
+# Data mentah pipeline (tidak masuk repo)
+tools/ecg-pipeline/.cache/
+tools/ecg-pipeline/__pycache__/

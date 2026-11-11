@@ -26,7 +26,7 @@ export function About() {
         )}
       </p>
       <h2>Privasi</h2>
-      <p>Tanpa login dan tanpa pengumpulan data. Riwayat skor, nama untuk sertifikat, dan pengaturan hanya disimpan di perangkat Anda (localStorage) dan dapat dihapus kapan saja dari halaman Riwayat.</p>
+      <p>Tanpa login dan tanpa pengumpulan data pribadi. Situs memakai penghitung kunjungan anonim GoatCounter (tanpa cookie; hanya jumlah kunjungan, halaman, negara, dan jenis perangkat). Riwayat skor, nama untuk sertifikat, dan pengaturan hanya disimpan di perangkat Anda (localStorage) dan dapat dihapus kapan saja dari halaman Riwayat.</p>
       <h2>Bekerja offline</h2>
       <p>Setelah kunjungan pertama, simulator dapat dipasang di layar utama HP (menu browser → “Tambahkan ke layar utama”) dan berjalan tanpa internet.</p>
       <h2>Disclaimer</h2>

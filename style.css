@@ -456,6 +456,15 @@ h1, h2, h3 {
   text-decoration: underline;
 }
 
+.site-footer .visit-count {
+  margin-top: 6px;
+  font-size: 0.8rem;
+}
+
+.site-footer .visit-count[hidden] {
+  display: none;
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */

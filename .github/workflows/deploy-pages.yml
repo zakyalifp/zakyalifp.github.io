@@ -1,5 +1,6 @@
 # Uji + deploy situs ke GitHub Pages.
-# - Setiap Pull Request: menjalankan seluruh test simulator (typecheck, unit, e2e).
+# - Setiap Pull Request: menjalankan seluruh test simulator (typecheck, unit, e2e)
+#   untuk Simulator Resusitasi Neonatus DAN Simulator EKG.
 # - Setiap push ke main: test dulu; bila LULUS, situs lama + simulator digabung dan dideploy.
 #   Bila test gagal, deploy tidak dijalankan (situs yang sedang online tidak berubah).
 # Syarat sekali saja: Settings → Pages → Build and deployment → Source: "GitHub Actions".
@@ -55,9 +56,46 @@ jobs:
             apps/resusitasi-neonatus/screenshots
           retention-days: 14
 
+  test-ekg:
+    name: Test Simulator EKG
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: apps/simulator-ekg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/simulator-ekg/package-lock.json
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit test (rumus, synthesizer, skala render, bank kasus)
+        run: npm test
+      - name: Validasi manifest kasus
+        run: npm run validate:cases
+      - name: Build
+        run: npm run build
+      - name: Pasang browser Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Test end-to-end (semua mode sampai debriefing)
+        run: npm run e2e
+      - name: Simpan laporan & screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: laporan-test-ekg
+          path: |
+            apps/simulator-ekg/playwright-report
+            apps/simulator-ekg/screenshots
+          retention-days: 14
+
   deploy:
     name: Deploy ke GitHub Pages
-    needs: test
+    needs: [test, test-ekg]
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -77,9 +115,16 @@ jobs:
           cache-dependency-path: apps/resusitasi-neonatus/package-lock.json
       - run: npm ci
       - run: npm run build
+      - name: Build Simulator EKG
+        working-directory: apps/simulator-ekg
+        run: npm ci && npm run build
       - name: Gabungkan situs lama + simulator
         working-directory: .
-        run: bash apps/resusitasi-neonatus/scripts/assemble-site.sh _site
+        run: |
+          bash apps/resusitasi-neonatus/scripts/assemble-site.sh _site
+          mkdir -p _site/simulator-ekg
+          cp -R apps/simulator-ekg/dist/. _site/simulator-ekg/
+          bash .github/scripts/inject-counter.sh _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
