@@ -13,7 +13,7 @@ export const SITE = {
   APP_SHORT: 'Simulator EKG',
   AUTHOR_NAME: 'dr. Zaky Alif Pradian',
   AUTHOR_AFFILIATION: 'Dokter Internsip, RS Tk. II Moh. Ridwan Meuraksa',
-  FEEDBACK_URL: '',
+  FEEDBACK_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSel-8HG9bdRXFNlZvOdRjk1xquN-f-CSl_4X2YpyPY2fNVxWA/viewform?usp=pp_url&entry.2119513798=KASUS_ID',
   GOATCOUNTER_CODE: 'zakyalifp',
   MAIN_SITE_URL: '../',
   VERSION: '1.1.0',

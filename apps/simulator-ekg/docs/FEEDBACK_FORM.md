@@ -1,5 +1,9 @@
 # Form Umpan Balik (Google Form)
 
+> **Status:** form sudah dibuat dan terpasang (`FEEDBACK_URL` di `src/config/site.ts`).
+> Jawaban masuk ke Google Sheet "Umpan balik Simulator EKG (jawaban)" di Drive pemilik situs.
+> Bagian A–C di bawah hanya diperlukan bila form ingin dibuat ulang.
+
 Form dibuat **otomatis** oleh skrip di bawah — Anda tidak perlu mengetik pertanyaan satu per satu.
 Form tersimpan di Google Drive Anda sendiri; jawabannya masuk ke Google Sheet milik Anda.
 Simulator tidak menyimpan jawaban apa pun.

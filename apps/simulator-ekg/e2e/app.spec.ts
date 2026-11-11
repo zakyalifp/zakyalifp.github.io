@@ -39,6 +39,11 @@ test('tentang: nama pembuat & institusi; ID kasus tampil di pembahasan', async (
   await page.goto('#/kasus/syn-wellens-b-19');
   await page.getByTestId('reveal').click();
   await expect(page.getByTestId('case-id')).toHaveText('syn-wellens-b-19');
+  // Tautan umpan balik per kasus mengisi ID kasus otomatis (Google Form isian otomatis)
+  const fb = page.getByTestId('feedback-case');
+  await expect(fb).toHaveAttribute('href', /docs\.google\.com\/forms\/.*=syn-wellens-b-19$/);
+  await expect(fb).toHaveAttribute('target', '_blank');
+  await expect(page.locator('footer').getByTestId('feedback-link')).toBeVisible();
 });
 
 test('sumber data & lisensi', async ({ page }) => {
