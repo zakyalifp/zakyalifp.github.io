@@ -77,7 +77,7 @@ export function Layout({ route, children, minimal }: { route: Route; children: R
               <strong>Disclaimer:</strong> {DISCLAIMER}
             </p>
             <p>
-              Acuan: {SITE.GUIDELINE_LABEL}, disesuaikan dengan konteks Indonesia. Tanpa login, tanpa pengumpulan data — riwayat hanya disimpan di perangkat Anda. ·{' '}
+              Acuan: {SITE.GUIDELINE_LABEL}, disesuaikan dengan konteks Indonesia. Tanpa login, tanpa pengumpulan data pribadi (hanya penghitung kunjungan anonim) — riwayat hanya disimpan di perangkat Anda. ·{' '}
               <a className="underline" href={SITE.MAIN_SITE_URL}>
                 Situs utama
               </a>{' '}

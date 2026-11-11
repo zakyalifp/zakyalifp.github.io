@@ -7,6 +7,8 @@ import { loadCase } from '../cases/loader';
 import { useCatalog } from '../store/catalog';
 import { EcgWorkspace } from './EcgWorkspace';
 import { DataBadge } from './DataBadge';
+import { FeedbackLink } from './Community';
+import { feedbackHref } from '../config/site';
 
 export function CaseFacts({ c }: { c: LoadedCase }) {
   const t = c.truth;
@@ -41,7 +43,13 @@ export function SourceLine({ c }: { c: LoadedCase }) {
           · label asli: <code>{Object.entries(m.real.labels).map(([k, v]) => (typeof v === 'number' ? `${k}${v ? ` ${v}` : ''}` : `${k}: ${v}`)).join(', ')}</code>
         </>
       )}
-      {' '}· ukuran: {c.truth.source}
+      {' '}· ukuran: {c.truth.source} · ID kasus: <code data-testid="case-id">{m.id}</code>
+      {feedbackHref(m.id) && (
+        <>
+          {' '}
+          · <FeedbackLink caseId={m.id} />
+        </>
+      )}
     </p>
   );
 }

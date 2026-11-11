@@ -32,6 +32,15 @@ test('bank kasus: filter jenis data nyata/sintetis', async ({ page }) => {
   expect(t2.every((t) => t.includes('nyata'))).toBe(true);
 });
 
+test('tentang: nama pembuat & institusi; ID kasus tampil di pembahasan', async ({ page }) => {
+  await page.goto('#/tentang');
+  await expect(page.getByTestId('author')).toContainText('dr. Zaky Alif Pradian');
+  await expect(page.getByTestId('author')).toContainText('RS Tk. II Moh. Ridwan Meuraksa');
+  await page.goto('#/kasus/syn-wellens-b-19');
+  await page.getByTestId('reveal').click();
+  await expect(page.getByTestId('case-id')).toHaveText('syn-wellens-b-19');
+});
+
 test('sumber data & lisensi', async ({ page }) => {
   await page.goto('#/sumber');
   for (const d of ['ptbxl', 'ptbxlplus', 'chapman']) await expect(page.getByTestId(`dataset-${d}`)).toContainText('CC BY 4.0');

@@ -124,6 +124,7 @@ jobs:
           bash apps/resusitasi-neonatus/scripts/assemble-site.sh _site
           mkdir -p _site/simulator-ekg
           cp -R apps/simulator-ekg/dist/. _site/simulator-ekg/
+          bash .github/scripts/inject-counter.sh _site
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -9,7 +9,10 @@ Latihan interpretasi EKG 12 sadapan untuk dokter umum dan residen di Indonesia. 
 - Mode: Interpretasi Sistematis, Diagnosis Cepat, Kasus Klinis (EKG serial), Monitor Irama
   Dinamis, Kurikulum bertingkat, Latihan Adaptif (pengulangan berjarak)
 - Skor per kompetensi, debriefing, progres, PDF ringkasan & sertifikat, Mode Reviewer (`#/reviewer`)
-- PWA (offline + paket offline per kategori), mode gelap, WCAG AA, tanpa login/pengumpulan data
+- PWA (offline + paket offline per kategori), mode gelap, WCAG AA, tanpa login & tanpa data pribadi
+  (hanya penghitung kunjungan anonim GoatCounter — `docs/GOATCOUNTER.md`)
+- Tombol umpan balik ke Google Form, dengan ID kasus terisi otomatis — `docs/FEEDBACK_FORM.md`
+- Pembuat: dr. Zaky Alif Pradian (Dokter Internsip, RS Tk. II Moh. Ridwan Meuraksa)
 
 ## Struktur
 
@@ -20,6 +23,9 @@ src/cases/                     ← taksonomi diagnosis, kasus sintetis, kasus kl
 src/scoring/                   ← penilaian, sesi, pengulangan berjarak
 tools/ecg-pipeline/            ← pipeline Python (wfdb) PTB-XL/Chapman → public/cases/real/
 docs/CLINICAL_REVIEW.md        ← tabel review klinis (dibuat otomatis)
+docs/FEEDBACK_FORM.md          ← membuat Google Form umpan balik (skrip otomatis)
+docs/GOATCOUNTER.md            ← penghitung kunjungan: cara daftar & aktivasi
+src/config/site.ts             ← nama pembuat, URL form, kode GoatCounter
 DATA_LICENSES.md               ← lisensi & sitasi data
 ```
 

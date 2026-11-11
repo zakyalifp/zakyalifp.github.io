@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { href, type Route } from '../router';
-import { SITE, DISCLAIMER } from '../config/site';
+import { SITE, DISCLAIMER, PRIVACY_NOTE, feedbackHref } from '../config/site';
+import { FeedbackLink, VisitCount } from './Community';
 import { usePrefs, type Theme } from '../store/prefs';
 import { cx } from '../lib/format';
 
@@ -54,11 +55,21 @@ export function Layout({ route, children }: { route: Route; children: ReactNode 
             <strong>Disclaimer:</strong> {DISCLAIMER}
           </p>
           <p>
-            Data EKG nyata: PTB-XL, PTB-XL+, Chapman-Shaoxing/Ningbo (PhysioNet, CC BY 4.0) — lihat <a className="underline" href={href({ name: 'sumber' })}>Sumber Data &amp; Lisensi</a>. Tanpa login, tanpa pengumpulan data; progres hanya di perangkat Anda. ·{' '}
+            Data EKG nyata: PTB-XL, PTB-XL+, Chapman-Shaoxing/Ningbo (PhysioNet, CC BY 4.0) — lihat <a className="underline" href={href({ name: 'sumber' })}>Sumber Data &amp; Lisensi</a>. {PRIVACY_NOTE} ·{' '}
             <a className="underline" href={SITE.MAIN_SITE_URL}>
               Situs utama
             </a>{' '}
-            · <a className="underline" href={href({ name: 'tentang' })}>Tentang &amp; panduan</a> · v{SITE.VERSION}
+            · <a className="underline" href={href({ name: 'tentang' })}>Tentang &amp; panduan</a>
+            {feedbackHref() && (
+              <>
+                {' '}
+                · <FeedbackLink />
+              </>
+            )}{' '}
+            · v{SITE.VERSION}
+          </p>
+          <p>
+            Dibuat oleh {SITE.AUTHOR_NAME} ({SITE.AUTHOR_AFFILIATION}). <VisitCount />
           </p>
         </div>
       </footer>

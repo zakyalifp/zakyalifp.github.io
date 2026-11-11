@@ -6,6 +6,7 @@ import { CompetencyBars } from '../components/Charts';
 import { DIAGNOSES, LEVEL_LABEL } from '../cases/diagnoses';
 import { SCORING } from '../clinical/ecg-criteria';
 import { cx } from '../lib/format';
+import { FeedbackLink } from '../components/Community';
 
 export default function Debrief() {
   const last = useProgress((s) => s.last);
@@ -121,6 +122,7 @@ export default function Debrief() {
         <a className="btn-secondary" href={href({ name: 'progres' })}>
           Lihat progres
         </a>
+        <FeedbackLink variant="button" label="Beri umpan balik" />
       </section>
     </div>
   );

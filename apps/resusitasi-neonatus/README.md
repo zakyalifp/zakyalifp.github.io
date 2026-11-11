@@ -8,7 +8,7 @@ Latihan resusitasi neonatus **real-time** untuk dokter umum di Indonesia, berbas
 - Engine fisiologi deterministik (tick 1 detik), monitor EKG/SpO₂ + pita target per menit
 - Pengguna menghitung sendiri dosis & volume epinefrin/cairan
 - Debriefing per domain, riwayat & grafik progres (localStorage), PDF & sertifikat
-- PWA (offline), mode gelap, WCAG AA, tanpa login & tanpa pengumpulan data
+- PWA (offline), mode gelap, WCAG AA, tanpa login & tanpa pengumpulan data pribadi (hanya penghitung kunjungan anonim GoatCounter, disisipkan saat deploy)
 
 ## Struktur
 

@@ -2,7 +2,8 @@ import { href } from '../router';
 import { useCatalog, quizCases } from '../store/catalog';
 import { useProgress } from '../store/progress';
 import { LEVEL_LABEL, type Level } from '../cases/diagnoses';
-import { DISCLAIMER } from '../config/site';
+import { DISCLAIMER, SITE } from '../config/site';
+import { FeedbackLink, VisitCount } from '../components/Community';
 
 const MODES = [
   { r: href({ name: 'latihan', mode: 'sistematis' }), t: 'Interpretasi Sistematis', d: 'Ukur sendiri laju, irama, aksis, P, PR, QRS, ST, T, QTc, lalu simpulkan & pilih tata laksana awal.', id: 'mode-sistematis' },
@@ -47,6 +48,13 @@ export function Home({ onOnboarding }: { onOnboarding: () => void }) {
           {err && <p className="mt-2 text-amber-200">{err}</p>}
           <p className="mt-3">{sessions.length} sesi latihan tersimpan di perangkat ini.</p>
           <p className="mt-3 text-xs text-slate-200">{DISCLAIMER}</p>
+          <p className="mt-3 text-xs text-slate-200">
+            Dibuat oleh {SITE.AUTHOR_NAME} · {SITE.AUTHOR_AFFILIATION}
+          </p>
+          <p className="mt-1 text-xs text-slate-200 [&_a]:text-white">
+            <VisitCount />{' '}
+            <FeedbackLink label="Beri umpan balik" />
+          </p>
         </div>
       </section>
       <h2 className="mb-3 text-lg font-bold">Mode belajar</h2>

@@ -4,8 +4,10 @@ import { App } from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import './index.css';
 import { applyTheme, usePrefs } from './store/prefs';
+import { startVisitCounter } from './lib/visits';
 
 applyTheme(usePrefs.getState().theme);
+startVisitCounter();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ErrorBoundary>

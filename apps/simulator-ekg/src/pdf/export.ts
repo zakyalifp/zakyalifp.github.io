@@ -106,7 +106,7 @@ export async function exportCertificatePdf(level: Level, score: number, nCases: 
   c(LEVEL_LABEL[level], 108, 16, true);
   c(`Skor ${score} · ${nCases} EKG · ${today()}`, 120, 12);
   c(`${SITE.APP_NAME} · ${SITE.GUIDELINE_LABEL}`, 140, 9);
-  c(`Pembuat: ${SITE.AUTHOR_NAME}`, 148, 10);
+  c(`Pembuat: ${SITE.AUTHOR_NAME} · ${SITE.AUTHOR_AFFILIATION}`, 148, 10);
   d.setFontSize(8);
   const disc = d.splitTextToSize(t(`Sertifikat ini menandakan penyelesaian latihan simulasi mandiri, BUKAN sertifikasi resmi dan tidak dapat dipakai sebagai bukti kompetensi klinis. ${DISCLAIMER}`), W - 70) as string[];
   d.text(disc, W / 2, 168, { align: 'center' });
