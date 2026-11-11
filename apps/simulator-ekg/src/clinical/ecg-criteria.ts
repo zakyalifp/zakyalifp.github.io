@@ -33,7 +33,7 @@ export const SOURCES = {
   ESC23: 'Byrne RA, Rossello X, Coughlan JJ, et al. 2023 ESC Guidelines for the management of acute coronary syndromes. Eur Heart J 2023;44:3720–3826. doi:10.1093/eurheartj/ehad191.',
   ACCAHA25: 'Rao SV, O’Donoghue ML, Ruel M, et al. 2025 ACC/AHA/ACEP/NAEMSP/SCAI Guideline for the Management of Patients With Acute Coronary Syndromes. Circulation 2025;151:e771–e862. doi:10.1161/CIR.0000000000001309 (JACC 2025;85:2135–2237).',
   PNPK26: 'Keputusan Menteri Kesehatan RI No. HK.01.07/MENKES/876/2026 tentang Pedoman Nasional Pelayanan Klinis Tata Laksana Sindrom Koroner Akut (bersumber Pedoman Tata Laksana SKA PERKI 2024 dan ESC 2023).',
-  PERKI24: 'Perhimpunan Dokter Spesialis Kardiovaskular Indonesia (PERKI). Pedoman Tata Laksana Sindrom Koroner Akut, 2024 (dokumen asli belum dicek langsung — terlalu besar untuk diunggah; dirujuk melalui PNPK26).',
+  PERKI24: 'Perhimpunan Dokter Spesialis Kardiovaskular Indonesia (PERKI). Pedoman Tata Laksana Sindrom Koroner Akut, 2024. Dicek langsung dari foto halaman yang dikirim pemilik repo: Bab 1.5.2.1 (EKG, Tabel 1.2–1.3, Gambar 1.3–1.4), 1.6–1.7, 2.1 (GRACE, strategi invasif), 3.2–3.3 (reperfusi, Tabel 3.1–3.2 dosis fibrinolitik, Tabel Rekomendasi 9–10), 3.6.2 (aritmia fase akut).',
   KLIGFIELD07: 'Kligfield P, Gettes LS, Bailey JJ, et al. Recommendations for the standardization and interpretation of the electrocardiogram: Part I. Circulation 2007;115:1306–1324.',
   SURAWICZ09: 'Surawicz B, Childers R, Deal BJ, et al. AHA/ACCF/HRS recommendations … Part III: intraventricular conduction disturbances. Circulation 2009;119:e235–e240. doi:10.1161/CIRCULATIONAHA.108.191095.',
   RAUTAHARJU09: 'Rautaharju PM, Surawicz B, Gettes LS, et al. AHA/ACCF/HRS recommendations … Part IV: the ST segment, T and U waves, and the QT interval. Circulation 2009;119:e241–e250. doi:10.1161/CIRCULATIONAHA.108.191096.',
@@ -96,8 +96,11 @@ export const RATE = {
   SVT_TYPICAL: { min: 150, max: 250 },
   // Flutter atrium tipikal: laju atrium ~240–350/menit (ESC19SVT). [VERIFY]
   FLUTTER_ATRIAL: { min: 240, max: 350 },
-  // Irama idioventrikular terakselerasi (AIVR) 50–110/menit. [VERIFY]
+  // PERKI24 §3.6.2.2: AIVR akibat reperfusi, "laju ventrikel <120 detak per menit", biasanya
+  // tidak berbahaya dan tidak perlu terapi. Simulator membuat AIVR 50–110/menit (di dalam
+  // batas PERKI; rentang umum literatur). [terverifikasi]
   AIVR: { min: 50, max: 110 },
+  AIVR_PERKI_MAX: 120,
   // Irama junctional (lolos) 40–60/menit; terakselerasi 60–100. [VERIFY]
   JUNCTIONAL_ESCAPE: { min: 40, max: 60 },
 } as const;
@@ -220,8 +223,9 @@ export const ST_ELEVATION = {
   // ESC23 (teks): "New ST elevation at the J-point in at least two contiguous leads:
   // ≥2.5 mm in men <40 years, ≥2 mm in men ≥40 years, or ≥1.5 mm in women regardless of
   // age in leads V2–V3 and/or ≥1 mm in the other leads (in the absence of LVH or LBBB)".
-  // Identik dengan PNPK26 Tabel 3, UDMI4, WAGNER09 (rekomendasi 1–3) dan ACCAHA25
-  // Tabel 3. [terverifikasi]
+  // Identik dengan PERKI24 Tabel 1.2, PNPK26 Tabel 3, UDMI4, WAGNER09 (rekomendasi 1–3) dan
+  // ACCAHA25 Tabel 3. PERKI24 (catatan Tabel 1.2): bila elevasi J di V2–V3 sudah ada di EKG
+  // lama, elevasi J baru ≥1 mm dibanding EKG lama dianggap respons iskemik. [terverifikasi]
   V2V3_MEN_GE40_MM: 2.0,
   V2V3_MEN_LT40_MM: 2.5,
   V2V3_WOMEN_MM: 1.5,
@@ -234,8 +238,11 @@ export const ST_ELEVATION = {
   POSTERIOR_V7V9_MEN_LT40_MM: 1.0,
   // UDMI4 & WAGNER09 (rekomendasi 4): elevasi ST ≥0,5 mm di V3R/V4R; ≥1 mm pada pria
   // <30 tahun. [terverifikasi]
-  // Catatan: PNPK26 menulis "≥1 mV di V1 dan V4R" — tampaknya salah ketik (mm);
-  // simulator memakai UDMI4. Lihat docs/CLINICAL_REVIEW.md.
+  // Catatan: PNPK26 menulis "≥1 mV di V1 dan V4R" (salah ketik mm). PERKI24 Gambar 1.3
+  // memasukkan V3R/V4R ke ambang "1 mm pada sadapan lainnya". Penilaian memakai UDMI4;
+  // semua kasus sintetis IMA ventrikel kanan dibuat ≥1 mm di V3R/V4R sehingga memenuhi
+  // kedua ambang (diuji di synthetic.test.ts). Lihat docs/CLINICAL_REVIEW.md.
+  RIGHT_V4R_PERKI_MM: 1.0,
   RIGHT_V4R_MM: 0.5,
   RIGHT_V4R_MEN_LT30_MM: 1.0,
   // Pengukuran pada titik J dibanding garis dasar PR/TP (UDMI4/PNPK26). [terverifikasi]
@@ -271,8 +278,12 @@ export const ST_DEPRESSION = {
   // sadapan berdekatan dan/atau inversi T >1 mm. [terverifikasi]
   PNPK_V1V3_MM: 0.5,
   PNPK_OTHER_MM: 1.0,
-  // PNPK26: inversi T simetris ≥0,2 mV spesifisitas tinggi untuk iskemia akut. [terverifikasi]
+  // PNPK26 & PERKI24 (hal. 11): inversi T simetris ≥0,2 mV spesifisitas tinggi untuk iskemia
+  // akut. [terverifikasi]
   DEEP_TWI_MM: 2.0,
+  // PERKI24 Gambar 1.4 (SKA-NEST): "inversi gelombang T >1 mm pada ≥5 sadapan (termasuk I,
+  // II, aVL, dan V2–V6)" → gangguan prognosis ringan. [terverifikasi]
+  ISOLATED_TWI_PROGNOSTIC_MIN_LEADS: 5,
   // ACCAHA25 Tabel 3: bila depresi ST terisolasi ≥0,5 mm di V1–V3 → rekam V7–V9 untuk
   // mencari infark posterior. [terverifikasi]
   RECORD_V7V9_IF_STD_V1V3_MM: 0.5,
@@ -283,7 +294,9 @@ export const AVR_PATTERN = {
   // depression), coupled with ST-segment elevation in aVR and/or V1" → sugestif
   // obstruksi left main/multivessel; bila ada, "prompt triage for immediate reperfusion
   // therapy is indicated" (konteks iskemia berlangsung/instabilitas). UDMI4 serupa:
-  // "ST-segment depression ≥1 mm in six leads". [terverifikasi]
+  // "ST-segment depression ≥1 mm in six leads". PERKI24 Gambar 1.3 identik ("depresi ST
+  // 1 mm pada ≥6 sadapan permukaan … ditambah elevasi ST pada aVR dan/atau V1") dengan
+  // catatan: terapi reperfusi dilanjutkan secara mekanik (IKPP). [terverifikasi]
   STD_MM: 1.0,
   MIN_LEADS_WITH_STD: 6,
   // WAGNER09: depresi ST >0,1 mV di ≥8 sadapan + elevasi ST aVR dan/atau V1 → iskemia
@@ -337,7 +350,7 @@ export const Q_WAVE = {
   POSTERIOR_R_V1V2_MS: 40,
 } as const;
 
-/** Kelompok sadapan berdekatan (PNPK26 Tabel 4 / UDMI4). [terverifikasi] */
+/** Kelompok sadapan berdekatan (PERKI24 Tabel 1.3 = PNPK26 Tabel 4 / UDMI4). [terverifikasi] */
 export const CONTIGUOUS_GROUPS: Record<string, readonly string[]> = {
   anterior: ['V1', 'V2', 'V3', 'V4'],
   lateral: ['I', 'aVL', 'V5', 'V6'],
@@ -439,12 +452,13 @@ export function evaluateSgarbossa(inp: SgarbossaInput): SgarbossaResult {
 // 7. Pola oklusi tanpa elevasi ST klasik
 // ---------------------------------------------------------------------------
 export const DE_WINTER = {
-  // DEWINTER08: depresi ST upsloping 1–3 mm di titik J pada V1–V6 berlanjut ke T tinggi,
-  // positif, simetris; QRS tidak/sedikit melebar; sebagian besar disertai elevasi ST
-  // 1–2 mm di aVR. Tanda oklusi LAD proksimal. [VERIFY]
+  // PERKI24 Gambar 1.4 (= ESC23): "depresi segmen ST upsloping 1–3 mm pada poin J, pada
+  // V1–V6 yang kemudian menjadi gelombang T yang tinggi, positif, dan simetris" →
+  // stenosis berat/oklusi LAD proksimal. [terverifikasi]
   STD_MIN_MM: 1,
   STD_MAX_MM: 3,
   LEADS: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6'] as const,
+  // DEWINTER08: sebagian besar disertai elevasi ST 1–2 mm di aVR (tidak disebut PERKI24). [VERIFY]
   AVR_STE_MM: { min: 1, max: 2 },
 } as const;
 
@@ -452,7 +466,10 @@ export const WELLENS = {
   // DEZWAAN82: tipe A = T bifasik (positif lalu negatif) di V2–V3; tipe B = T terbalik
   // dalam & simetris di V2–V3 (dapat sampai V1–V6); riwayat angina, rekaman saat bebas
   // nyeri, ST isoelektrik/elevasi minimal (<1 mm), tanpa gelombang Q prekordial, progresi
-  // R terjaga → stenosis kritis LAD proksimal; hindari uji latih beban. [VERIFY]
+  // R terjaga → stenosis kritis LAD proksimal; hindari uji latih beban.
+  // PERKI24 Gambar 1.4: "elevasi poin J isoelektrik atau minimal (<1 mm)" + T bifasik di V2
+  // dan V3 (tipe A) atau T simetrik dan sangat terbalik di V2 dan V3, kadang V1, V4, V5, V6
+  // (tipe B) → stenosis berat/oklusi LAD proksimal. [terverifikasi]
   LEADS: ['V2', 'V3'] as const,
   MAX_STE_MM: 1,
   // WAGNER09: T inversi dalam ">0.5 mV" di V2, V3, V4 (kadang V5), sering dengan QT
@@ -664,22 +681,32 @@ export const ACS_TIMING = {
   // ESC23, PNPK26 & ACCAHA25 (COR 1): EKG direkam dan diinterpretasi dalam 10 menit sejak
   // kontak medis pertama/kedatangan. [terverifikasi]
   ECG_WITHIN_MIN: 10,
-  // ESC23 & PNPK26: waktu absolut diagnosis IMA-EST → reperfusi IKP (wire crossing)
-  // 120 menit; bila diperkirakan >120 menit → fibrinolitik. [terverifikasi]
+  // ESC23, PNPK26 & PERKI24 (hal. 56): waktu absolut diagnosis IMA-EST → reperfusi IKP
+  // (wire crossing) 120 menit; bila diperkirakan >120 menit → fibrinolitik. PERKI24 Tabel
+  // Rekomendasi 9: IKPP lebih dianjurkan bila interval KMP → IKP <120 menit (I A). [terverifikasi]
   PCI_MAX_DELAY_MIN: 120,
   // ACCAHA25 §5.2.1 (COR 1): IKP primer bila dapat dilakukan ≤90 menit (FMC → aktivasi
   // alat pertama), atau ≤120 menit pada pasien yang dirujuk antar-RS; §5.3: bila
   // diperkirakan >120 menit dari FMC dan gejala <12 jam → fibrinolitik. Dinyatakan
-  // dari FMC (ESC23/PNPK26: dari diagnosis). [terverifikasi]
+  // dari FMC (ESC23/PNPK26: dari diagnosis). PERKI24 (hal. 55): di RS sentra IKP, "IKP
+  // primer harus terlaksana segera dalam waktu <90 menit". [terverifikasi]
   FMC_TO_DEVICE_MIN: 90,
   FMC_TO_DEVICE_TRANSFER_MIN: 120,
   // ACCAHA25 §5.3 (COR 2a): gejala 12–24 jam → rujuk untuk IKP primer masih wajar.
   LATE_PRESENTER_H: 24,
+  // PERKI24 Tabel Rekomendasi 9: >12 jam → IKP primer bila gejala iskemia berlangsung,
+  // instabilitas hemodinamik, atau aritmia mengancam nyawa (I C); IKP rutin dipertimbangkan
+  // pada 12–48 jam (IIa B); IKP rutin IRA tersumbat >48 jam tanpa gejala tidak dianjurkan
+  // (III A). [terverifikasi]
+  LATE_ROUTINE_PCI_MAX_H: 48,
   // ACCAHA25 §5.3 (3: Harm): depresi ST saja (kecuali curiga STEMI posterior sejati) →
   // fibrinolitik TIDAK boleh diberikan. [terverifikasi]
   NO_LYSIS_FOR_ISOLATED_STD: true,
   // ESC23: "start fibrinolytic therapy within 10 min of the STEMI diagnosis". [terverifikasi]
   LYSIS_WITHIN_MIN: 10,
+  // PERKI24 (hal. 56 & Tabel Rekomendasi 9, I A): fibrinolitik dimulai dalam 30 menit dari
+  // kontak medis pertama (KMP); diagnosis IMA-EST ditegakkan ≤10 menit dari KMP. [terverifikasi]
+  LYSIS_WITHIN_FMC_MIN: 30,
   // ESC23 & PNPK26: reperfusi diindikasikan bila gejala ≤12 jam. [terverifikasi]
   REPERFUSION_WINDOW_H: 12,
   // ESC23 & PNPK26: setelah fibrinolisis berhasil → angiografi 2–24 jam; gagal (resolusi
@@ -688,6 +715,45 @@ export const ACS_TIMING = {
   POST_LYSIS_ANGIO_H: { min: 2, max: 24 },
   RESCUE_ST_RESOLUTION_PCT: 50,
   RESCUE_ASSESS_MIN: { min: 60, max: 90 },
+  // PERKI24 §3.2.2.1: fibrinolisis gagal/re-oklusi → angiografi segera & IKP rescue;
+  // pemberian ulang fibrinolitik tidak bermanfaat dan tidak dianjurkan. [terverifikasi]
+  NO_REPEAT_LYSIS: true,
+} as const;
+
+/**
+ * Pola yang menurut PERKI24 Gambar 1.3 (= ESC23) ditangani seperti IMA-EST dengan reperfusi
+ * MEKANIK (IKP primer): LBBB/irama pacu atau RBBB dengan kecurigaan klinis tinggi infark,
+ * dan iskemia multivessel/left main (pola aVR). De Winter (PERKI24 Gambar 1.4: stenosis
+ * berat/oklusi LAD proksimal) juga dirujuk untuk angiografi segera karena berupa depresi ST
+ * (ACCAHA25: tanpa fibrinolitik untuk depresi ST saja). [terverifikasi]
+ */
+export const MECHANICAL_REPERFUSION_PATTERNS = ['lbbb-iskemia', 'irama-pacu-iskemia', 'rbbb-iskemia', 'avr-multivessel', 'de-winter'] as const;
+
+/** Dosis fibrinolitik & ko-terapi IMA-EST — PERKI24 Tabel 3.2. [terverifikasi] */
+export const LYSIS_DOSES = {
+  STREPTOKINASE: '1,5 juta unit IV selama 30–60 menit (kontraindikasi: riwayat streptokinase/anistreplase)',
+  ALTEPLASE: 'bolus 15 mg IV, 0,75 mg/kg selama 30 menit (maks. 50 mg), lalu 0,5 mg/kg selama 60 menit (maks. 35 mg)',
+  TENECTEPLASE: 'bolus tunggal sesuai BB: <60 kg 30 mg; 60–<70 kg 35 mg; 70–<80 kg 40 mg; 80–<90 kg 45 mg; ≥90 kg 50 mg (setengah dosis pada usia ≥75 tahun)',
+  ASPIRIN: '160–320 mg oral, lanjut 80–100 mg/hari',
+  CLOPIDOGREL: 'LD 300 mg oral, lanjut 75 mg/hari (usia >75 tahun: LD 75 mg)',
+  ENOXAPARIN: 'usia <75 th: 30 mg IV lalu 15 menit kemudian 1 mg/kg SK tiap 12 jam (dua dosis pertama maks. 100 mg); usia ≥75 th: tanpa bolus, 0,75 mg/kg SK (maks. 75 mg); eGFR <30: 1×/hari',
+  UFH: 'bolus 60 U/kg IV (maks. 4000 U), infus 12 U/kg/jam (maks. 1000 U/jam) 24–48 jam, target aPTT 50–70 detik',
+} as const;
+
+/** Stratifikasi risiko SKA-NEST — PERKI24 §2.1. [terverifikasi] */
+export const NSTE_RISK = {
+  // Tabel 2.2: kematian di RS — skor GRACE ≤108 rendah (<1%), 109–140 menengah (1–3%),
+  // >140 tinggi (>3%).
+  GRACE_LOW_MAX: 108,
+  GRACE_HIGH_ABOVE: 140,
+  // §2.1.2: invasif segera (sesegera mungkin) bila risiko sangat tinggi (syok/instabilitas
+  // hemodinamik, nyeri refrakter, gagal jantung akut, aritmia/henti jantung, komplikasi
+  // mekanik, perubahan ST/T dinamis berulang); invasif dini <24 jam bila risiko tinggi
+  // (Gambar 2.1, IIa); selektif untuk risiko tidak tinggi.
+  EARLY_INVASIVE_H: 24,
+  // §1.5.2.1: EKG non-diagnostik + angina berlangsung → ulang 10–20 menit (rekam V7–V9);
+  // pemantauan 12–24 jam, EKG diulang tiap angina berulang atau minimal 1×/24 jam.
+  REPEAT_ECG_MIN: { min: 10, max: 20 },
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -731,7 +797,7 @@ export const CRITERIA_REGISTRY: RegistryRow[] = [
   { key: 'RATE.BRADY/TACHY', parameter: 'Bradikardia/takikardia sinus', value: '<60 / >100 per menit', source: 'Konvensi; AHA 2007 (Mason) menyebut opsi 50/menit', status: 'VERIFY' },
   { key: 'RATE.SVT_TYPICAL', parameter: 'Laju khas SVT', value: '150–250/menit', source: 'ESC19SVT', status: 'VERIFY' },
   { key: 'RATE.FLUTTER_ATRIAL', parameter: 'Laju atrium flutter', value: '240–350/menit', source: 'ESC19SVT', status: 'VERIFY' },
-  { key: 'RATE.AIVR', parameter: 'AIVR', value: '50–110/menit', source: 'Literatur elektrokardiografi', status: 'VERIFY' },
+  { key: 'RATE.AIVR', parameter: 'AIVR', value: '<120/menit, akibat reperfusi, biasanya jinak (simulator 50–110)', source: 'PERKI24 §3.6.2.2', status: 'terverifikasi' },
   { key: 'RATE.JUNCTIONAL_ESCAPE', parameter: 'Irama lolos junctional', value: '40–60/menit', source: 'Literatur elektrokardiografi', status: 'VERIFY' },
   { key: 'INTERVALS.PR', parameter: 'PR normal', value: '120–200 ms; >200 = AV blok derajat 1; <120 + delta = pre-eksitasi', source: 'KUSUMOTO18 (batas 200 ms); SURAWICZ09 (PR <120 ms pada WPW, terverifikasi)', status: 'VERIFY' },
   { key: 'INTERVALS.QRS', parameter: 'QRS', value: 'normal ≤110 ms; >110 IVCD; ≥120 ms BBB komplet; 110–120 inkomplet', source: 'SURAWICZ09', status: 'terverifikasi' },
@@ -741,13 +807,13 @@ export const CRITERIA_REGISTRY: RegistryRow[] = [
   { key: 'qtcBazett/qtcFridericia', parameter: 'Rumus QTc', value: 'Bazett QT/√RR; Fridericia QT/∛RR (RR dalam detik)', source: 'BAZETT20, FRIDERICIA20', status: 'terverifikasi' },
   { key: 'AXIS.NORMAL', parameter: 'Aksis', value: 'Normal −30° s.d. +90°; LAD sedang −30…−45°, berat −45…−90°; RAD sedang 90…120°, berat 120…180°', source: 'SURAWICZ09', status: 'terverifikasi' },
   { key: 'AXIS.EXTREME', parameter: 'Aksis ekstrem ("northwest")', value: '−90° s.d. ±180° (konvensi pengajaran; tidak didefinisikan untuk dewasa di SURAWICZ09)', source: 'Konvensi', status: 'asumsi-sim' },
-  { key: 'ST_ELEVATION.V2V3', parameter: 'Elevasi ST V2–V3', value: 'Pria ≥40 th ≥2 mm; pria <40 th ≥2,5 mm; wanita ≥1,5 mm', source: 'ESC23 (teks), PNPK26 Tabel 3, UDMI4, WAGNER09, ACCAHA25 Tabel 3', status: 'terverifikasi' },
-  { key: 'ST_ELEVATION.OTHER_LEADS_MM', parameter: 'Elevasi ST sadapan lain', value: '≥1 mm pada ≥2 sadapan berdekatan (tanpa LVH/LBBB)', source: 'ESC23, PNPK26, UDMI4, WAGNER09, ACCAHA25', status: 'terverifikasi' },
+  { key: 'ST_ELEVATION.V2V3', parameter: 'Elevasi ST V2–V3', value: 'Pria ≥40 th ≥2 mm; pria <40 th ≥2,5 mm; wanita ≥1,5 mm', source: 'PERKI24 Tabel 1.2, ESC23, PNPK26, UDMI4, WAGNER09, ACCAHA25', status: 'terverifikasi' },
+  { key: 'ST_ELEVATION.OTHER_LEADS_MM', parameter: 'Elevasi ST sadapan lain', value: '≥1 mm pada ≥2 sadapan berdekatan (tanpa LVH/LBBB)', source: 'PERKI24 Tabel 1.2, ESC23, PNPK26, UDMI4, WAGNER09, ACCAHA25', status: 'terverifikasi' },
   { key: 'ST_ELEVATION.POSTERIOR', parameter: 'Elevasi ST V7–V9', value: '≥0,5 mm; ≥1 mm pada pria <40 th', source: 'UDMI4 (teks); WAGNER09 0,5 mm semua umur', status: 'terverifikasi' },
-  { key: 'ST_ELEVATION.RIGHT_V4R', parameter: 'Elevasi ST V3R/V4R', value: '≥0,5 mm; ≥1 mm pada pria <30 th', source: 'UDMI4, WAGNER09. PNPK26 menulis "≥1 mV" (kemungkinan salah ketik)', status: 'terverifikasi' },
-  { key: 'ST_DEPRESSION.ISCHEMIC_MM', parameter: 'Depresi ST iskemik', value: 'Horizontal/downsloping ≥0,5 mm pada 2 sadapan berdekatan; T inversi >1 mm (R prominen/R:S >1); STD terisolasi ≥0,5 mm V1–V3 → rekam V7–V9', source: 'PNPK26 Tabel 3, UDMI4, ACCAHA25 Tabel 3', status: 'terverifikasi' },
-  { key: 'ST_DEPRESSION.PNPK', parameter: 'Depresi ST diagnostik', value: '≥0,5 mm di V1–V3 (AHA: V2–V3), ≥1 mm sadapan lain; inversi T simetris ≥2 mm spesifik', source: 'PNPK26 (teks), WAGNER09 rekomendasi 6', status: 'terverifikasi' },
-  { key: 'AVR_PATTERN', parameter: 'Elevasi aVR + depresi ST difus', value: 'Depresi ST ≥1 mm pada ≥6 sadapan (WAGNER09: ≥8) + elevasi ST aVR dan/atau V1 → curiga LM/multivessel; triase reperfusi segera', source: 'ESC23 (teks), UDMI4, WAGNER09', status: 'terverifikasi' },
+  { key: 'ST_ELEVATION.RIGHT_V4R', parameter: 'Elevasi ST V3R/V4R', value: '≥0,5 mm; ≥1 mm pada pria <30 th (kasus sintetis dibuat ≥1 mm agar juga memenuhi PERKI)', source: 'UDMI4, WAGNER09. PERKI24 Gambar 1.3: V3R/V4R ikut ambang 1 mm; PNPK26 "≥1 mV" (salah ketik)', status: 'terverifikasi' },
+  { key: 'ST_DEPRESSION.ISCHEMIC_MM', parameter: 'Depresi ST iskemik', value: 'Horizontal/downsloping ≥0,5 mm pada 2 sadapan berdekatan; T inversi >1 mm (R prominen/R:S >1); STD terisolasi ≥0,5 mm V1–V3 → rekam V7–V9', source: 'PERKI24 Tabel 1.2, PNPK26, UDMI4, ACCAHA25 Tabel 3', status: 'terverifikasi' },
+  { key: 'ST_DEPRESSION.PNPK', parameter: 'Depresi ST diagnostik', value: '≥0,5 mm di V1–V3 (AHA: V2–V3), ≥1 mm sadapan lain; inversi T simetris ≥2 mm spesifik; T inversi >1 mm di ≥5 sadapan = prognosis', source: 'PERKI24 hal. 11 & Gambar 1.4, PNPK26, WAGNER09', status: 'terverifikasi' },
+  { key: 'AVR_PATTERN', parameter: 'Elevasi aVR + depresi ST difus', value: 'Depresi ST ≥1 mm pada ≥6 sadapan (WAGNER09: ≥8) + elevasi ST aVR dan/atau V1 → LM/multivessel; reperfusi mekanik (IKPP) segera', source: 'PERKI24 Gambar 1.3, ESC23, UDMI4, WAGNER09', status: 'terverifikasi' },
   { key: 'AVR_PATTERN.STE_AVR_MM', parameter: 'Besar elevasi aVR yang dipakai', value: '≥1 mm (tidak diberi angka oleh ESC23/WAGNER09)', source: 'Asumsi simulator', status: 'asumsi-sim' },
   { key: 'POSTERIOR_MI', parameter: 'Infark posterior', value: 'Depresi ST V1–V3 dan/atau elevasi ST V7–V9', source: 'ESC23 (teks)', status: 'terverifikasi' },
   { key: 'HYPERACUTE_T', parameter: 'T hiperakut', value: 'T menonjol & simetris di ≥2 sadapan berdekatan (tanpa ambang angka)', source: 'UDMI4 (teks)', status: 'terverifikasi' },
@@ -755,12 +821,13 @@ export const CRITERIA_REGISTRY: RegistryRow[] = [
   { key: 'HYPERACUTE_T.V2_UPPER', parameter: 'Batas atas normal T V2', value: 'Pria 1,0–1,4 mV (≤1,6 mV usia 18–29 th); wanita 0,7–1,0 mV', source: 'RAUTAHARJU09', status: 'terverifikasi' },
   { key: 'T_WAVE', parameter: 'Deskriptor gelombang T', value: 'Inversi −0,1…−0,5 mV; dalam −0,5…−1,0 mV; raksasa < −1,0 mV; rendah <10% R; datar ±0,1 mV', source: 'RAUTAHARJU09', status: 'terverifikasi' },
   { key: 'Q_WAVE', parameter: 'Gelombang Q patologis', value: 'V2–V3 >20 ms/QS; lain ≥30 ms & ≥1 mm di 2 sadapan sekelompok; R V1–V2 >40 ms + R/S>1 (posterior)', source: 'UDMI4 Tabel 3 (gambar)', status: 'VERIFY' },
-  { key: 'CONTIGUOUS_GROUPS', parameter: 'Lokasi infark per sadapan', value: 'V1–V4 anterior; I, aVL, V5–V6 lateral; II, III, aVF inferior; V7–V9 posterior; V3R–V4R ventrikel kanan', source: 'PNPK26 Tabel 4', status: 'terverifikasi' },
+  { key: 'CONTIGUOUS_GROUPS', parameter: 'Lokasi infark per sadapan', value: 'V1–V4 anterior; I, aVL, V5–V6 lateral; II, III, aVF inferior; V7–V9 posterior; V3R–V4R ventrikel kanan', source: 'PERKI24 Tabel 1.3, PNPK26 Tabel 4', status: 'terverifikasi' },
   { key: 'SGARBOSSA', parameter: 'Kriteria Sgarbossa', value: 'STE konkordan ≥1 mm (5); STD konkordan V1–V3 ≥1 mm (3); STE diskordan ≥5 mm (2); skor ≥3', source: 'Ambang: WAGNER09 (terverifikasi); bobot poin: SGARBOSSA96', status: 'VERIFY' },
   { key: 'SGARBOSSA.SMITH_RATIO', parameter: 'Modifikasi Smith', value: 'Rasio ST/S ≤ −0,25 menggantikan kriteria diskordan', source: 'SMITH12', status: 'VERIFY' },
   { key: 'SGARBOSSA.UDMI', parameter: 'LBBB: STE konkordan', value: '≥1 mm di sadapan mana pun → iskemia akut', source: 'UDMI4 (teks)', status: 'terverifikasi' },
-  { key: 'DE_WINTER', parameter: 'Pola de Winter', value: 'Depresi ST upsloping 1–3 mm V1–V6 + T tinggi simetris; STE aVR 1–2 mm', source: 'DEWINTER08', status: 'VERIFY' },
-  { key: 'WELLENS', parameter: 'Pola Wellens', value: 'A: T bifasik V2–V3; B: T inversi dalam (>5 mm) simetris V2–V4, sering QT memanjang; ST <1 mm, tanpa Q', source: 'DEZWAAN82 (tipe A, VERIFY); WAGNER09 (tipe B >0,5 mV, terverifikasi)', status: 'VERIFY' },
+  { key: 'DE_WINTER', parameter: 'Pola de Winter', value: 'Depresi ST upsloping 1–3 mm di titik J V1–V6 → T tinggi, positif, simetris; stenosis berat/oklusi LAD proksimal', source: 'PERKI24 Gambar 1.4 (= ESC23)', status: 'terverifikasi' },
+  { key: 'DE_WINTER.AVR_STE_MM', parameter: 'de Winter: elevasi aVR', value: '1–2 mm (sebagian besar kasus)', source: 'DEWINTER08 (tidak disebut PERKI24)', status: 'VERIFY' },
+  { key: 'WELLENS', parameter: 'Pola Wellens', value: 'Titik J <1 mm + A: T bifasik V2–V3; B: T simetris sangat terbalik V2–V3 (kadang V1, V4–V6), AHA: >5 mm V2–V4 + QT memanjang', source: 'PERKI24 Gambar 1.4, WAGNER09', status: 'terverifikasi' },
   { key: 'BRUGADA.TYPE1_STE_MM', parameter: 'Brugada tipe 1', value: 'STE coved ≥2 mm di ≥1 sadapan V1–V2 + T negatif', source: 'PRIORI13, ESC22VA', status: 'VERIFY' },
   { key: 'EARLY_REPOL.JP_MV', parameter: 'Repolarisasi dini', value: 'Jp ≥0,1 mV di ≥2 sadapan inferior/lateral + notch/slur', source: 'MACFARLANE15', status: 'VERIFY' },
   { key: 'PERICARDITIS.ST_T_RATIO_V6', parameter: 'Perikarditis vs repolarisasi dini', value: 'STE cekung luas + depresi PR; rasio ST/T V6 >0,25', source: 'ADLER15; Ginzton & Laks 1982', status: 'VERIFY' },
@@ -772,7 +839,7 @@ export const CRITERIA_REGISTRY: RegistryRow[] = [
   { key: 'LOW_VOLTAGE', parameter: 'Voltase rendah', value: 'QRS <5 mm semua ekstremitas dan/atau <10 mm semua prekordial', source: 'HANCOCK09 / Mason 2007', status: 'VERIFY' },
   { key: 'CONDUCTION.RBBB', parameter: 'RBBB komplet', value: 'QRS ≥120; rsR′ V1/V2; S lebar >40 ms di I & V6; RPT V1 >50 ms', source: 'SURAWICZ09', status: 'terverifikasi' },
   { key: 'CONDUCTION.LBBB', parameter: 'LBBB komplet', value: 'QRS ≥120; R lebar berlekuk I, aVL, V5–V6; tanpa q I/V5/V6; RPT V5–V6 >60 ms', source: 'SURAWICZ09', status: 'terverifikasi' },
-  { key: 'CONDUCTION.LBBB_NEW', parameter: 'LBBB baru & IMA', value: 'LBBB baru tidak diagnostik IMA bila berdiri sendiri; pada pasien asimtomatik bukan ekuivalen STEMI — nilai klinis + Sgarbossa', source: 'ACCAHA25 Tabel 3 (catatan kaki), UDMI4', status: 'terverifikasi' },
+  { key: 'CONDUCTION.LBBB_NEW', parameter: 'LBBB/pacu/RBBB & IMA', value: 'Kecurigaan klinis tinggi → tangani seperti IMA-EST dengan IKP primer; LBBB baru saja (asimtomatik) bukan ekuivalen STEMI', source: 'PERKI24 Gambar 1.3 (= ESC23), ACCAHA25 Tabel 3, UDMI4', status: 'terverifikasi' },
   { key: 'CONDUCTION.LAFB', parameter: 'LAFB', value: 'Aksis −45° s.d. −90°; qR aVL; RPT aVL ≥45 ms; QRS <120', source: 'SURAWICZ09', status: 'terverifikasi' },
   { key: 'CONDUCTION.LPFB', parameter: 'LPFB', value: 'Aksis +90° s.d. +180°; rS I & aVL; qR III & aVF; QRS <120; istilah "bifasikular" tidak dianjurkan', source: 'SURAWICZ09', status: 'terverifikasi' },
   { key: 'AV_BLOCK', parameter: 'AV blok', value: 'D1 PR >200; Mobitz I PR progresif; Mobitz II PR konstan + drop; 2:1 tak terklasifikasi; D3 disosiasi AV', source: 'KUSUMOTO18', status: 'VERIFY' },
@@ -786,13 +853,16 @@ export const CRITERIA_REGISTRY: RegistryRow[] = [
   { key: 'HYPOTHERMIA', parameter: 'Hipotermia', value: 'Gelombang Osborn, bradikardia, interval memanjang, artefak menggigil', source: 'MATTU02', status: 'VERIFY' },
   { key: 'TCA', parameter: 'Overdosis TCA', value: 'QRS ≥100 ms (kejang), ≥160 ms (aritmia); R aVR ≥3 mm; R/S aVR ≥0,7; Na-bikarbonat 1–2 mEq/kg', source: 'BOEHNERT85, LIEBELT95', status: 'VERIFY' },
   { key: 'DIGOXIN', parameter: 'Digoksin', value: 'Efek: ST scooped, QT pendek; toksisitas: VT bidireksional, AT dengan blok, AV blok, PVC', source: 'MA01', status: 'VERIFY' },
-  { key: 'ACS_TIMING.ECG_WITHIN_MIN', parameter: 'EKG pertama', value: '≤10 menit sejak kontak medis pertama/kedatangan', source: 'ESC23 (teks), PNPK26, ACCAHA25 (COR 1)', status: 'terverifikasi' },
-  { key: 'ACS_TIMING.PCI_MAX_DELAY_MIN', parameter: 'Diagnosis → IKP primer', value: '≤120 menit; bila lebih → fibrinolitik', source: 'ESC23 (teks), PNPK26', status: 'terverifikasi' },
-  { key: 'ACS_TIMING.FMC_TO_DEVICE_MIN', parameter: 'FMC → alat (IKP primer)', value: '≤90 menit; ≤120 menit bila dirujuk; >120 menit & gejala <12 jam → fibrinolitik; 12–24 jam → rujuk IKP wajar (2a)', source: 'ACCAHA25 §5.2.1, §5.3', status: 'terverifikasi' },
+  { key: 'ACS_TIMING.ECG_WITHIN_MIN', parameter: 'EKG pertama', value: '≤10 menit sejak kontak medis pertama/kedatangan; ulang tiap angina berulang', source: 'PERKI24 §1.5.2.1, ESC23, PNPK26, ACCAHA25 (COR 1)', status: 'terverifikasi' },
+  { key: 'ACS_TIMING.PCI_MAX_DELAY_MIN', parameter: 'Diagnosis → IKP primer', value: '≤120 menit; bila lebih → fibrinolitik', source: 'PERKI24 hal. 56 & Tabel Rek. 9, ESC23, PNPK26', status: 'terverifikasi' },
+  { key: 'ACS_TIMING.FMC_TO_DEVICE_MIN', parameter: 'FMC → alat (IKP primer)', value: '<90 menit di sentra IKP; ≤120 menit bila dirujuk; >120 menit & gejala <12 jam → fibrinolitik; 12–24 jam → rujuk IKP wajar (2a)', source: 'PERKI24 hal. 55, ACCAHA25 §5.2.1, §5.3', status: 'terverifikasi' },
   { key: 'ACS_TIMING.NO_LYSIS_FOR_ISOLATED_STD', parameter: 'Depresi ST saja', value: 'Jangan fibrinolitik (kecuali curiga STEMI posterior sejati)', source: 'ACCAHA25 §5.3 (3: Harm)', status: 'terverifikasi' },
-  { key: 'ACS_TIMING.LYSIS_WITHIN_MIN', parameter: 'Fibrinolitik', value: 'Mulai ≤10 menit sejak diagnosis STEMI', source: 'ESC23 (teks)', status: 'terverifikasi' },
-  { key: 'ACS_TIMING.REPERFUSION_WINDOW_H', parameter: 'Jendela reperfusi', value: 'Gejala ≤12 jam (atau >12 jam bila iskemia berlangsung)', source: 'ESC23, PNPK26', status: 'terverifikasi' },
-  { key: 'ACS_TIMING.POST_LYSIS', parameter: 'Pasca-fibrinolisis', value: 'Angiografi 2–24 jam; rescue PCI bila resolusi ST <50% dalam 60–90 menit', source: 'ESC23, PNPK26, ACCAHA25 §5.3.2', status: 'terverifikasi' },
+  { key: 'ACS_TIMING.LYSIS_WITHIN_MIN', parameter: 'Fibrinolitik', value: '≤30 menit sejak kontak medis pertama (PERKI); ≤10 menit sejak diagnosis (ESC)', source: 'PERKI24 Tabel Rek. 9 (I A), ESC23', status: 'terverifikasi' },
+  { key: 'ACS_TIMING.REPERFUSION_WINDOW_H', parameter: 'Jendela reperfusi', value: 'Gejala ≤12 jam; >12 jam → IKP bila iskemia berlangsung/instabilitas/aritmia; 12–48 jam IKP rutin dipertimbangkan (IIa); >48 jam tanpa gejala tidak (III)', source: 'PERKI24 Tabel Rek. 9, ESC23, PNPK26', status: 'terverifikasi' },
+  { key: 'ACS_TIMING.POST_LYSIS', parameter: 'Pasca-fibrinolisis', value: 'Rujuk segera ke sentra IKP; angiografi 2–24 jam; rescue PCI bila resolusi ST <50% dalam 60–90 menit; jangan fibrinolitik ulang', source: 'PERKI24 Tabel Rek. 10 & §3.2.2.1, ESC23, ACCAHA25 §5.3.2', status: 'terverifikasi' },
+  { key: 'MECHANICAL_REPERFUSION_PATTERNS', parameter: 'Reperfusi mekanik (IKPP)', value: 'LBBB/irama pacu/RBBB + kecurigaan klinis tinggi, pola aVR/multivessel; de Winter → angiografi segera (bukan fibrinolitik)', source: 'PERKI24 Gambar 1.3–1.4 (= ESC23), ACCAHA25 §5.3', status: 'terverifikasi' },
+  { key: 'LYSIS_DOSES', parameter: 'Dosis fibrinolitik & ko-terapi', value: 'Streptokinase 1,5 juta U/30–60 mnt; tenekteplase 30–50 mg sesuai BB (½ dosis ≥75 th); alteplase 15 mg + 0,75 mg/kg + 0,5 mg/kg; aspirin 160–320 mg; klopidogrel 300 mg (75 mg bila >75 th); enoksaparin/UFH', source: 'PERKI24 Tabel 3.2', status: 'terverifikasi' },
+  { key: 'NSTE_RISK', parameter: 'Stratifikasi SKA-NEST', value: 'GRACE RS ≤108 rendah, 109–140 menengah, >140 tinggi; risiko sangat tinggi → invasif segera; tinggi → invasif dini <24 jam; EKG ulang 10–20 menit bila non-diagnostik', source: 'PERKI24 §2.1, Tabel 2.2, Gambar 2.1, §1.5.2.1', status: 'terverifikasi' },
   { key: 'SCORING', parameter: 'Toleransi penilaian', value: 'HR ±10% (min ±8); PR ±30; QRS ±25; QT/QTc ±40 ms; aksis ±30°; lulus 75; kesalahan kritis → skor maks. 59', source: 'Asumsi simulator', status: 'asumsi-sim' },
   { key: 'SYNTH.DOWER', parameter: 'Model sintetis: proyeksi VCG → 12 sadapan', value: 'Matriks Dower (1980); sadapan V3R–V5R/V7–V9 = ekstrapolasi model', source: 'Dower GE, et al. 1980; Sameni R, et al. 2007 (model dinamis 3D)', status: 'asumsi-sim' },
 ];

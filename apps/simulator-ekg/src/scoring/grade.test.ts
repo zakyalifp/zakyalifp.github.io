@@ -28,6 +28,17 @@ describe('Penilaian interpretasi sistematis', () => {
     expect(q.weight).toBe(0);
     expect(q.ok).toBe(true);
   });
+  it('reperfusi vs IKP segera (PERKI 2024): nilai parsial, bukan kritis', () => {
+    const avr = SYNTH_METAS.find((m) => m.dx === 'avr-std')!;
+    const a = gradeSystematic(avr, truth, { mgmt: 'reperfusi' }).find((x) => x.step === 'mgmt')!;
+    expect(a.credit).toBe(0.5);
+    expect(a.critical).toBe(false);
+    const b = gradeSystematic(stemi, truth, { mgmt: 'ikp-segera' }).find((x) => x.step === 'mgmt')!;
+    expect(b.credit).toBe(0.75);
+    expect(b.critical).toBe(false);
+    const c = gradeSystematic(avr, truth, { mgmt: 'observasi' }).find((x) => x.step === 'mgmt')!;
+    expect(c.critical).toBe(true);
+  });
   it('melewatkan STEMI & reperfusi = kesalahan kritis', () => {
     const s = gradeSystematic(stemi, truth, { st: 'normal', dx: 'early-repol', mgmt: 'observasi' });
     expect(s.filter((x) => x.critical).length).toBeGreaterThanOrEqual(2);

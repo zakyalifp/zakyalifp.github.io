@@ -9,7 +9,7 @@ import { synthesize, type SynthResult } from '../ekg/synth/synth';
 import { measureLeads, type BeatMeasure } from '../ekg/core/measure';
 import type { LeadName } from '../ekg/core/types';
 import { STANDARD_LEADS } from '../ekg/core/types';
-import { areContiguous, AVR_PATTERN, BRUGADA, evaluateSgarbossa, INTERVALS, LVH, QT, RATE, RVH, steThresholdMm, ST_DEPRESSION, TCA, ATRIAL, DE_WINTER, WELLENS } from '../clinical/ecg-criteria';
+import { areContiguous, ST_ELEVATION, AVR_PATTERN, BRUGADA, evaluateSgarbossa, INTERVALS, LVH, QT, RATE, RVH, steThresholdMm, ST_DEPRESSION, TCA, ATRIAL, DE_WINTER, WELLENS } from '../clinical/ecg-criteria';
 
 const ALL: LeadName[] = [...STANDARD_LEADS, 'V3R', 'V4R', 'V5R', 'V7', 'V8', 'V9'];
 
@@ -259,6 +259,13 @@ describe('Kasus sintetis memenuhi kriteria klinis', () => {
       if (DIAGNOSES[s.dx].category === 'konduksi' && ['lbbb', 'rbbb', 'bifascicular'].includes(s.dx)) expect(c.r.truth.qrsMs!).toBeGreaterThanOrEqual(INTERVALS.QRS_BBB_MIN_MS);
     });
   }
+  it('IMA ventrikel kanan sintetis juga memenuhi ambang PERKI 2024 (V3R/V4R ≥1 mm)', () => {
+    for (const sc of SYNTHETIC_CASES.filter((x) => x.dx === 'stemi-rv')) {
+      const r = synthesize({ ...sc.spec, noise: undefined, extraLeads: true });
+      const m = measureLeads(r.signal, r.beats, ['V3R', 'V4R'] as LeadName[], () => true);
+      expect(Math.max(m.V3R!.stJ, m.V4R!.stJ)).toBeGreaterThanOrEqual(ST_ELEVATION.RIGHT_V4R_PERKI_MM);
+    }
+  });
   it('LVH sintetis dari synthesizer memenuhi Sokolow–Lyon', () => {
     const c = ctx({ id: 'lvh-probe', dx: 'lvh', age: 60, sex: 'L', spec: { rhythm: { kind: 'sinus', rate: 70 }, morph: { lvh: 1 }, seed: 'lvh' }, annotations: [] });
     expect(c.m.V1!.s + Math.max(c.m.V5!.r, c.m.V6!.r)).toBeGreaterThan(LVH.SOKOLOW_MM);

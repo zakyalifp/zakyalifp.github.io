@@ -64,6 +64,8 @@ export function truthRhythm(meta: CaseMeta, truth: Truth): RhythmKey {
   return r;
 }
 const SINUS_FAMILY: RhythmKey[] = ['sinus', 'sinus-brady', 'sinus-tachy', 'sinus-arrhythmia'];
+/** Pilihan tata laksana yang berarti reperfusi segera (farmakologis/mekanik). */
+const REPERFUSION_MGMT: MgmtKey[] = ['reperfusi', 'ikp-segera'];
 /** Irama sangat tidak teratur: QTc tidak dikoreksi/dinilai (RAUTAHARJU09). */
 export const IRREGULAR_RHYTHMS: RhythmKey[] = ['af', 'mat'];
 
@@ -167,7 +169,18 @@ export function gradeSystematic(meta: CaseMeta, truth: Truth, a: SystematicAnswe
   if (critMiss) out[out.length - 1].feedback += ' Diagnosis kritis terlewat.';
   const um = a.mgmt || '';
   const mOk = um === dx.mgmt;
-  out.push({ step: 'mgmt', label: 'Tata laksana awal', ok: mOk, credit: mOk ? 1 : 0, user: um ? MGMT_LABEL[um as MgmtKey] : 'kosong', truth: MGMT_LABEL[dx.mgmt], feedback: mOk ? 'Tepat.' : `Tata laksana: ${MGMT_LABEL[dx.mgmt]}.`, competency: 'tatalaksana', weight: 2, critical: !mOk && (dx.mgmt === 'reperfusi' || dx.mgmt === 'defibrilasi') });
+  // Reperfusi vs reperfusi mekanik (PERKI 2024 Gambar 1.3–1.4): keduanya mengaktifkan
+  // reperfusi segera → nilai parsial, bukan kesalahan kritis.
+  const nearReperf = !mOk && REPERFUSION_MGMT.includes(dx.mgmt) && REPERFUSION_MGMT.includes(um as MgmtKey);
+  const mCredit = mOk ? 1 : nearReperf ? (dx.mgmt === 'reperfusi' ? 0.75 : 0.5) : 0;
+  const mFeedback = mOk
+    ? 'Tepat.'
+    : nearReperf && dx.mgmt === 'ikp-segera'
+      ? `Benar perlu reperfusi segera, tetapi pada pola ini reperfusi dilakukan secara mekanik (IKP primer); fibrinolitik bukan pilihan. ${MGMT_LABEL[dx.mgmt]}.`
+      : nearReperf
+        ? `Hampir: IKP primer memang pilihan utama, tetapi bila IKP tidak dapat dicapai tepat waktu, STEMI klasik tetap dapat difibrinolisis. ${MGMT_LABEL[dx.mgmt]}.`
+        : `Tata laksana: ${MGMT_LABEL[dx.mgmt]}.`;
+  out.push({ step: 'mgmt', label: 'Tata laksana awal', ok: mOk, credit: mCredit, user: um ? MGMT_LABEL[um as MgmtKey] : 'kosong', truth: MGMT_LABEL[dx.mgmt], feedback: mFeedback, competency: 'tatalaksana', weight: 2, critical: !mOk && !nearReperf && (REPERFUSION_MGMT.includes(dx.mgmt) || dx.mgmt === 'defibrilasi') });
   if (out[out.length - 1].critical) out[out.length - 1].feedback += ' Tindakan penyelamat nyawa terlewat — kesalahan kritis.';
   return out;
 }

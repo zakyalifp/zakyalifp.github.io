@@ -2,7 +2,7 @@
  * Mode Kasus Klinis: vinyet + EKG (termasuk EKG serial yang berevolusi) + keputusan.
  * Angka waktu reperfusi diambil dari ACS_TIMING (ESC 2023 / PNPK 2026, terverifikasi).
  */
-import { ACS_TIMING, TCA, TORSADES } from '../clinical/ecg-criteria';
+import { ACS_TIMING, LYSIS_DOSES, TCA, TORSADES } from '../clinical/ecg-criteria';
 import type { Competency, Level } from './diagnoses';
 
 export type CaseRef = { id: string } | { dx: string; kind?: 'nyata' | 'sintetis'; n?: number };
@@ -54,7 +54,7 @@ export const CLINICAL: ClinicalScenario[] = [
         question: `Transfer ke PCI diperkirakan >${T.PCI_MAX_DELAY_MIN} menit. Tindakan?`,
         competency: 'tatalaksana',
         options: [
-          { text: `Fibrinolitik segera (target ≤${T.LYSIS_WITHIN_MIN} menit sejak diagnosis) lalu rujuk untuk angiografi ${T.POST_LYSIS_ANGIO_H.min}–${T.POST_LYSIS_ANGIO_H.max} jam (farmakoinvasif)`, correct: true, feedback: `Sesuai ESC 2023 & PNPK 2026: bila IKP primer tidak dapat dicapai ≤${T.PCI_MAX_DELAY_MIN} menit, fibrinolitik dalam ${T.REPERFUSION_WINDOW_H} jam onset.` },
+          { text: `Fibrinolitik segera (≤${T.LYSIS_WITHIN_FMC_MIN} menit sejak kontak medis pertama) lalu rujuk ke sentra IKP untuk angiografi ${T.POST_LYSIS_ANGIO_H.min}–${T.POST_LYSIS_ANGIO_H.max} jam (farmako-invasif)`, correct: true, feedback: `Sesuai PERKI 2024, ESC 2023 & PNPK 2026: bila IKP primer tidak dapat dicapai <${T.PCI_MAX_DELAY_MIN} menit dan gejala <${T.REPERFUSION_WINDOW_H} jam, fibrinolitik ≤${T.LYSIS_WITHIN_FMC_MIN} menit sejak kontak medis pertama. Dosis (PERKI 2024 Tabel 3.2): tenekteplase ${LYSIS_DOSES.TENECTEPLASE}; atau streptokinase ${LYSIS_DOSES.STREPTOKINASE}. Ko-terapi: aspirin ${LYSIS_DOSES.ASPIRIN}; klopidogrel ${LYSIS_DOSES.CLOPIDOGREL}; enoksaparin ${LYSIS_DOSES.ENOXAPARIN}.` },
           { text: 'Rujuk untuk IKP primer tanpa fibrinolitik walau perjalanan 150 menit', feedback: `Keterlambatan >${T.PCI_MAX_DELAY_MIN} menit menghilangkan keunggulan IKP primer; strategi farmakoinvasif dianjurkan.` },
           { text: 'Tunggu troponin sebelum memutuskan', critical: true, feedback: 'STEMI didiagnosis dari EKG + klinis; menunggu troponin menunda reperfusi.' },
         ],
