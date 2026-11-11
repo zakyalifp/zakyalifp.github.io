@@ -21,6 +21,13 @@ describe('Penilaian interpretasi sistematis', () => {
     expect(s.find((x) => x.step === 'qrs')!.credit).toBe(0.5);
     expect(s.find((x) => x.step === 'axis')!.credit).toBe(0.5);
   });
+  it('QTc tidak dinilai pada fibrilasi atrium (Rautaharju 2009)', () => {
+    const af = SYNTH_METAS.find((m) => m.dx === 'af')!;
+    const s = gradeSystematic(af, { ...truth, pr: null }, { qtc: 999 });
+    const q = s.find((x) => x.step === 'qtc')!;
+    expect(q.weight).toBe(0);
+    expect(q.ok).toBe(true);
+  });
   it('melewatkan STEMI & reperfusi = kesalahan kritis', () => {
     const s = gradeSystematic(stemi, truth, { st: 'normal', dx: 'early-repol', mgmt: 'observasi' });
     expect(s.filter((x) => x.critical).length).toBeGreaterThanOrEqual(2);

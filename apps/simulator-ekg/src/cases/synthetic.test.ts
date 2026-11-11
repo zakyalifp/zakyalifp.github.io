@@ -90,10 +90,12 @@ const CHECKS: Record<string, Check> = {
     for (const l of WELLENS.LEADS) expect(c.m[l]!.stJ).toBeLessThan(WELLENS.MAX_STE_MM);
   },
   'wellens-b': (c) => {
-    for (const l of WELLENS.LEADS) {
-      expect(c.m[l]!.t).toBeLessThan(-2);
+    // WAGNER09: inversi T >0,5 mV di V2–V4, sering dengan QT memanjang; ST <1 mm (DEZWAAN82)
+    for (const l of WELLENS.TYPE_B_LEADS) {
+      expect(c.m[l]!.t).toBeLessThan(-WELLENS.TYPE_B_DEEP_TWI_MM);
       expect(c.m[l]!.stJ).toBeLessThan(WELLENS.MAX_STE_MM);
     }
+    expect(c.r.truth.qtcBazettMs!).toBeGreaterThanOrEqual(c.s.sex === 'P' ? QT.PROLONGED_FEMALE_MS : QT.PROLONGED_MALE_MS);
   },
   'avr-std': (c) => {
     const dep = STANDARD_LEADS.filter((l) => l !== 'aVR' && c.m[l]!.stJ <= -AVR_PATTERN.STD_MM + 0.05);
@@ -167,10 +169,10 @@ const CHECKS: Record<string, Check> = {
     expect(c.r.truth.qtcBazettMs!).toBeLessThan(QT.PROLONGED_MALE_MS);
   },
   rvh: (c) => {
-    expect(c.m.V1!.r).toBeGreaterThanOrEqual(RVH.R_V1_MM);
+    expect(c.m.V1!.r).toBeGreaterThan(RVH.R_V1_MM);
     expect(c.m.V1!.r / Math.max(0.1, c.m.V1!.s)).toBeGreaterThan(RVH.RS_RATIO_V1);
   },
-  rae: (c) => expect(pAmpMm(c, 'II')).toBeGreaterThanOrEqual(ATRIAL.RAE_P_II_MM),
+  rae: (c) => expect(pAmpMm(c, 'II')).toBeGreaterThan(ATRIAL.RAE_P_II_MM),
   hcm: (c) => expect(c.m.V6!.s).toBeGreaterThan(2),
   lafb: (c) => expect(c.r.truth.axisDeg!).toBeLessThanOrEqual(-45),
   'vt-mono': (c) => {
@@ -259,7 +261,7 @@ describe('Kasus sintetis memenuhi kriteria klinis', () => {
   }
   it('LVH sintetis dari synthesizer memenuhi Sokolow–Lyon', () => {
     const c = ctx({ id: 'lvh-probe', dx: 'lvh', age: 60, sex: 'L', spec: { rhythm: { kind: 'sinus', rate: 70 }, morph: { lvh: 1 }, seed: 'lvh' }, annotations: [] });
-    expect(c.m.V1!.s + Math.max(c.m.V5!.r, c.m.V6!.r)).toBeGreaterThanOrEqual(LVH.SOKOLOW_MM);
+    expect(c.m.V1!.s + Math.max(c.m.V5!.r, c.m.V6!.r)).toBeGreaterThan(LVH.SOKOLOW_MM);
   });
   it('id unik', () => {
     const ids = [...SYNTHETIC_CASES, ...SERIAL_SYNTH].map((s) => s.id);

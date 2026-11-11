@@ -8,7 +8,7 @@ import { SCORING } from '../clinical/ecg-criteria';
 
 const DESC: Record<Level, string> = {
   dasar: 'Setara UKMPPD: EKG normal, irama dasar, AF/flutter/SVT, PVC, AV blok, BBB, STEMI klasik, hiperkalemia & hipokalemia, salah pasang elektroda.',
-  menengah: 'Kasus IGD: STEMI ventrikel kanan & posterior, perikarditis vs repolarisasi dini, LVH strain, Mobitz II, VT, torsades, elektrolit, hipotermia.',
+  menengah: 'Kasus IGD: STEMI ventrikel kanan & posterior, perikarditis vs repolarisasi dini, LVH dengan ST-T sekunder, Mobitz II, VT, torsades, elektrolit, hipotermia.',
   lanjut: 'Residen: blok fasikular, VT vs SVT aberan, pola oklusi tanpa elevasi ST klasik (de Winter, Wellens, aVR, Sgarbossa), malfungsi pacu jantung, Brugada, TCA.',
 };
 

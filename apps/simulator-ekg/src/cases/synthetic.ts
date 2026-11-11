@@ -108,8 +108,8 @@ export const SYNTHETIC_CASES: SynthCase[] = [
   ]),
   c('wellens-a', 49, 'L', { rhythm: sinus(68), morph: { wellens: 'A' } }, [{ leads: ['V2', 'V3'], label: 'T bifasik', text: 'T bifasik (positif lalu negatif) di V2–V3, ST isoelektrik, R terjaga: Wellens tipe A.', kind: 'gelombang-t' }]),
   c('wellens-a', 57, 'P', { rhythm: sinus(72), morph: { wellens: 'A', qrsScale: 0.9 } }, [{ leads: ['V2', 'V3'], label: 'T bifasik', text: 'Wellens tipe A di V2–V3.', kind: 'gelombang-t' }]),
-  c('wellens-b', 53, 'L', { rhythm: sinus(66), morph: { wellens: 'B' } }, [{ leads: ['V1', 'V2', 'V3'], label: 'T inversi dalam', text: 'T inversi dalam & simetris di V1–V3 tanpa Q: Wellens tipe B.', kind: 'gelombang-t' }]),
-  c('wellens-b', 62, 'P', { rhythm: sinus(74), morph: { wellens: 'B', tExtra: [{ territory: 'anterior', mm: -2, index: 'V4' }] } }, [{ leads: ['V1', 'V2', 'V3', 'V4'], label: 'T inversi dalam', text: 'Inversi T simetris V1–V4, progresi R normal.', kind: 'gelombang-t' }]),
+  c('wellens-b', 53, 'L', { rhythm: sinus(66), morph: { wellens: 'B', qtc: 470 } }, [{ leads: ['V2', 'V3', 'V4'], label: 'T inversi dalam', text: 'T inversi dalam (>5 mm) & simetris di V2–V4 tanpa Q, QTc memanjang: Wellens tipe B.', kind: 'gelombang-t' }]),
+  c('wellens-b', 62, 'P', { rhythm: sinus(74), morph: { wellens: 'B', qtc: 475 } }, [{ leads: ['V1', 'V2', 'V3', 'V4'], label: 'T inversi dalam', text: 'Inversi T dalam & simetris V1–V4 (>5 mm di V2–V4), progresi R normal.', kind: 'gelombang-t' }]),
   c('avr-std', 68, 'L', { rhythm: sinus(108), morph: { st: [{ territory: 'diffuseSubendo', mm: 2 }] } }, [
     { leads: ['aVR', 'V1'], label: 'Elevasi aVR', text: 'Elevasi ST di aVR (dan V1).', kind: 'st-elevasi' },
     { leads: ['I', 'II', 'aVF', 'V4', 'V5', 'V6'], label: 'Depresi ST difus', text: 'Depresi ST ≥1 mm di ≥6 sadapan: iskemia subendokardial difus (LM/tiga pembuluh).', kind: 'st-depresi' },
@@ -247,8 +247,8 @@ export const SYNTHETIC_CASES: SynthCase[] = [
   c('pacing-noncapture', 76, 'L', { rhythm: { kind: 'paced', mode: 'VVI', rate: 60, fault: 'noncapture' } }, [{ leads: RHY, label: 'Gagal capture', text: 'Spike pacu yang tidak diikuti depolarisasi ventrikel.', kind: 'irama', beats: 'gagal capture' }]),
   c('pacing-undersensing', 80, 'L', { rhythm: { kind: 'paced', mode: 'VVI', rate: 60, fault: 'undersensing' } }, [{ leads: RHY, label: 'Undersensing', text: 'Spike muncul walau QRS intrinsik ada; sebagian jatuh di segmen ST/T.', kind: 'irama', beats: 'spike (undersensing)' }]),
   // ---------------------------------------------------------------- Konduksi tambahan
-  c('rvh', 34, 'P', { rhythm: sinus(88), morph: { rvh: 1.1, strain: 'rv', pMorph: 'pulmonale' } }, [{ leads: ['V1', 'V2', 'V3'], label: 'R dominan V1 + strain', text: 'R tinggi di V1 (R/S >1), inversi T V1–V3, P pulmonal.', kind: 'qrs' }, { leads: ['I', 'V5', 'V6'], label: 'Aksis kanan', text: 'S dalam di I dan V5–V6.', kind: 'qrs' }]),
-  c('rvh', 22, 'L', { rhythm: sinus(80), morph: { rvh: 1.3, strain: 'rv' } }, [{ leads: ['V1', 'V2'], label: 'R dominan V1', text: 'RVH dengan strain.', kind: 'qrs' }]),
+  c('rvh', 34, 'P', { rhythm: sinus(88), morph: { rvh: 1.1, strain: 'rv', pMorph: 'pulmonale' } }, [{ leads: ['V1', 'V2', 'V3'], label: 'R dominan V1 + ST-T sekunder', text: 'R tinggi di V1 (R/S >1), inversi T V1–V3 (abnormalitas ST-T sekunder), P pulmonal.', kind: 'qrs' }, { leads: ['I', 'V5', 'V6'], label: 'Aksis kanan', text: 'S dalam di I dan V5–V6.', kind: 'qrs' }]),
+  c('rvh', 22, 'L', { rhythm: sinus(80), morph: { rvh: 1.3, strain: 'rv' } }, [{ leads: ['V1', 'V2'], label: 'R dominan V1', text: 'RVH dengan abnormalitas ST-T sekunder (dulu "strain").', kind: 'qrs' }]),
   c('rae', 61, 'L', { rhythm: sinus(96), morph: { pMorph: 'pulmonale' } }, [{ leads: ['II', 'III', 'aVF', 'V1'], label: 'P pulmonal', text: 'P ≥2,5 mm di II/III/aVF.', kind: 'gelombang-p' }]),
   c('lbbb', 73, 'L', { rhythm: sinus(76), morph: { conduction: 'lbbb', qtc: 420 } }, [{ leads: ['I', 'aVL', 'V5', 'V6', 'V1'], label: 'LBBB', text: 'R lebar berlekuk di lateral, QS di V1, ST-T diskordan.', kind: 'qrs' }]),
   c('lafb', 64, 'P', { rhythm: sinus(70), morph: { conduction: 'lafb' } }, [{ leads: ['aVL', 'II', 'III', 'aVF'], label: 'LAFB', text: 'Aksis kiri ~−60°, qR di aVL, rS inferior.', kind: 'qrs' }]),

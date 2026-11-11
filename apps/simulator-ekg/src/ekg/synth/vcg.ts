@@ -103,6 +103,8 @@ export function rotateHorizontal(v: Vec3, deg: number): Vec3 {
 export const TERRITORY: Record<string, { dir: Vec3; index: LeadName }> = {
   // LAD (anterior/anteroseptal), elevasi maksimal V2–V3
   anterior: { dir: norm([0.25, -0.15, -1.0]), index: 'V3' },
+  // Anterior luas (V2–V5): dipakai untuk inversi T Wellens tipe B (WAGNER09: V2–V4, kadang V5)
+  anteriorWide: { dir: norm([0.65, 0.1, -1.0]), index: 'V3' },
   // LAD proksimal: anterior + lateral tinggi (I, aVL), resiprok inferior
   anteriorProximal: { dir: norm([0.45, -0.45, -1.0]), index: 'V3' },
   // LAD distal/"wrap-around": anterior + inferior

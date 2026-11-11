@@ -358,8 +358,11 @@ export function buildVentricular(spec: MorphSpec, o: BuildOpts): VentricularTemp
     t.push({ c: tPeak - 0.06, sL: sL * 0.6, sR: 0.03, v: scale(tVec, tAmp * 0.6) });
     t.push({ c: tPeak + 0.02, sL: 0.03, sR: sR, v: territoryVector('anterior', -0.32) });
   } else {
-    t.push({ c: tPeak, sL, sR, v: scale(tVec, tAmp) });
-    if (spec.wellens === 'B' && conducted) t.push({ c: tPeak, sL: sL * 0.8, sR: sR, v: territoryVector('anterior', -1.0) });
+    // Wellens B: vektor T normal dilemahkan lalu diganti vektor T anterior negatif dalam
+    // (WAGNER09: inversi >0,5 mV di V2–V4, sering dengan QT memanjang).
+    const wB = spec.wellens === 'B' && conducted;
+    t.push({ c: tPeak, sL, sR, v: scale(tVec, wB ? tAmp * 0.35 : tAmp) });
+    if (wB) t.push({ c: tPeak, sL: sL * 0.9, sR: sR, v: territoryVector('anteriorWide', -1.05) });
   }
   if (conducted) {
     for (const te of spec.tExtra ?? []) {

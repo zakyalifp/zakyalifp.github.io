@@ -1,7 +1,7 @@
 /**
  * Penilaian per langkah & per kasus (murni, teruji). Toleransi dari SCORING di ecg-criteria.ts.
  */
-import { AXIS_LABEL, axisCategory, RATE, SCORING, type AxisCategory } from '../clinical/ecg-criteria';
+import { AXIS_LABEL, axisCategory, QT, RATE, SCORING, type AxisCategory } from '../clinical/ecg-criteria';
 import { DIAGNOSES, MGMT_LABEL, PWAVE_LABEL, RHYTHM_LABEL, ST_LABEL, T_LABEL, type Competency, type MgmtKey, type PWave, type RhythmKey, type StFinding, type TFinding } from '../cases/diagnoses';
 import type { CaseMeta, Truth } from '../cases/model';
 
@@ -64,6 +64,8 @@ export function truthRhythm(meta: CaseMeta, truth: Truth): RhythmKey {
   return r;
 }
 const SINUS_FAMILY: RhythmKey[] = ['sinus', 'sinus-brady', 'sinus-tachy', 'sinus-arrhythmia'];
+/** Irama sangat tidak teratur: QTc tidak dikoreksi/dinilai (RAUTAHARJU09). */
+export const IRREGULAR_RHYTHMS: RhythmKey[] = ['af', 'mat'];
 
 export interface SystematicAnswer {
   hr?: number | null;
@@ -147,8 +149,15 @@ export function gradeSystematic(meta: CaseMeta, truth: Truth, a: SystematicAnswe
   const ut = a.t || '';
   const tOk = ut === dx.t;
   out.push({ step: 't', label: 'Gelombang T', ok: tOk, credit: tOk ? 1 : 0, user: ut ? T_LABEL[ut as TFinding] : 'kosong', truth: T_LABEL[dx.t], feedback: tOk ? 'Tepat.' : `Gelombang T: ${T_LABEL[dx.t]}.`, competency: repComp, weight: 1 });
-  const qtNa = ['vf', 'asistol', 'torsades', 'af'].includes(tr) && truth.qt === null;
-  out.push(numStep('qtc', 'QTc', a.qtc, a.qtNA, qtNa ? null : truth.qtcB, SCORING.QTC_TOL_MS, 'ms', 'pengukuran'));
+  // RAUTAHARJU09: koreksi QT tidak dilakukan bila variabilitas RR besar (FA, MAT) →
+  // langkah QTc ditampilkan sebagai catatan edukasi dan TIDAK dinilai (bobot 0).
+  if (QT.NO_CORRECTION_IRREGULAR && IRREGULAR_RHYTHMS.includes(tr)) {
+    const filled = !a.qtNA && a.qtc != null && !Number.isNaN(a.qtc);
+    out.push({ step: 'qtc', label: 'QTc', ok: true, credit: 1, weight: 0, competency: 'pengukuran', user: filled ? `${a.qtc} ms` : 'tidak dikoreksi', truth: 'tidak dinilai (RR sangat tidak teratur)', feedback: 'Tidak dinilai: AHA/ACCF/HRS 2009 (Rautaharju) menganjurkan koreksi QT tidak dilakukan bila RR sangat bervariasi, seperti pada fibrilasi atrium. Bila perlu, ukur QT pada beberapa siklus dan laporkan rentangnya.' });
+  } else {
+    const qtNa = ['vf', 'asistol', 'torsades'].includes(tr) && truth.qt === null;
+    out.push(numStep('qtc', 'QTc', a.qtc, a.qtNA, qtNa ? null : truth.qtcB, SCORING.QTC_TOL_MS, 'ms', 'pengukuran'));
+  }
   // Kesimpulan
   const ud = a.dx ?? '';
   const exact = ud === meta.dx || meta.secondary.includes(ud);

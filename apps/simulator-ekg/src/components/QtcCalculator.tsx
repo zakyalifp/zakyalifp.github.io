@@ -66,7 +66,7 @@ export function QtcCalculator({ initialQt, initialRr }: { initialQt?: number; in
         <p className="text-slate-600 dark:text-slate-400">Isi QT dan RR (atau laju). Ukur QT dari awal QRS sampai akhir T di sadapan dengan QT terpanjang (biasanya II atau V2–V3).</p>
       )}
       <p className="text-xs text-slate-600 dark:text-slate-400">
-        Batas: memanjang ≥{QT.PROLONGED_MALE_MS} ms (pria) / ≥{QT.PROLONGED_FEMALE_MS} ms (wanita); risiko tinggi &gt;{QT.HIGH_RISK_MS} ms; pendek ≤{QT.SHORT_MS} ms. Bazett berlebihan pada laju tinggi — Fridericia lebih akurat pada takikardia.
+        Batas: memanjang ≥{QT.PROLONGED_MALE_MS} ms (pria) / ≥{QT.PROLONGED_FEMALE_MS} ms (wanita); risiko tinggi &gt;{QT.HIGH_RISK_MS} ms; pendek ≤{QT.SHORT_MS} ms. Bazett berlebihan pada laju tinggi — Fridericia lebih akurat pada takikardia. AHA 2009 menganjurkan regresi linear dan tidak melakukan koreksi QT bila RR sangat bervariasi (fibrilasi atrium).
       </p>
     </div>
   );

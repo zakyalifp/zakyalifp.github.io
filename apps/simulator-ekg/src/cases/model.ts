@@ -186,7 +186,7 @@ export function realAnnotations(r: RealManifestEntry): Annotation[] {
     case 'lvh':
     case 'lvh-strain':
       add(['V1', 'V5', 'V6', 'aVL'], 'Voltase LVH', `Sokolow–Lyon SV1+RV5/6 = ${(((r.sMm?.V1 ?? 0) + Math.max(r.rMm?.V5 ?? 0, r.rMm?.V6 ?? 0))).toFixed(0)} mm; Cornell RaVL+SV3 = ${((r.rMm?.aVL ?? 0) + (r.sMm?.V3 ?? 0)).toFixed(0)} mm.`, 'qrs');
-      if (r.dx === 'lvh-strain') add(std.filter((l) => ['I', 'aVL', 'V4', 'V5', 'V6'].includes(l)), 'Pola strain', 'Depresi ST & inversi T asimetris di sadapan lateral.', 'st-depresi');
+      if (r.dx === 'lvh-strain') add(std.filter((l) => ['I', 'aVL', 'V4', 'V5', 'V6'].includes(l)), 'ST-T sekunder ("strain")', 'Depresi ST & inversi T asimetris di sadapan lateral.', 'st-depresi');
       break;
     case 'rvh':
       add(['V1', 'V2', 'I', 'V6'], 'RVH', 'R dominan di V1 dengan S dalam di I/V6.', 'qrs');
