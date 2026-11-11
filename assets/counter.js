@@ -44,7 +44,8 @@
         return r.ok ? r.json() : null;
       })
       .then(function (d) {
-        if (!d || !d.count) return;
+        // Sembunyikan bila belum ada kunjungan (0) atau data tidak tersedia.
+        if (!d || !d.count || !/[1-9]/.test(String(d.count))) return;
         // GoatCounter memakai koma sebagai pemisah ribuan. data-visit-count="en" → tetap
         // koma (halaman berbahasa Inggris); selain itu format Indonesia (titik).
         var raw = String(d.count).replace(/[^0-9]+/g, ',');

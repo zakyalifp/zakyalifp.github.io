@@ -7,6 +7,7 @@ describe('Penghitung kunjungan', () => {
     expect(formatCount('1,234')).toBe('1.234');
     expect(formatCount('12')).toBe('12');
     expect(formatCount('')).toBe('');
+    expect(formatCount('0')).toBe('');
   });
   it('tidak menghitung di localhost / uji otomatis', () => {
     expect(countingDisabled({ hostname: 'localhost', protocol: 'http:' }, { webdriver: false })).toBe(true);

@@ -37,7 +37,8 @@ export function startVisitCounter(): void {
 /** "1,234" (format GoatCounter) → "1.234" (format Indonesia). */
 export function formatCount(raw: string): string {
   const digits = raw.replace(/[^0-9]+/g, '');
-  if (!digits) return '';
+  // 0 kunjungan = belum ada data → tidak ditampilkan.
+  if (!digits || Number(digits) === 0) return '';
   return Number(digits).toLocaleString('id-ID');
 }
 
